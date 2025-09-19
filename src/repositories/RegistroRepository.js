@@ -1,30 +1,34 @@
 import Registros from '../database/Registros.json' with { type: 'json' };
 
 
-const users = Registros.map((u, id) => ({
-  id: id + 1,
-  nome: u.name,
-  email: u.email,
-  senha: u.Senha,
-  curso: u.curso,
-  tipo: u.Tipo || "Aluno" 
-}));
+const users = [...Registros] //funciona como um local storage
 
-const nextId = () => (users.length ? users[users.length - 1].id + 1 : 1);
+// const makeMatricula = () => {
+//     const year = new Date().getYear();
+//     const semestre = new Date().getMonth() < 6 ? '10' : '20';
+
+//     if (users.length === 0) {
+//     return `${year}${semestre}1`; // primeiro do semestre
+// }
+
+//     const ultima = users[users.length - 1].matricula;
+//     const seq = Number(String(ultima).slice(6)) + 1; // pega a parte final e soma 1
+//     return `${year}${semestre}${seq}`
+// };
 
 const UsersRepo = {
     async readAll() {
-    return users;
+    return users  //antes o readAll retornava Registros, onde era estatico, agora ele retorna o array users que é dinamico.
 },
 
     async readByEmail(email) {
     const pesquisaEmail = users.find(u => u.email === email)
     return pesquisaEmail;
 },
-create({ nome, email, senha, curso }) {
+create({ nome, matricula, email, senha, curso }) {
     const novo = { 
-        id: nextId(), 
-        nome, 
+        nome,
+        matricula,
         email, 
         senha, 
         curso, 

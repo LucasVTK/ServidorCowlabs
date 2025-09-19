@@ -4,9 +4,15 @@ import RegistroRepository from '../repositories/RegistroRepository.js'
 
 
 const RegistroController = {
-    async registro(req, res){
-        const { nome, email, senha, curso, tipo } = req.body
 
+    async MostraTodosOsRegistros(req, res){
+        const registros = await RegistroRepository.readAll()
+        res.status(200).json(registros)
+        console.log(registros)
+    },
+
+    async registro(req, res){
+        const { nome, email, senha, curso, tipo } = req.body 
         if(!nome || !email || !senha || !curso) {
             return res.status(400).json({
                 error: 'Campos obrigatórios: nome, email, senha e curso, preencha o faltante.'

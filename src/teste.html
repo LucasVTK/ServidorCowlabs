@@ -1,0 +1,42 @@
+<label>Educação Física
+  <input type="checkbox" class="filtro" id="cb-edu" value="Educação Física" />
+</label>
+<label>lalalla
+  <input type="checkbox" class="filtro" id="cb-lala" value="lalala" />
+</label>
+
+<ul id="lista"></ul>
+
+<script>
+  const API = 'http://127.0.0.1:3000/demandas/filter';
+  const cbs = document.querySelectorAll('input.filtro');
+  const ul  = document.getElementById('lista');
+
+  async function carregar(tag) {
+    const resp = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: tag ? JSON.stringify({ demanda_tag: tag }) : JSON.stringify({})
+    });
+    const data  = await resp.json();
+    const items = data.items || data;
+
+    ul.innerHTML = (!items || items.length === 0)
+      ? `<li>(Nenhuma demanda encontrada)</li>`
+      : items.map(d => `
+          <li>
+            <strong>${d.demanda_title}</strong><br>
+            <small>${d.data_curso} — ${d.demanda_tag} — por ${d.user_demanda}</small><br>
+            ${d.demanda_content}
+          </li>`).join('');
+  }
+
+  // marca = filtra; desmarca = todas (se nenhuma marcada)
+  function onChange() {
+    const marcado = [...cbs].find(cb => cb.checked);
+    carregar(marcado ? marcado.value : null);
+  }
+  cbs.forEach(cb => cb.addEventListener('change', onChange));
+
+  carregar(null); // inicial: todas
+</script>

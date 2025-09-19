@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --env-file .env ./src/server.js",
-    "dev": "vercel dev"
+    "start": "nodemon --env-file .env ./src/server.js"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +14,6 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "nodemon": "^3.1.10",
-    "serverless-http": "^4.0.0"
+    "nodemon": "^3.1.10"
   }
 }
