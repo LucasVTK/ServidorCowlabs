@@ -19,22 +19,27 @@ const users = [...Registros] //funciona como um local storage
 const UsersRepo = {
     async readAll() {
     return users  //antes o readAll retornava Registros, onde era estatico, agora ele retorna o array users que é dinamico.
-},
+    },
 
     async readByEmail(email) {
     const pesquisaEmail = users.find(u => u.email === email)
     return pesquisaEmail;
-},
-create({ nome, matricula, email, senha, curso }) {
-    const novo = { 
-        nome,
-        matricula,
-        email, 
-        senha, 
-        curso, 
-        tipo: 'Aluno' };
-    users.push(novo);
-    return novo;
+    },
+
+    create({ nome, matricula, email, senha, curso }){
+        
+        const novo = { 
+            nome,
+            matricula,
+            email, 
+            senha, 
+            curso, 
+            tipo: 'Aluno' 
+        };
+        
+        users.push(novo);
+        
+        return novo;
     }
 }
 
