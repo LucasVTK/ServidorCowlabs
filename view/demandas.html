@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+    />
+    <title>CowLabs UniFOA</title>
+    <link
+      rel="shortcut icon"
+      href="https://cowlabs.com.br/assets/img/favicon.ico"
+      type="image/favicon"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/view/styles/style.css" />
+    <!-- <link rel="stylesheet" href="/src/css/default.css" /> -->
+  </head>
+  <body>
+    <nav
+      id="header"
+      class="navbar navbar-expand-md bg-primary navbar-dark absolute-top py-3"
+    >
+      <div class="container" id="cabecalho">
+        <a
+          class="navbar-brand fw-bold text-light d-flex align-items-center"
+          href="https://cowlabs.com.br/src/home/index.htm"
+        >
+          CowLabs
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarScrollSpy"
+          aria-controls="navbarScrollSpy"
+          aria-expanded="false"
+          aria-label="Alternar navegação"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div
+          class="collapse navbar-collapse justify-content-between"
+          id="navbarScrollSpy"
+        >
+          <ul class="navbar-nav mx-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a href="/src/faq/index.html" class="nav-link text-white px-2"
+                >FAQs</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="/src/sobre/index.html" class="nav-link text-white px-2"
+                >Sobre</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="#contact" class="nav-link text-white px-2"
+                >Fale Conosco</a
+              >
+            </li>
+          </ul>
+
+          <div class="d-flex" id="loginOrLoged">
+            <li class="nav-item dropdown none list-unstyled">
+              <a
+                class="nav-link dropdown-toggle btn profile_img"
+                data-bs-toggle="dropdown"
+                role="button"
+                aria-expanded="false"
+                id="profile_img"
+              >
+                <img src="https://cowlabs.com.br/assets/img/ImagemUser.jpg" alt="" />
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <div id="profile_list"></div>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <button
+                    class="dropdown-item"
+                    role="button"
+                    id="logout"
+                    onclick="logout()"
+                  >
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div
+      class="modal fade"
+      id="modalDemanda"
+      tabindex="-1"
+      aria-labelledby="modalDemandaLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalDemandaLabel">Nova Demanda</h5>
+          </div>
+          <div class="modal-body">
+            <form id="form-demanda">
+              <div class="mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="novaDemanda"
+                  placeholder="Digite o título da sua demanda"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <textarea
+                  class=""
+                  id="textoDemanda"
+                  placeholder="Digite sua demanda aqui"
+                  required
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="fileLocation" class="form-label"
+                  >Arquivos (Opcional):</label
+                >
+                <input type="file" class="form-control" id="fileLocation" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Fechar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-outline-primary"
+              form="form-demanda"
+            >
+              Publicar demanda
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- inicio da página, chamar para o usuário publicar um pedido de "demanda" -->
+    <div class="container">
+      <div class="cards">
+        <div class="container pt-4">
+          <div class="position-relative mb-4 card bg-body-tertiary p-3">
+            <div class="text-center">
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#modalDemanda"
+              >
+                Colabore
+              </button>
+            </div>
+            <!-- inicio do filtro dropdown -->
+            <div
+              class="position-absolute end-0 top-0 px-3 justify-content-center d-lg-none"
+            >
+              <button
+                class="btn text-primary dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-funnel-fill"></i>
+              </button>
+              <div class="dropdown-menu p-3" style="min-width: 300px">
+                <form id="form_filter_dropdown">
+                  <strong>Filtros</strong>
+                  <ul class="list-unstyled text-primary">
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Sistemas de Informação"
+                        value="Sistemas de Informação"
+                      />
+                      <label for="Sistemas de Informação">
+                        Sistemas de Informação
+                      </label>
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Administração"
+                        value="Administração"
+                      />
+                      <label for="Administração">Administração</label>
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Ciências Biológicas"
+                        value="Ciências Biológicas"
+                      />
+                      <label for="Ciências Biológicas"
+                        >Ciências Biológicas</label
+                      >
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Ciências Contábeis"
+                        value="Ciências Contábeis"
+                      />
+                      <label for="Ciências Contábeis">Ciências Contábeis</label>
+                    </li>
+                    <li>
+                      <input type="checkbox" id="Direito" value="Direito" />
+                      <label for="Direito">Direito</label>
+                    </li>
+                    <li>
+                      <input type="checkbox" id="Design" value="Design" />
+                      <label for="Design">Design</label>
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Educação Física"
+                        value="Educação Física"
+                      />
+                      <label for="Educação Física">Educação Física</label>
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Engenharia ABI"
+                        value="Engenharia ABI"
+                      />
+                      <label for="Engenharia ABI">Engenharia ABI</label>
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Engenharia Ambiental"
+                        value="Engenharia Ambiental"
+                      />
+                      <label for="Engenharia Ambiental"
+                        >Engenharia Ambiental</label
+                      >
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Engenharia Civil"
+                        value="Engenharia Civil"
+                      />
+                      <label for="Engenharia Civil">Engenharia Civil</label>
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Engenharia de Produção"
+                        value="Engenharia de Produção"
+                      />
+                      <label for="Engenharia de Produção"
+                        >Engenharia de Produção</label
+                      >
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Engenharia Elétrica"
+                        value="Engenharia Elétrica"
+                      />
+                      <label for="Engenharia Elétrica"
+                        >Engenharia Elétrica</label
+                      >
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Engenharia Mecânica"
+                        value="Engenharia Mecânica"
+                      />
+                      <label for="Engenharia Mecânica"
+                        >Engenharia Mecânica</label
+                      >
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Enfermagem"
+                        value="Enfermagem"
+                      />
+                      <label for="Enfermagem">Enfermagem</label>
+                    </li>
+                    <li>
+                      <input type="checkbox" id="Medicina" value="Medicina" />
+                      <label for="Medicina">Medicina</label>
+                    </li>
+                    <li>
+                      <input type="checkbox" id="Nutrição" value="Nutrição" />
+                      <label for="Nutrição">Nutrição</label>
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Odontologia"
+                        value="Odontologia"
+                      />
+                      <label for="Odontologia">Odontologia</label>
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Publicidade e Propaganda"
+                        value="Publicidade e Propaganda"
+                      />
+                      <label for="Publicidade e Propaganda"
+                        >Publicidade e Propaganda</label
+                      >
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Serviço Social"
+                        value="Serviço Social"
+                      />
+                      <label for="Serviço Social">Serviço Social</label>
+                    </li>
+                    <li>
+                      <input
+                        type="checkbox"
+                        id="Técnico em Enfermagem"
+                        value="Técnico em Enfermagem"
+                      />
+                      <label for="Técnico em Enfermagem"
+                        >Técnico em Enfermagem</label
+                      >
+                    </li>
+                  </ul>
+                  <button
+                    type="reset"
+                    id="filter_btn_sm"
+                    class="btn demanda_btn mt-2"
+                  >
+                    Limpar
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- fim do filtro dropdown -->
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap">
+          <div class="col-lg-4 d-none d-lg-block mx-2">
+            <div class="text-primary card">
+              <div class="m-2">
+                <h4>Filtros</h4>
+              </div>
+              <form id="form_filter_sidebar">
+                <ul class="list_none">
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="sis_info"
+                      value="Sistemas de Informação"
+                    />
+                    <label for="sis_info"> Sistemas de Informação </label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="admn" value="Administração" />
+                    <label for="admn">Administração</label>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="cien_bio"
+                      value="Ciências Biológicas"
+                    />
+                    <label for="cien_bio">Ciências Biológicas</label>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="Cien_conta"
+                      value="Ciências Contábeis"
+                    />
+                    <label for="Cien_conta">Ciências Contábeis</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="Dir" value="Direito" />
+                    <label for="Dir">Direito</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="desi" value="Design" />
+                    <label for="desi">Design</label>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="Edu_fis"
+                      value="Educação Física"
+                    />
+                    <label for="Edu_fis">Educação Física</label>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="Eng_abi"
+                      value="Engenharia ABI"
+                    />
+                    <label for="Eng_abi">Engenharia ABI</label>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="Eng_ambi"
+                      value="Engenharia Ambiental"
+                    />
+                    <label for="Eng_ambi">Engenharia Ambiental</label>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="Eng_civ"
+                      value="Engenharia Civil"
+                    />
+                    <label for="Eng_civ">Engenharia Civil</label>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="Eng_Prod"
+                      value="Engenharia de Produção"
+                    />
+                    <label for="Eng_Prod">Engenharia de Produção</label>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="Eng_el"
+                      value="Engenharia Elétrica"
+                    />
+                    <label for="Eng_el">Engenharia Elétrica</label>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="Eng_mec"
+                      value="Engenharia Mecânica"
+                    />
+                    <label for="Eng_mec">Engenharia Mecânica</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="Enfer" value="Enfermagem" />
+                    <label for="Enfer">Enfermagem</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="Med" value="Medicina" />
+                    <label for="Med">Medicina</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="Nutr" value="Nutrição" />
+                    <label for="Nutr">Nutrição</label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="Odonto" value="Odontologia" />
+                    <label for="Odonto">Odontologia</label>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="PubProp"
+                      value="Publicidade e Propaganda"
+                    />
+                    <label for="PubProp">Publicidade e Propaganda</label>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="ServSoc"
+                      value="Serviço Social"
+                    />
+                    <label for="ServSoc">Serviço Social</label>
+                  </li>
+                  <li>
+                    <input
+                      type="checkbox"
+                      id="TecEnf"
+                      value="Técnico em Enfermagem"
+                    />
+                    <label for="TecEnf">Técnico em Enfermagem</label>
+                  </li>
+                </ul>
+
+                <div class="row justify-content-end m-2">
+                  <div class="btn-group col-auto mt-auto">
+                    <button
+                      type="reset"
+                      form="form_filter_sidebar"
+                      class="btn demanda_btn"
+                      id="clear_filter"
+                    >
+                      Limpar
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- cards -->
+          <div class="col-12 col-lg-6">
+            <div class="d-flex justify-content-center">
+              <div class="row row_cards" id="tarefa-list">
+                <!-- inicio dos cards de exemplo -->
+
+                <!-- fim das demandas de exemplo -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <dialog class="login_dialog" id="logoutDialog">
+      <p class="fs-5">Poxa, já vai?</p>
+      <img src="https://www.cowlabs.com.br/assets/img/sad_cow.gif" alt="" srcset="" />
+    </dialog>
+
+    <!-- 
+        <label>Educação Física
+          <input type="checkbox" class="filtro" id="cb-edu" value="Educação Física" />
+        </label>
+        <label>lalalla
+          <input type="checkbox" class="filtro" id="cb-lala" value="lalala" />
+        </label>
+
+        <ul id="lista"></ul>
+
+        <script>
+          
+        </script> -->
+
+    <!-- footer início -->
+    <footer id="rodape" class="pt-3 pb-3 bg-blue sticky">
+      <div class="container align-middle">
+        <div
+          class="d-flex align-middle flex-wrap justify-content-between align-items-center border-bottom"
+        >
+          <div
+            class="col-md-4 d-flex text-light align-items-center align-middle"
+          >
+            <a
+              class="navbar-brand align-middle d-flex align-items-center"
+              href="https://cowlabs.com.br/src/home/index.htm"
+              style="font-weight: bold"
+            >
+              CowLabs
+            </a>
+          </div>
+
+          <ul class="list-unstyled pt-3 align-middle d-flex">
+            <li class="ms-3">
+              <a class="link-body-emphasis" href="#"
+                ><i class="bi align-middle text-light bi-twitter-x"></i
+              ></a>
+            </li>
+            <li class="ms-3">
+              <a class="link-body-emphasis" href="#"
+                ><i class="bi align-middle text-light bi-instagram"></i
+              ></a>
+            </li>
+            <li class="ms-3">
+              <a class="link-body-emphasis" href="#"
+                ><i class="bi align-middle text-light bi-facebook"></i
+              ></a>
+            </li>
+            <li class="ms-3">
+              <a class="link-body-emphasis" href="#"
+                ><i class="bi align-middle text-light bi-linkedin"></i
+              ></a>
+            </li>
+            <li class="ms-3">
+              <a class="link-body-emphasis" href="#"
+                ><i class="bi align-middle text-light bi-whatsapp"></i
+              ></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="container">
+        <div
+          class="d-flex flex-wrap justify-content-between align-items-center my-4"
+        >
+          <div class="col-md-4 mb-0 text-body-secondary">
+            <p class="">&copy; 2025 cowlabs , Todos direitos reservados.</p>
+          </div>
+          <div class="nav col-md-5 justify-content-end">
+            <p
+              class="mt-1 ms-2 bi bi-geo-alt text-body-secondary align-items-center align-middle pt-3"
+            >
+              Rua da Criatividade, nº 42 – Bairro das Ideias, Universo Web – BR
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- fim do footer -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="/view/script/script.js"></script>
+    <!-- <script src="/src/script/default.js"></script> -->
+  </body>
+</html>

@@ -1,0 +1,323 @@
+
+body, html {
+    margin: 0;
+    padding: 0;
+  }
+  
+  main {
+    padding-top: 50px;
+  }
+  
+  .text-dark-gray {
+    color: #242424;
+  }
+  
+  .blue-text {
+    color: #006eff;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  
+  .bg-blue {
+    background-color: #006eff;
+  }
+  
+  .navbar-brand {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  
+  #texto_centralizado{
+   place-items: center;
+  
+  }
+
+  .list_none{
+    list-style: none;
+  }
+  
+  .texto_justificado{
+    text-align: justify;
+  }
+
+  #imagem-user, .imagem-user{
+    width: 30px;
+  }
+  
+  #back_btn{
+    width: 80px;
+  }
+
+  .banner-home {
+    margin-bottom: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px; 
+    background-image: url(../../assets/img/banner-home.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right;
+  }
+  
+  .h1-title-montserrat {
+    font-family: "Montserrat", sans-serif;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 60px;
+    width: 50%;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+  
+  .banner-home .content-text {
+    width: 50%;
+  }
+  
+  .banner-home .content-image {
+    width: 40%;
+  }
+  
+  .banner-home img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  
+  .btn:link,
+  .btn:visited {
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 15px 40px;
+    display: inline-block;
+    border-radius: 100px;
+    transition: all 0.2s;
+  }
+  
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn-primary {
+    background-color: #006eff;
+    border-color: #006eff;
+    border-radius: 25px;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056d6;
+    border-color: #0056d6;
+  }
+  
+  .btn-white {
+    background-color: #fff;
+    color: #777;
+  }
+  
+  .btn-white:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .btn-animated {
+    animation: moveInBottom 5s ease-out;
+    animation-fill-mode: backwards;
+  }
+  
+  
+  .btn-bottom-right {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    border-radius: 25px; 
+    padding: 15px;
+    background-color: #006eff;
+    color: white;
+  }
+  
+  .btn-bottom-right:hover {
+    background-color: #0056d6;
+  }
+  
+  #forms_btn{
+    border-radius: 30px;
+    padding: 15px 80px;
+    text-transform: uppercase;
+    justify-self: center;
+    
+  }
+  
+  .justify_center{
+    display: flex;
+    justify-content: center;
+  }
+  
+  .profile_img{
+    width: auto;
+    color: white;
+    /* border: white solid; */
+    border-radius: 100%;
+    
+        
+    img{
+      background-color: white;
+      width: 50px;
+      border-radius: 100%;
+    }
+
+    .aluno{
+      border: solid 3px greenyellow;
+    }
+
+    .professor{
+      border: solid 3px orange;
+    }
+
+    .Admin{
+      border: solid 3px red;
+    }
+
+  }
+  .personal_btn{
+    background-color: #0d6efd;
+    border: white solid 2px;
+    color: white;
+    border-radius: 30px;
+    padding: 0.7rem 2rem;
+  }
+  
+  .personal_btn:hover{
+    background-color: white ;
+    border:  white solid 2px;
+    color:  #0d6efd ;
+  }
+  
+  .demanda_btn{
+    background-color: white ;
+    border:  #0d6efd solid 2px;
+    color: #0d6efd;
+    border-radius: 30px;
+    padding: 0.6rem 1.8rem;
+    
+  }
+  
+  .demanda_btn:hover{
+    background-color: #0d6efd;
+    border:  #0d6efd solid 2px;
+    color:   white ;
+  }
+
+
+
+ .milk_box{
+  width: 50px;
+  display: flex;
+  
+ }
+
+  
+  #contact {
+    padding: 3rem 0;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-control {
+    height: 45px;
+    border-radius: 0.25rem;
+    border: 1px solid #ccc;
+  }
+  
+  textarea#message {
+    resize: none;
+  }
+  
+  .text-colored{
+    color: #fff;
+    display: inline;
+  }
+  
+  .social-links,
+  strong{
+    display: block;
+    text-align: center;
+  }
+  
+  .social-links li{
+    display: inline;
+    list-style: none;
+  }
+  
+  .social-links a{
+    text-decoration: none;
+  }
+  
+  .cor-footer{
+    color: #fff;
+  }
+  
+  i{
+    font-size: 20px;
+  }
+  
+  
+  .login_dialog{
+    border-radius: 15px;
+    border: none;
+    text-align: center;
+    
+    
+    img{
+      width: 100px;
+    }
+  }
+
+  dialog::backdrop{
+    background-color: #34588fa6;
+  }
+
+  
+
+/* demanda_view */
+
+main{
+    height: auto;
+}
+
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+/* demandas */
+
+
+
+
+
+
+
+
+  
+  @keyframes moveInBottom {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
+  
