@@ -10,6 +10,9 @@ const host = process.env.host;
 app.use(globalMiddleware.cors);
 app.use(express.json()); // sem isso o req.body vem vazio
 
+app.use(RegistrosRotas);
+app.use(Demandarouter)
+
 app.get("/", (req, res) => {
     res.status(200).json({
         system: "Cowlabs",
@@ -17,8 +20,6 @@ app.get("/", (req, res) => {
     });
 });
 
-app.use(RegistrosRotas);
-app.use(Demandarouter)
 
 app.listen(port, host, () => {
     console.log(` Servidor rodando em uma porta ${port} `);

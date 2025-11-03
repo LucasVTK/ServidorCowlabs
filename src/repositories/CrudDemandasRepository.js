@@ -17,11 +17,11 @@ const DemandasRepository = {
 
     const novaDemanda = {
       demanda_id: Demandas.length + 1,
-      data_curso,
+      data_curso: data_curso.toLowerCase(),
       user_demanda,
       demanda_title,
       demanda_content,
-      demanda_tag,
+      demanda_tag: demanda_tag.toLowerCase(),
       file_location
     } //Cria uma nova demanda 
 
@@ -44,12 +44,11 @@ const DemandasRepository = {
 
     const demandaAtualizada = {
       demanda_id: parseInt(demanda_id),
-      data_curso,
-      user_demanda,
+      data_curso: data_curso.toLowerCase(),
       demanda_content,
       demanda_title,
-      demanda_tag,
-      file_location
+      demanda_tag: demanda_tag.toLowerCase(),
+      file_location,
     } // Objetos com os dados que sarão atualizados
 
     Demandas[demandaIndex] = demandaAtualizada // coloca a demanda dentro do array no id encontrado 
