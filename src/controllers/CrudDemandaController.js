@@ -1,4 +1,4 @@
-import DemandasRepository from '../repositories/crudDemandasRepository.js';
+import DemandasRepository from '../repositories/CrudDemandasRepository.js';
 
 const CrudDemandaController = {
   async getAllDemandas(req,res){
@@ -29,7 +29,10 @@ const CrudDemandaController = {
         erro:true
       })
     }else{
-      res.status(200).json(demanda)
+      res.status(200).json({
+        total: demanda.length,
+        items: demanda,
+      })
     }
   },
   async creatDemandas(req, res) {

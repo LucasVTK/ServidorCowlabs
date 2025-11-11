@@ -7,21 +7,23 @@ const DemandasRepository = {
   },
   async readById(demanda_id){
     const BuscarId = Demandas.find(d => d.demanda_id === parseInt(demanda_id)) // transforma o 'demanda_id' em inteiro e busca a demanda pelo id
+
     return BuscarId; // Retorna a demanda encontrada
   },
   async readByTag(demanda_tag){
-    const BususcarTag = Demandas.find(d => d.demanda_tag === demanda_tag) // busca a demanda pela tag
+    const padronizarTag = demanda_tag.toLowerCase()// padroniza a tag para minúsculo deixando a busca mais funcional
+    const BususcarTag = Demandas.filter(d => d.demanda_tag.toLocaleLowerCase().includes(padronizarTag)) // busca a demanda pela tag
     return BususcarTag; // retorna a demanda encrontrada
   },
   async create({data_curso, user_demanda, demanda_title, demanda_content, demanda_tag,file_location}){
 
     const novaDemanda = {
       demanda_id: Demandas.length + 1,
-      data_curso: data_curso.toLowerCase(),
+      data_curso,
       user_demanda,
       demanda_title,
       demanda_content,
-      demanda_tag: demanda_tag.toLowerCase(),
+      demanda_tag,
       file_location
     } //Cria uma nova demanda 
 
@@ -44,10 +46,11 @@ const DemandasRepository = {
 
     const demandaAtualizada = {
       demanda_id: parseInt(demanda_id),
-      data_curso: data_curso.toLowerCase(),
+      data_curso,
+      user_demanda,
       demanda_content,
       demanda_title,
-      demanda_tag: demanda_tag.toLowerCase(),
+      demanda_tag,
       file_location,
     } // Objetos com os dados que sarão atualizados
 
@@ -69,6 +72,10 @@ const DemandasRepository = {
     } // se a demanda não for encontrada, retorna um erro
 
     Demandas.splice(DemandaIndex, 1) // remove a demanda do array
+
+    Demandas.forEach((d, index)=>{
+      d.demanda_id = index + 1
+    }) // deixa os ids organizados dps de uma deleção, por exempo, antes da deleção tinha 5 demandas, se a demanda 3 for excluida, a demanda 4 passa a ser 3 e a 5 passa a ser 4
 
     fs.writeFileSync('./src/database/Demandas.json', JSON.stringify(Demandas), 'utf-8') // att o arquivo JSON na database
 
