@@ -73,10 +73,6 @@ const DemandasRepository = {
 
     Demandas.splice(DemandaIndex, 1) // remove a demanda do array
 
-    Demandas.forEach((d, index)=>{
-      d.demanda_id = index + 1
-    }) // deixa os ids organizados dps de uma deleção, por exempo, antes da deleção tinha 5 demandas, se a demanda 3 for excluida, a demanda 4 passa a ser 3 e a 5 passa a ser 4
-
     fs.writeFileSync('./src/database/Demandas.json', JSON.stringify(Demandas), 'utf-8') // att o arquivo JSON na database
 
     return {

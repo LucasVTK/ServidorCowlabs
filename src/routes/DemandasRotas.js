@@ -4,11 +4,11 @@ import middlewareDemandas from '../middleware/middlewareDemandas.js'
 
 const Demandarouter = Router();
 
-Demandarouter.get('/demandas',CrudDemandaController.getAllDemandas);
-Demandarouter.get('/demandas/id/:id', CrudDemandaController.getDemandasById);
-Demandarouter.get('/demandas/tag/:demanda_tag', CrudDemandaController.getDemandasByTag);
-Demandarouter.post('/demandas/create',middlewareDemandas.verificarCamposdaDemanda, CrudDemandaController.creatDemandas);
-Demandarouter.put('/demandas/update/:id',middlewareDemandas.verificarCamposdaDemanda, CrudDemandaController.updateDemandas);
-Demandarouter.delete('/demandas/delete/:id', CrudDemandaController.deleteDemandas);
+Demandarouter.get('/demandas', CrudDemandaController.getAllDemandas);
+Demandarouter.get('/demandas/id/:id', middlewareDemandas.verificarIdValido, CrudDemandaController.getDemandasById);
+Demandarouter.get('/demandas/tag/:demanda_tag', middlewareDemandas.verificarTagValida, CrudDemandaController.getDemandasByTag);
+Demandarouter.post('/demandas/create', middlewareDemandas.verificarCamposdaDemanda, middlewareDemandas.verificarTiposDeDados, middlewareDemandas.verificarComprimento, CrudDemandaController.creatDemandas);
+Demandarouter.put('/demandas/update/:id', middlewareDemandas.verificarIdValido, middlewareDemandas.verificarCamposdaDemanda, middlewareDemandas.verificarTiposDeDados, middlewareDemandas.verificarComprimento, CrudDemandaController.updateDemandas);
+Demandarouter.delete('/demandas/delete/:id', middlewareDemandas.verificarIdValido, CrudDemandaController.deleteDemandas);
 
 export default Demandarouter;
