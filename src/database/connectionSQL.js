@@ -4,7 +4,7 @@ const configSql = {
     user: 'sa',
     password: 'unifoa',
     database: 'BDJOGOS',
-    server: 'TPCP04LAB1000\\SQLEXPRESS',
+    server: 'LAPTOP-KQGD4KF5\\SQLEXPRESS',
     options: {
         encrypt: false, 
         trustServerCertificate: false 

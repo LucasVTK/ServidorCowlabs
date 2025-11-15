@@ -1,5 +1,4 @@
  import express from 'express'
- import RegistrosRotas from './routes/RegistrosRotas.js'
  import globalMiddleware from './middleware/globalMiddleware.js'
 
  const app = express()
@@ -15,8 +14,6 @@
          ok: true
      })
  })
-
- app.use(RegistrosRotas)
 
  app.listen(port, host, () => {
     console.log(` Servidor rodando em uma porta ${port} `)
