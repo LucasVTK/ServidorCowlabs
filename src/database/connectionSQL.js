@@ -3,7 +3,7 @@ import mssql from 'mssql'
 const configSql = {
     user: 'sa',
     password: 'unifoa',
-    database: 'BDJOGOS',
+    database: 'cowlabs',
     server: 'LAPTOP-KQGD4KF5\\SQLEXPRESS',
     options: {
         encrypt: false, 

@@ -37,7 +37,7 @@ const AuthController = {
         }
     },
     crypt:(user_senha) =>{
-        const csenha = bcrypt.hashSync(user_senha,process.env.BCRYPT_SALT)
+        const csenha = bcrypt.hashSync(user_senha,10)
         return csenha
     },
     compare:(user_senha, hash) =>{

@@ -6,16 +6,18 @@ const UserController = {
     const users = await UserRepository.readAll();
     res.json(users);
     },
+
     async getUserById(req, res) {
-    const id = req.params.user_id;
+    const id = req.params.id;
     const users = await UserRepository.readById(id);
     res.json(users);
     },
-    async insert(req, res) {
+
+    async create(req, res) {
     try {
         const model = req.body;
         model.user_senha = auth.crypt(model.user_senha);
-        const respDB = await UserController.create(model);
+        const respDB = await UserRepository.create(model);
         if (respDB.rowsAffected[0] > 0) {
         res.status(200).json({
             ok: true,
@@ -30,16 +32,26 @@ const UserController = {
         email: model.user_email,
         });
     } catch (e) {
+        // res.status(500).json({
+        // ok: false,
+        // message: "Erro do servidor",
+        // error:e
+        console.log("ERRO COMPLETO NO CREATE:");
+        console.dir(e, { depth: null });
         res.status(500).json({
         ok: false,
         message: "Erro do servidor",
+        error: e.message || e
+
+
         });
     }
     },
+
     async Update(req,res){
     try{
         const model = req.body
-        const id = req.params.user_id
+        const id = req.params.id
 
         model.user_senha = auth.crypt(model.user_senha)
 
@@ -65,7 +77,8 @@ const UserController = {
             })
         }
     },
-        async updatePassword(req, res) {
+
+    async updatePassword(req, res) {
         try {
             const model = req.body
             const id = req.params.id
