@@ -12,8 +12,10 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "nodemon": "^3.1.10"
+    "jsonwebtoken": "^9.0.2",
+    "mssql": "^12.0.0"
   }
 }
