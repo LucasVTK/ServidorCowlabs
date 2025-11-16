@@ -1,4 +1,4 @@
-<label>Educação Física
+<!-- <label>Educação Física
   <input type="checkbox" class="filtro" id="cb-edu" value="Educação Física" />
 </label>
 <label>lalalla
@@ -39,6 +39,636 @@
   cbs.forEach(cb => cb.addEventListener('change', onChange));
 
   carregar(null); // inicial: todas
-</script>
+</script> -->
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CowLabs - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 40px;
+        }
+
+        .logo-container img {
+            width: 120px;
+            height: auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 30px;
+        }
+
+        .card h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-bottom: 2px solid #e0e0e0;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: transparent;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-bottom-color: #007AFF;
+        }
+
+        .form-group input::placeholder {
+            color: #ccc;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background: #0051D5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .links a {
+            color: #007AFF;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin: 10px 0;
+            transition: opacity 0.3s;
+        }
+
+        .links a:hover {
+            opacity: 0.8;
+        }
+
+        .footer {
+            text-align: center;
+            color: #007AFF;
+            font-size: 14px;
+            margin-top: 30px;
+            font-weight: 500;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            color: #007AFF;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+        .social-icons a:hover {
+            transform: translateY(-2px);
+            opacity: 0.7;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 30px 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dashboard {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .dashboard h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .user-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .user-detail:last-child {
+            border-bottom: none;
+        }
+
+        .user-detail span:first-child {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .user-detail span:last-child {
+            color: #333;
+        }
+
+        .btn-logout {
+            background: #dc3545;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage">
+        <div class="logo-container">
+            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="50" fill="#007AFF"/>
+                <path d="M40 50C40 45 45 40 50 40C55 40 60 45 60 50" stroke="white" stroke-width="4" stroke-linecap="round"/>
+                <path d="M60 50C60 45 65 40 70 40C75 40 80 45 80 50" stroke="white" stroke-width="4" stroke-linecap="round"/>
+                <ellipse cx="60" cy="65" rx="25" ry="20" fill="white"/>
+                <circle cx="50" cy="52" r="3" fill="white"/>
+                <circle cx="70" cy="52" r="3" fill="white"/>
+                <path d="M45 75L50 80L55 75" stroke="#007AFF" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <div class="card">
+            <h2>Faça o Login</h2>
+            
+            <div id="alertLogin" class="alert"></div>
+
+            <form id="formLogin" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Usuário ou Matrícula:</label>
+                    <input type="text" id="login-usuario" placeholder="" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Senha:</label>
+                    <input type="password" id="login-senha" placeholder="" required>
+                </div>
+
+                <button type="submit" class="btn-primary">Continuar</button>
+
+                <div class="links">
+                    <a href="#" onclick="showForgotPassword(event)">Esqueci minha senha</a>
+                    <a href="#" onclick="showRegister(event)">Ainda não tenho registro</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="footer">
+            © 2025 CowLabs. Todos os direitos reservados.
+        </div>
+
+        <div class="social-icons">
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+    </div>
+
+    <!-- Register Page -->
+    <div id="registerPage" class="hidden">
+        <div class="logo-container">
+            <svg width="80" height="80" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="50" fill="#007AFF"/>
+                <path d="M40 50C40 45 45 40 50 40C55 40 60 45 60 50" stroke="white" stroke-width="4" stroke-linecap="round"/>
+                <path d="M60 50C60 45 65 40 70 40C75 40 80 45 80 50" stroke="white" stroke-width="4" stroke-linecap="round"/>
+                <ellipse cx="60" cy="65" rx="25" ry="20" fill="white"/>
+                <circle cx="50" cy="52" r="3" fill="white"/>
+                <circle cx="70" cy="52" r="3" fill="white"/>
+            </svg>
+        </div>
+
+        <div class="card">
+            <h2>Registre-se</h2>
+
+            <div id="alertRegister" class="alert"></div>
+
+            <form id="formRegister" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Usuário:</label>
+                    <input type="text" id="user_name" placeholder="(Nome que todos vão ver)" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Nome Inteiro (Real):</label>
+                    <input type="text" id="user_real_name" placeholder="Essa informação aparecerá apenas para os professores!" required>
+                </div>
+
+                <div class="form-group">
+                    <label>CPF:</label>
+                    <input type="text" id="user_cpf" placeholder="000.000.000-00" maxlength="14" required>
+                </div>
+
+                <div class="form-group">
+                    <label>E-mail:</label>
+                    <input type="email" id="user_email" placeholder="" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Estou cursando:</label>
+                    <select id="user_tipo" required>
+                        <option value="">Selecione...</option>
+                        <option value="Administração">Administração</option>
+                        <option value="Arquitetura e Urbanismo">Arquitetura e Urbanismo</option>
+                        <option value="Ciência da Computação">Ciência da Computação</option>
+                        <option value="Direito">Direito</option>
+                        <option value="Educação Física">Educação Física</option>
+                        <option value="Enfermagem">Enfermagem</option>
+                        <option value="Engenharia Civil">Engenharia Civil</option>
+                        <option value="Sistemas de Informação">Sistemas de Informação</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>CEP</label>
+                    <input type="text" id="user_cep" placeholder="00000-000" maxlength="9" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Estado</label>
+                    <input type="text" id="user_uf" placeholder="" maxlength="2" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Cidade</label>
+                    <input type="text" id="user_cidade" placeholder="00000-000" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Endereço</label>
+                    <input type="text" id="user_endereco" placeholder="" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Número</label>
+                    <input type="text" id="user_num" placeholder="" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Complemento</label>
+                    <input type="text" id="user_complemento" placeholder="">
+                </div>
+
+                <div class="form-group">
+                    <label>Senha:</label>
+                    <input type="password" id="user_senha" placeholder="" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Confirme a sua senha:</label>
+                    <input type="password" id="user_senha_confirm" placeholder="(Repita sua senha)" required>
+                </div>
+
+                <button type="submit" class="btn-primary">Registre-se</button>
+
+                <div class="links">
+                    <a href="#" onclick="showLogin(event)">Já tenho cadastro</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboardPage" class="hidden">
+        <div class="logo-container">
+            <svg width="80" height="80" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="50" fill="#007AFF"/>
+                <path d="M40 50C40 45 45 40 50 40C55 40 60 45 60 50" stroke="white" stroke-width="4" stroke-linecap="round"/>
+                <path d="M60 50C60 45 65 40 70 40C75 40 80 45 80 50" stroke="white" stroke-width="4" stroke-linecap="round"/>
+                <ellipse cx="60" cy="65" rx="25" ry="20" fill="white"/>
+                <circle cx="50" cy="52" r="3" fill="white"/>
+                <circle cx="70" cy="52" r="3" fill="white"/>
+            </svg>
+        </div>
+
+        <div class="dashboard">
+            <h2>Bem-vindo ao CowLabs!</h2>
+            
+            <div class="user-info">
+                <div class="user-detail">
+                    <span>Nome:</span>
+                    <span id="dash-name"></span>
+                </div>
+                <div class="user-detail">
+                    <span>Email:</span>
+                    <span id="dash-email"></span>
+                </div>
+                <div class="user-detail">
+                    <span>Curso:</span>
+                    <span id="dash-tipo"></span>
+                </div>
+            </div>
+
+            <button class="btn-primary btn-logout" onclick="logout()">Sair</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+
+        // Page Navigation
+        function showLogin(e) {
+            if(e) e.preventDefault();
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.add('hidden');
+        }
+
+        function showRegister(e) {
+            if(e) e.preventDefault();
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.remove('hidden');
+            document.getElementById('dashboardPage').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.remove('hidden');
+        }
+
+        function showForgotPassword(e) {
+            e.preventDefault();
+            showAlert('alertLogin', 'Em desenvolvimento. Entre em contato com o administrador.', 'error');
+        }
+
+        // Alert Functions
+        function showAlert(elementId, message, type) {
+            const alert = document.getElementById(elementId);
+            alert.textContent = message;
+            alert.className = `alert alert-${type} show`;
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+
+        // Handle Login
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const usuario = document.getElementById('login-usuario').value;
+            const senha = document.getElementById('login-senha').value;
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_email: usuario,
+                        user_senha: senha
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    showAlert('alertLogin', 'Login realizado com sucesso!', 'success');
+                    
+                    setTimeout(() => {
+                        loadDashboard(data.user);
+                        showDashboard();
+                    }, 1000);
+                } else {
+                    showAlert('alertLogin', data.message || 'Usuário ou senha incorretos', 'error');
+                }
+            } catch (error) {
+                showAlert('alertLogin', 'Erro ao conectar com o servidor', 'error');
+                console.error('Erro:', error);
+            }
+        }
+
+        // Handle Register
+        async function handleRegister(event) {
+            event.preventDefault();
+
+            const senha = document.getElementById('user_senha').value;
+            const senhaConfirm = document.getElementById('user_senha_confirm').value;
+
+            if (senha !== senhaConfirm) {
+                showAlert('alertRegister', 'As senhas não coincidem!', 'error');
+                return;
+            }
+
+            const formData = {
+                user_name: document.getElementById('user_name').value,
+                user_real_name: document.getElementById('user_real_name').value,
+                user_cpf: document.getElementById('user_cpf').value.replace(/\D/g, ''),
+                user_email: document.getElementById('user_email').value,
+                user_senha: senha,
+                user_tipo: document.getElementById('user_tipo').value,
+                user_endereco: document.getElementById('user_endereco').value,
+                user_num: document.getElementById('user_num').value,
+                user_complemento: document.getElementById('user_complemento').value || '',
+                user_bairro: 'Centro',
+                user_cidade: document.getElementById('user_cidade').value,
+                user_uf: document.getElementById('user_uf').value.toUpperCase(),
+                user_cep: document.getElementById('user_cep').value.replace(/\D/g, '')
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/users/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.ok) {
+                    showAlert('alertRegister', 'Cadastro realizado com sucesso! Redirecionando...', 'success');
+                    document.getElementById('formRegister').reset();
+                    
+                    setTimeout(() => {
+                        showLogin();
+                    }, 2000);
+                } else {
+                    const errorMsg = Array.isArray(data.message) 
+                        ? data.message.join(', ') 
+                        : data.message || 'Erro ao cadastrar';
+                    showAlert('alertRegister', errorMsg, 'error');
+                }
+            } catch (error) {
+                showAlert('alertRegister', 'Erro ao conectar com o servidor', 'error');
+                console.error('Erro:', error);
+            }
+        }
+
+        // Load Dashboard
+        function loadDashboard(user) {
+            document.getElementById('dash-name').textContent = user.realname || user.name;
+            document.getElementById('dash-email').textContent = user.email;
+            document.getElementById('dash-tipo').textContent = user.tipo;
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            showLogin();
+            showAlert('alertLogin', 'Logout realizado com sucesso!', 'success');
+        }
+
+        // Input Masks
+        document.getElementById('user_cpf')?.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                e.target.value = value;
+            }
+        });
+
+        document.getElementById('user_cep')?.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 8) {
+                value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                e.target.value = value;
+            }
+        });
+
+        document.getElementById('user_uf')?.addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+
+        // Check if user is logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            if (token && user) {
+                loadDashboard(JSON.parse(user));
+                showDashboard();
+            }
+        });
+    </script>
+</body>
+</html>
 
