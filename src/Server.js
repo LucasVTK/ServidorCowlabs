@@ -1,5 +1,5 @@
 import express from "express";
-import RegistrosRotas from "./routes/RegistrosRotas.js";
+import UserRoutes from "./routes/UsersRoutes.js";
 import globalMiddleware from "./middleware/globalMiddleware.js";
 import Demandarouter from "./routes/DemandasRotas.js"
 
@@ -10,7 +10,7 @@ const host = process.env.host;
 app.use(globalMiddleware.cors);
 app.use(express.json()); // sem isso o req.body vem vazio
 
-app.use(RegistrosRotas);
+app.use(UserRoutes);
 app.use(Demandarouter)
 
 app.get("/", (req, res) => {
