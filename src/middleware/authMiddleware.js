@@ -31,7 +31,7 @@ const authMiddleare = {
         const token = c.split(' ')[1] || c
         try{
             const user = jwt.verify(token,process.env.JWT_SECRET)
-            if(user.user_tipo==='admin') next()
+            if(user.user_tipo==='Admin') next()
             else res.status(401).json({
                 ok:false,
                 message:'não autorizado!'

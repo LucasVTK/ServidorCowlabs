@@ -1,5 +1,4 @@
-import DemandasRepository from '../repositories/CrudDemandasRepository.js';
-import auth from "./AuthController.js";
+import DemandasRepository from '../repositories/DemandasRepository.js';
 
 const CrudDemandaController = {
   async getAllDemandas(req,res){

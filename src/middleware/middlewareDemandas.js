@@ -1,5 +1,5 @@
 const validarDemandas = {
-  verificarCamposdaDemanda(req, res, next) {
+verificarCamposdaDemanda(req, res, next) {
     const {
       data_curso,
       user_demanda,
@@ -19,9 +19,7 @@ const validarDemandas = {
       });
     }
     next();
-  },
-
-  verificarTiposDeDados(req, res, next) {
+  }, verificarTiposDeDados(req, res, next) {
     const {
       data_curso,
       user_demanda,
@@ -45,7 +43,7 @@ const validarDemandas = {
 
   verificarComprimento(req, res, next) {
     const { demanda_title, demanda_content } = req.body;
-    if (demanda_title.length < 5 || demanda_title.length > 20) {
+    if (demanda_title.length < 5 || demanda_title.length > 100) {
       return res
         .status(400)
         .json({ error: "O título deve ter entre 5 e 20 caracteres." });

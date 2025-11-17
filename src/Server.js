@@ -14,6 +14,7 @@ app.use(globalMiddleware.cors);
 app.use(express.json()); // sem isso o req.body vem vazio
 
 app.use(UserRoutes);
+app.use(Demandarouter)
 app.use(AuthRoute)
 app.use(RotaRepJson)
 app.use(Demandarouter)

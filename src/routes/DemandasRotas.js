@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import CrudDemandaController from '../controllers/CrudDemandaController.js';
 import middlewareDemandas from '../middleware/middlewareDemandas.js'
+import authMiddleare from '../middleware/authMiddleware.js';
 
 const Demandarouter = Router();
 
@@ -11,4 +12,4 @@ Demandarouter.post('/demandas/create', middlewareDemandas.verificarCamposdaDeman
 Demandarouter.put('/demandas/update/:id', middlewareDemandas.verificarIdValido, middlewareDemandas.verificarCamposdaDemanda, middlewareDemandas.verificarTiposDeDados, middlewareDemandas.verificarComprimento, CrudDemandaController.updateDemandas);
 Demandarouter.delete('/demandas/delete/:id', middlewareDemandas.verificarIdValido, CrudDemandaController.deleteDemandas);
 
-export default Demandarouter;
+export default Demandarouter;
