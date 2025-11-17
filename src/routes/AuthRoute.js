@@ -5,7 +5,7 @@ import ModelMiddleware from "../middleware/modelMiddleware.js";
 
 const AuthRoute = Router()
 
-AuthRoute.post('/login', AuthController.login)
+AuthRoute.post('/login/users', AuthController.login)
 
 
 export default AuthRoute
