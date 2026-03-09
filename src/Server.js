@@ -11,22 +11,23 @@ import con from './database/connectionSQL.js'
  app.use(express.json()) // sem isso o req.body vem vazio
  app.use(UserRoute)
 
-//  app.get('/' ,(req, res) =>{ 
-//      res.status(200).json({
-//          system: 'Cowlabs',
-//          ok: true
-//      })
-//  })
+ //! functions abaixo é do servidor antigo
+//!  app.get('/' ,(req, res) =>{ 
+//!     res.status(200).json({
+//!        system: 'Cowlabs',
+//!       ok: true
+//!  })
+//!  })
+//!
+//!  app.listen(port, host, () => {
+//!     console.log(` Servidor rodando em uma porta ${port} `)
+//!  })
 
-//  app.listen(port, host, () => {
-//     console.log(` Servidor rodando em uma porta ${port} `)
-//  })
-
-let pool = await con()
+let pool = await con() // declarei essa variável dnv para receber a função importada do connectionSQL
 
 app.get('/', async (req, res) => {
   try {
-    const result = await pool.request().query('SELECT user_name FROM tb_user');
+    const result = await pool.request().query('SELECT user_name FROM tb_user');//fiz essa querry simples só para testar
     res.json(result.recordset); // retorna os dados como JSON
   } catch (err) {
     console.error(err);
@@ -35,7 +36,7 @@ app.get('/', async (req, res) => {
 });
 
 // Inicia servidor só após conectar ao banco par evitar erros de conexão
-con().then(() => {
+con().then(() => { // estamos utilizando o .then() aqui para esperara conexao com o banco e depois dar inicio ao servidor, não sei bem o pq mas sem isso não tava funcionando antes.
   app.listen(3000, () => {
     console.log("Servidor rodando na porta 3000");
   });
