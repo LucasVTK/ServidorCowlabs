@@ -1,32 +1,15 @@
 import mssql from 'mssql'
-
-//! functions abaixo era o modo antigo de acessar o banco
-//! const configSql = {
-//!     user: 'sa',
-//!     password: 'Pereira1nz!',
-//!     database: 'cowlabs_db',
-//!     server: 'localhost',
-//!     options: {
-//!         encrypt: false, 
-//!         trustServerCertificate: true 
-//!         }
-//! }
-//! 
-//! export async function connect () {
-//!     const conn = await mssql.connect(configSql)
-//!     return conn
-//! }
-
-
+import dotenv from 'dotenv'
 
 const sql = mssql;
+dotenv.config();
 
 //TODO: as o objeto sqlConfig é a configuração que fornece acesso ao sql
 const sqlConfig = {
-  user: 'sa',
-  password: 'Pereira1nz!',
-  database: 'cowlabs_db',
-  server: "localhost",
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  server: process.env.DB_SERVER,
   options: {
     encrypt: false, 
     trustServerCertificate: true,
@@ -46,3 +29,20 @@ let con = async function conectar() {
 }
 
 export default con; // exportando para ser utilizado no arquivo server
+
+//! functions abaixo era o modo antigo de acessar o banco
+//! const configSql = {
+//!     user: 'sa',
+//!     password: 'Pereira1nz!',
+//!     database: 'cowlabs_db',
+//!     server: 'localhost',
+//!     options: {
+//!         encrypt: false, 
+//!         trustServerCertificate: true 
+//!         }
+//! }
+//! 
+//! export async function connect () {
+//!     const conn = await mssql.connect(configSql)
+//!     return conn
+//! }
