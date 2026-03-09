@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --env-file .env ./src/server.js"
+    "start": "nodemon --env-file .env ./src/Server.js"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +16,8 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mssql": "^12.0.0",
-    "nodemon": "^3.1.11"
+    "mssql": "^12.2.0",
+    "nodemon": "^3.1.11",
+    "xpress": "^2.4.6"
   }
 }

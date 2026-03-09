@@ -1,22 +1,42 @@
  import express from 'express'
  import globalMiddleware from './middleware/globalMiddleware.js'
 import UserRoute from './routes/UsersRoutes.js'
+import con from './database/connectionSQL.js'
 
  const app = express()
- const port = process.env.PORT
- const host = process.env.host
+ const port = '3000'
+ const host = '127.0.0.1'
 
  app.use(globalMiddleware.cors)
  app.use(express.json()) // sem isso o req.body vem vazio
  app.use(UserRoute)
 
- app.get('/' ,(req, res) =>{ 
-     res.status(200).json({
-         system: 'Cowlabs',
-         ok: true
-     })
- })
+//  app.get('/' ,(req, res) =>{ 
+//      res.status(200).json({
+//          system: 'Cowlabs',
+//          ok: true
+//      })
+//  })
 
- app.listen(port, host, () => {
-    console.log(` Servidor rodando em uma porta ${port} `)
- })
+//  app.listen(port, host, () => {
+//     console.log(` Servidor rodando em uma porta ${port} `)
+//  })
+
+let pool = await con()
+
+app.get('/', async (req, res) => {
+  try {
+    const result = await pool.request().query('SELECT user_name FROM tb_user');
+    res.json(result.recordset); // retorna os dados como JSON
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: err.message });
+  }
+});
+
+// Inicia servidor só após conectar ao banco par evitar erros de conexão
+con().then(() => {
+  app.listen(3000, () => {
+    console.log("Servidor rodando na porta 3000");
+  });
+});
