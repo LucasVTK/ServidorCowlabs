@@ -5,8 +5,8 @@ import DemandasRoute from "./routes/DemandasRoute.js";
 import con from "./database/connectionSQL.js";
 
 const app = express();
-const port = "3000";
-const host = "127.0.0.1";
+const port = process.env.PORT;
+const host = process.env.HOST;
 const pool = await con(); // declarei essa variável dnv para receber a função importada do connectionSQL
 
 app.use(globalMiddleware.cors);
@@ -21,13 +21,10 @@ app.get("/", (req, res) => {
   });
 });
 
-app.listen(port, host, () => {
-  console.log(` Servidor rodando em uma porta ${port} `);
-});
 // Inicia servidor só após conectar ao banco par evitar erros de conexão
 con().then(() => {
   // estamos utilizando o .then() aqui para esperara conexao com o banco e depois dar inicio ao servidor, não sei bem o pq mas sem isso não tava funcionando antes.
-  app.listen(3000, () => {
+  app.listen(port, () => {
     console.log("Servidor rodando na porta 3000");
   });
 });
