@@ -1,39 +1,38 @@
-import DemandasRepository from '../repositories/CrudDemandasRepository.js';
-import auth from "./AuthController.js";
+import DemandasRepository from "../repositories/CrudDemandaRepository.js";
 
 const CrudDemandaController = {
-  async getAllDemandas(req,res){
-    const demandas = await DemandasRepository.readAll()
+  async getAllDemandas(req, res) {
+    const demandas = await DemandasRepository.readAll();
     res.status(200).json({
       total: demandas.length,
       items: demandas,
     });
   },
-  async getDemandasById(req,res){
-    const {id} = req.params
-    const demanda = await DemandasRepository.readById(id)
-    if(!demanda){
+  async getDemandasById(req, res) {
+    const { id } = req.params;
+    const demanda = await DemandasRepository.readById(id);
+    if (!demanda) {
       res.status(404).json({
-        message:'Demanda não encontrada!',
-        erro:true
-      })
-    }else{
-      res.status(200).json(demanda)
+        message: "Demanda não encontrada!",
+        erro: true,
+      });
+    } else {
+      res.status(200).json(demanda);
     }
   },
   async getDemandasByTag(req, res) {
-    const { demanda_tag } = req.params; 
-    const demanda = await DemandasRepository.readByTag(demanda_tag); 
-    if(!demanda){
+    const { demanda_tag } = req.params;
+    const demanda = await DemandasRepository.readByTag(demanda_tag);
+    if (!demanda) {
       res.status(404).json({
-        message:'Demanda não encontrada!',
-        erro:true
-      })
-    }else{
+        message: "Demanda não encontrada!",
+        erro: true,
+      });
+    } else {
       res.status(200).json({
         total: demanda.length,
         items: demanda,
-      })
+      });
     }
   },
   async creatDemandas(req, res) {
@@ -43,7 +42,7 @@ const CrudDemandaController = {
       demanda_title,
       demanda_content,
       demanda_tag,
-      file_location
+      file_location,
     } = req.body;
 
     const novaDemanda = await DemandasRepository.create({
@@ -52,20 +51,20 @@ const CrudDemandaController = {
       demanda_title,
       demanda_content,
       demanda_tag,
-      file_location
+      file_location,
     });
 
     res.status(200).json(novaDemanda);
   },
   async updateDemandas(req, res) {
-    const { id } = req.params; 
+    const { id } = req.params;
     const {
       data_curso,
       user_demanda,
       demanda_title,
       demanda_content,
       demanda_tag,
-      file_location
+      file_location,
     } = req.body;
 
     const demandaAtualizada = await DemandasRepository.update(id, {
@@ -74,16 +73,16 @@ const CrudDemandaController = {
       demanda_title,
       demanda_content,
       demanda_tag,
-      file_location
-    }); 
+      file_location,
+    });
 
     res.status(200).json(demandaAtualizada);
   },
-  async deleteDemandas(req,res){
-    const {id} = req.params
-    const demandaDeletada = await DemandasRepository.delete(id)
-    res.status(200).json(demandaDeletada)
-  }
-}
+  async deleteDemandas(req, res) {
+    const { id } = req.params;
+    const demandaDeletada = await DemandasRepository.delete(id);
+    res.status(200).json(demandaDeletada);
+  },
+};
 
 export default CrudDemandaController;
