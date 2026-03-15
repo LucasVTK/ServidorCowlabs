@@ -6,7 +6,12 @@ const UserRepository = {
   async readAll() {
     const conn = await con();
     const { recordset } = await conn.query(
-      "select user_id,user_name,user_real_name,user_email,user_tipo from tb_user"
+      `select user_id, 
+              user_name,
+              user_real_name, 
+              user_email, 
+              user_tipo 
+        from tb_user`,
     );
     return recordset;
   },
@@ -17,7 +22,14 @@ const UserRepository = {
       .request()
       .input("user_id", sqltype.Int, id)
       .query(
-        "select user_id,user_name,user_real_name,user_email,user_tipo from tb_user where user_id=@user_id"
+        `select 
+          user_id,
+          user_name,
+          user_real_name,
+          user_email,
+          user_tipo 
+        from tb_user 
+        where user_id=@user_id`,
       );
     return recordset;
   },
@@ -44,15 +56,35 @@ const UserRepository = {
     console.log("Repository");
     const sql = `
         INSERT INTO tb_user (
-            user_name, user_real_name, user_cpf, user_email, user_senha,
-            user_tipo, user_endereco, user_num, user_complemento,
-            user_bairro, user_cidade, user_uf, user_cep
-
-        ) VALUES (
-            @user_name, @user_real_name, @user_cpf, @user_email, @user_senha,
-            @user_tipo, @user_endereco, @user_num, @user_complemento,
-            @user_bairro, @user_cidade, @user_uf, @user_cep
-        )
+            user_name, 
+            user_real_name, 
+            user_cpf, 
+            user_email, 
+            user_senha,
+            user_tipo, 
+            user_endereco, 
+            user_num, 
+            user_complemento,
+            user_bairro, 
+            user_cidade, 
+            user_uf, 
+            user_cep
+            ) 
+        VALUES(
+            @user_name, 
+            @user_real_name,
+            @user_cpf,
+            @user_email,
+            @user_senha,
+            @user_tipo,
+            @user_endereco,
+            @user_num,
+            @user_complemento,
+            @user_bairro,
+            @user_cidade,
+            @user_uf,
+            @user_cep
+            )
         `;
 
     const respDB = await conn
@@ -79,10 +111,23 @@ const UserRepository = {
     //encarando que ja foram validadas pelo middleware
 
     const conn = await con();
-    const sql = `update tb_user 
-            set user_name = @user_name,   user_real_name= @user_real_name, user_email=@user_email,   user_senha= @user_senha,     user_endereco=@user_endereco,   user_num= @user_num,    user_complemento=@user_complemento,    user_bairro=@user_bairro ,   user_cidade=@user_cidade  ,  user_uf=@user_uf  ,  user_cep=@user_cep  ,  
-            where user_id=@user_id`;
-    console.log(model.user_senha)
+    const sql = `
+            update tb_user 
+            set user_name = @user_name,
+              user_real_name = @user_real_name,
+              user_email=@user_email,
+              user_senha= @user_senha,
+              user_endereco=@user_endereco,
+              user_num= @user_num,
+              user_complemento=@user_complemento,
+              user_bairro=@user_bairro,
+              user_cidade=@user_cidade,
+              user_uf=@user_uf,
+              user_cep=@user_cep
+            where user_id=@user_id
+              `;
+
+    console.log(model.user_senha);
     const respDB = await conn
       .request()
       .input("user_name", sqltype.VarChar(100), model.user_name)
@@ -104,8 +149,10 @@ const UserRepository = {
   },
   async updatePassword(user_id, user_senha) {
     const conn = await con();
-    const sql = `update tb_user 
-        set user_senha=@user_senha where user_id=@user_id`;
+    const sql = `
+          update tb_user 
+          set user_senha=@user_senha 
+          where user_id=@user_id`;
 
     const respDB = await conn
       .request()
