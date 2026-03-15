@@ -28,13 +28,3 @@ con().then(() => {
     console.log("Servidor rodando na porta 3000");
   });
 });
-
-//! app.get("/", async (req, res) => {
-//!   try {
-//!    const result = await pool.request().query("SELECT user_name FROM tb_user"); //fiz essa querry simples só para testar
-//!     res.json(result.recordset); // retorna os dados como JSON
-//!   } catch (err) {
-//!     console.error(err);
-//!     res.status(500).json({ erro: err.message });
-//!   }
-//! });
