@@ -105,7 +105,7 @@ const DemandasRepository = {
   ) {
     const conn = await con();
     const sql = `update tb_demandas 
-                set demanda_title = @demanda_title,   demanda_content= @demanda_content, demanda_file=@demanda_file,   demanda_create_data= @demanda_create_data,     demandas_status=@demandas_status,   demandas_status_date= @demandas_status_date,  
+                set demanda_title = @demanda_title,   demanda_content= @demanda_content, demanda_file=@demanda_file,   demanda_create_data= @demanda_create_data,     demandas_status=@demandas_status,   demandas_status_date= @demandas_status_date  
                 where demanda_id=@demanda_id`;
 
     const respDB = await conn
@@ -116,64 +116,10 @@ const DemandasRepository = {
       .input("demanda_create_data", sqltype.DateTime, demanda_create_data)
       .input("demandas_status", sqltype.VarChar(10), demandas_status)
       .input("demandas_status_date", sqltype.DateTime, demandas_status_date)
-
       .query(sql);
 
     return respDB;
-
-    // const demandaIndex = Demandas.findIndex(
-    //   (d) => d.demanda_id === parseInt(demanda_id)
-    // ); // transforma o 'demanda_id' em inteiro e busca a demanda pelo id
-
-    // if (demandaIndex === -1) {
-    //   return { message: "Demanda não encontrada!" };
-    // } // se a demanda não for encontrada, retorna um err
-
-    // const demandaAtualizada = {
-    //   demanda_id: parseInt(demanda_id),
-    //   data_curso,
-    //   user_demanda,
-    //   demanda_content,
-    //   demanda_title,
-    //   demanda_tag,
-    //   file_location,
-    // }; // Objetos com os dados que sarão atualizados
-
-    // Demandas[demandaIndex] = demandaAtualizada; // coloca a demanda dentro do array no id encontrado
-
-    // fs.writeFileSync(
-    //   "./src/database/Demandas.json",
-    //   JSON.stringify(Demandas),
-    //   "utf-8"
-    // ); // att o arquivo JSON na database
-
-    // return {
-    //   message: "Demanda atualizada com sucesso!",
-    //   data: demandaAtualizada,
-    // }; // retorna uma mensagem de sucesso e os dados atualizados
-  },
-  // async delete(demanda_id) {
-  //   const DemandaIndex = Demandas.findIndex(
-  //     (d) => d.demanda_id === parseInt(demanda_id)
-  //   ); //encontra o id da demanda
-
-  //   if (DemandaIndex === -1) {
-  //     return { message: "Demanda não encontrada!" };
-  //   } // se a demanda não for encontrada, retorna um erro
-
-  //   Demandas.splice(DemandaIndex, 1); // remove a demanda do array
-
-  //   fs.writeFileSync(
-  //     "./src/database/Demandas.json",
-  //     JSON.stringify(Demandas),
-  //     "utf-8"
-  //   ); // att o arquivo JSON na database
-
-  //   return {
-  //     message: "Demanda deletada com sucesso!",
-  //     data: Demandas,
-  //   }; // retorna uma mensagem de sucesso e os dados atualizados
-  // },
+  }
 };
 
 export default DemandasRepository;
