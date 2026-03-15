@@ -65,28 +65,10 @@ const DemandasRepository = {
       .input("demanda_create_data", sqltype.DateTime, demanda_create_data)
       .input("tb_user_user_id", sqltype.Int, tb_user_user_id)
       .input("demandas_status", sqltype.VarChar(10), demandas_status)
-      .input("demandas_status_date", sqltype.DateTime, demandas_status_date);
+      .input("demandas_status_date", sqltype.DateTime, demandas_status_date)
+      .query(sql);
 
     return respDB;
-
-    // const novaDemanda = {
-    //   demanda_id: Demandas.length + 1,
-    //   data_curso,
-    //   user_demanda,
-    //   demanda_title,
-    //   demanda_content,
-    //   demanda_tag,
-    //   file_location
-    // } //Cria uma nova demanda
-
-    // Demandas.push(novaDemanda) // Adiciona a nova demanda no final do array
-
-    // fs.writeFileSync('./src/database/Demandas.json', JSON.stringify(Demandas),'utf-8') //Atualiza o arquivo JSON com a nova demanda
-
-    // return {
-    //   message: 'Demanda criada com sucesso!',
-    //   data: Demandas,
-    // } //Retorna uma mensagem de sucesso e os dados atualizados
   },
   async update(
     demanda_id,
