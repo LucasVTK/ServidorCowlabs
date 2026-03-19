@@ -13,10 +13,11 @@
   "type": "module",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.3.1",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^9.0.3",
     "mssql": "^12.2.0",
     "nodemon": "^3.1.11",
     "xpress": "^2.4.6"

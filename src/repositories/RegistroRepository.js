@@ -1,5 +1,4 @@
 import con from "../database/connectionSQL.js";
-import AuthController from "../controllers/AuthController.js";
 import sqltype from "mssql";
 
 const UserRepository = {
@@ -22,7 +21,7 @@ const UserRepository = {
     return recordset;
   },
 
-  async readUser(user_email, user_senha) {
+  async readUser(user_email) {
     const sql = await con();
 
     const { recordset } = await sql
@@ -30,11 +29,11 @@ const UserRepository = {
       .input("user_email", sqltype.VarChar(100), user_email)
       .query(`select * from tb_user where user_email=@user_email`);
 
+          // console.log('Recordset:', recordset)
+          // console.log('Email buscado:', user_email) 
+
     if (recordset.length > 0) {
-      const s = recordset[0].user_senha;
-      if (AuthController.compare(user_senha, s)) {
-        return recordset;
-      }
+        return recordset[0]
     }
     return null;
   },
