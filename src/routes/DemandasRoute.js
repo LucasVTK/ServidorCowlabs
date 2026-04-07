@@ -5,7 +5,7 @@ import authMiddleware from "../middleware/authMiddleware.js";
 
 const DemandasRouter = Router()
 
-DemandasRouter.get('/demandas', /*authMiddleware.authenticate,*/CrudDemandaController.getAllDemandas)
+DemandasRouter.get('/demandas', authMiddleware.authenticate,CrudDemandaController.getAllDemandas)
 DemandasRouter.get('/demandas/id/:id', middlewareDemandas.verificarIdValido,CrudDemandaController.getDemandasById)
 DemandasRouter.get('/demandas/tag/:demanda_tag', middlewareDemandas.verificarTagValida, CrudDemandaController.getDemandasByTag)
 DemandasRouter.post('/demandas/create', middlewareDemandas.verificarCamposdaDemanda, CrudDemandaController.creatDemandas)
