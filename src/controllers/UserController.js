@@ -2,111 +2,108 @@ import UserRepository from "../repositories/RegistroRepository.js";
 import auth from "./AuthController.js";
 
 const UserController = {
-    async getAllUsers(req, res) {
+  async getAllUsers(req, res) {
     const users = await UserRepository.readAll();
     res.json(users);
-    },
+  },
 
-    async getUserById(req, res) {
+  async getUserById(req, res) {
     const id = req.params.id;
     const users = await UserRepository.readById(id);
     res.json(users);
-    },
+  },
 
-    async create(req, res) {
+  async create(req, res) {
     try {
-        const model = req.body;
-        model.user_senha = auth.crypt(model.user_senha);
-        const respDB = await UserRepository.create(model);
-        if (respDB.rowsAffected[0] > 0) {
+      const model = req.body;
+      model.user_senha = auth.crypt(model.user_senha);
+      const respDB = await UserRepository.create(model);
+      if (respDB.rowsAffected[0] > 0) {
         res.status(200).json({
-            ok: true,
-            message: "Usuário inserido com sucesso!",
-            email: model.user_email,
+          ok: true,
+          message: "Usuário inserido com sucesso!",
+          email: model.user_email,
         });
         return;
-        }
-        res.status(500).json({
+      }
+      res.status(500).json({
         ok: false,
         message: "Erro ao inserir usuário",
         email: model.user_email,
-        });
+      });
     } catch (e) {
-        // res.status(500).json({
-        // ok: false,
-        // message: "Erro do servidor",
-        // error:e
-        console.log("ERRO COMPLETO NO CREATE:");
-        console.dir(e, { depth: null });
-        res.status(500).json({
+      // res.status(500).json({
+      // ok: false,
+      // message: "Erro do servidor",
+      // error:e
+      console.log("ERRO COMPLETO NO CREATE:");
+      console.dir(e, { depth: null });
+      res.status(500).json({
         ok: false,
         message: "Erro do servidor",
-        error: e.message || e
-
-
-        });
+        error: e.message || e,
+      });
     }
-    },
+  },
 
-    async Update(req,res){
-    try{
-        const model = req.body
-        const id = req.params.id
+  async Update(req, res) {
+    try {
+      const model = req.body;
+      const id = req.params.id;
 
-        model.user_senha = auth.crypt(model.user_senha)
+      model.user_senha = auth.crypt(model.user_senha);
 
-        const respDB = await UserRepository.update(id, model)
-        if(respDB.rowsAffected[0] > 0)
-                        if (respDB.rowsAffected[0] > 0) {
-                res.status(200).json({
-                    ok: true,
-                    message: 'Usuário alterado com sucesso!',
-                    email: model.user_email
-                })
-                return
-            }
-            res.status(500).json({
-                ok: false,
-                message: 'Erro ao alterar usuário',
-                email: model.user_email
-            })
-        } catch (e) {
-            res.status(500).json({
-                ok: false,
-                message: 'Erro do servidor',
-            })
+      const respDB = await UserRepository.update(id, model);
+      if (respDB.rowsAffected[0] > 0)
+        if (respDB.rowsAffected[0] > 0) {
+          res.status(200).json({
+            ok: true,
+            message: "Usuário alterado com sucesso!",
+            email: model.user_email,
+          });
+          return;
         }
-    },
+      res.status(500).json({
+        ok: false,
+        message: "Erro ao alterar usuário",
+        email: model.user_email,
+      });
+    } catch (e) {
+      res.status(500).json({
+        ok: false,
+        message: "Erro do servidor",
+      });
+    }
+  },
 
-    async updatePassword(req, res) {
-        try {
-            const model = req.body
-            const id = req.params.id
-            model.senha = auth.crypt(model.senha)
+  async updatePassword(req, res) {
+    try {
+      const model = req.body;
+      const id = req.params.id;
+      model.senha = auth.crypt(model.senha);
 
-            const respDB = await UserRepository.updatePassword(id, model.user_senha)
+      const respDB = await UserRepository.updatePassword(id, model.user_senha);
 
-            if (respDB.rowsAffected[0] > 0) {
-                res.status(200).json({
-                    ok: true,
-                    message: 'Senha alterada com sucesso!',
-                    email: model.user_email
-                })
-                return
-            }
-            res.status(500).json({
-                ok: false,
-                message: 'Erro ao alterar senha',
-                email: model.user_email
-            })
-        } catch (e) {
-            res.status(500).json({
-                ok: false,
-                message: 'Erro do servidor',
-            })
-        }
-    },
-}
+      if (respDB.rowsAffected[0] > 0) {
+        res.status(200).json({
+          ok: true,
+          message: "Senha alterada com sucesso!",
+          email: model.user_email,
+        });
+        return;
+      }
+      res.status(500).json({
+        ok: false,
+        message: "Erro ao alterar senha",
+        email: model.user_email,
+      });
+    } catch (e) {
+      res.status(500).json({
+        ok: false,
+        message: "Erro do servidor",
+      });
+    }
+  },
+};
 
-export default UserController
-
+export default UserController;
