@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>CowLabs Registre-se</title>
+    <link rel="stylesheet" href="../styles/default.css" />
+    <meta />
+    <link rel="stylesheet" href="../styles/register.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      rel="shortcut icon"
+      href="https://cowlabs.com.br/assets/img/favicon.ico"
+      type="image/favicon"
+    />
+  </head>
+  <body>
+    <section>
+      <div class="imgLogo">
+        <a href="http://www.cowlabs.com.br"
+          ><img
+            src="https://cowlabs.com.br/assets/img/banner-home.png"
+            alt="logo da sua vaquinha favorita"
+        /></a>
+      </div>
+    </section>
+
+    <main class="container">
+      <div class="row justify-content-center mb-5 col-sm-12">
+        <div class="col-sm-12 col-lg-5">
+          <div class="col-sm-12">
+            <form id="registerForm" class="">
+              <p class="text-center">Registre-se</p>
+              <label for="User">
+                Usuário:
+                <input
+                  id="User"
+                  type="text"
+                  name="User"
+                  required
+                  placeholder="(Nome que todos vão ver)"
+              /></label>
+              <div id="UserCheckerMsg"></div>
+              <label for="RealName">
+                Nome Inteiro (Real):
+                <input
+                  id="Realname"
+                  type="text"
+                  name="Realname"
+                  required
+                  placeholder="(Essa informação aparecerá apenas para os professores)"
+              /></label>
+              <label for="CPF">
+                CPF:
+                <input
+                  id="CPF"
+                  type="number"
+                  name="CPF"
+                  placeholder="000.000.000-00"
+                  required
+              /></label>
+              <label for="Email">
+                E-mail: <input id="Email" type="email" name="Email" required
+              /></label>
+              <div class="row align-items-center pt-3 pb-3">
+                <label for="curso" class="col-4 pb-1">Estou cursando:</label>
+                <select id="curso" name="curso" class="col-8">
+                  <option value="Administração">Administração</option>
+                  <option value="Ciências Biológicas">
+                    Ciências Biológicas
+                  </option>
+                  <option value="Ciências Contábeis">Ciências Contábeis</option>
+                  <option value="Direito">Direito</option>
+                  <option value="Design">Design</option>
+                  <option value="Educação Física">Educação Física</option>
+                  <option value="Engenharia ABI">Engenharia ABI</option>
+                  <option value="Engenharia Ambiental">
+                    Engenharia Ambiental
+                  </option>
+                  <option value="Engenharia Civil">Engenharia Civil</option>
+                  <option value="Engenharia de Produção">
+                    Engenharia de Produção
+                  </option>
+                  <option value="Engenharia Elétrica">
+                    Engenharia Elétrica
+                  </option>
+                  <option value="Engenharia Mecânica">
+                    Engenharia Mecânica
+                  </option>
+                  <option value="Enfermagem">Enfermagem</option>
+                  <option value="Medicina">Medicina</option>
+                  <option value="Nutrição">Nutrição</option>
+                  <option value="Odontologia">Odontologia</option>
+                  <option value="Publicidade e Propaganda">
+                    Publicidade e Propaganda
+                  </option>
+                  <option value="Serviço Social">Serviço Social</option>
+                  <option value="Sistemas de Informação">
+                    Sistemas de Informação
+                  </option>
+                  <option value="Técnico em Enfermagem">
+                    Técnico em Enfermagem
+                  </option>
+                </select>
+              </div>
+              <label for="CEP"
+                >CEP
+                <input
+                  id="CEP"
+                  type="text"
+                  name="Email"
+                  required
+                  placeholder="00000-000"
+              /></label>
+              <label for="uf"
+                >Estado
+                <input id="uf" type="text" name="uf" required />
+              </label>
+              <label for="cidade"
+                >Cidade
+                <input
+                  id="cidade"
+                  type="text"
+                  name="Email"
+                  required
+                  placeholder=""
+              /></label>
+              <label for="Endereço"
+                >Endereço
+                <input id="endereco" type="text" name="endereco" required
+              /></label>
+              <label for="bairro"
+                >Bairro
+                <input id="bairro" type="text" name="bairro" required
+              /></label>
+
+
+              <label for="numero"
+                >Número<input id="numero" type="text" name="numero" required
+              /></label>
+              <label for="complemento"
+                >Complemento<input
+                  id="complemento"
+                  type="text"
+                  name="complemento"
+                  required
+              /></label>
+
+              <label for="Senha"
+                >Senha: <input id="Senha" type="password" name="Senha" required
+              /></label>
+
+              <label for="confirmação de senha"
+                >Confirme a sua senha:
+                <input
+                  id="ConfirmSenha"
+                  type="password"
+                  name="ConfirmSenha"
+                  required
+                  placeholder="(Repita sua senha)"
+                />
+              </label>
+
+              <div id="InfoUser"></div>
+
+              <div class="row justify-content-center pt-5">
+                <div class="col-12 text-center">
+                  <button type="submit" class="personal_btn" id="RegBtn">
+                    Registre-se
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="/PluginsJQUERY/jquery.mask.min.js"></script>
+    <script src="/PluginsJQUERY/jquery.validate.min.js"></script>
+    <script src="/PluginsJQUERY/messages_pt_BR.min.js"></script>
+    <!-- <script src="/src/register/script.js"></script> -->
+    <script type="module" src="../services/register.js"></script>
+  </body>
+</html>
