@@ -6,17 +6,24 @@ const DemandasRepository = {
   async readAll() {
     const conn = await con();
     const { recordset } = await conn.query(
-      "select demanda_id,demanda_title,demanda_content,demanda_file,demanda_create_data,tb_user_user_id,demandas_status,demandas_status_date from tb_demandas"
+      "select user_name, user_tipo, demanda_title,  demanda_content, demanda_file, demanda_create_data, demandas_status from tb_user join tb_demandas on tb_demandas.tb_user_user_id = tb_user.user_id",
     );
+    console.log(recordset)
     return recordset; // retorna todas as demandas
   },
   async readById(demanda_id) {
+    (user_name,
+      user_tipo,
+      demanda_title,
+      demanda_content,
+      demanda_create_data,
+      demandas_status);
     const conn = await con();
     const { recordset } = await conn
       .request()
       .input("demanda_id", sqltype.Int, demanda_id)
       .query(
-        "select demanda_id,demanda_title,demanda_content,demanda_file,demanda_create_data,tb_user_user_id,demandas_status,demandas_status_date from tb_demandas where demanda_id=@demanda_id"
+        "select demanda_id,demanda_title,demanda_content,demanda_file,demanda_create_data,tb_user_user_id,demandas_status,demandas_status_date from tb_demandas where demanda_id=@demanda_id",
       );
     return recordset;
   },
@@ -83,7 +90,7 @@ const DemandasRepository = {
       tb_user_user_id,
       demandas_status,
       demandas_status_date,
-    }
+    },
   ) {
     const conn = await con();
     const sql = `update tb_demandas 
@@ -101,7 +108,7 @@ const DemandasRepository = {
       .query(sql);
 
     return respDB;
-  }
+  },
 };
 
 export default DemandasRepository;
