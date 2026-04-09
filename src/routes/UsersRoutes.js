@@ -7,6 +7,7 @@ const UserRoute = Router()
 
 UserRoute.get('/admin/users', UserController.getAllUsers)
 UserRoute.get('/users/:id',UserController.getUserById)
+UserRoute.post('/users/verificaLogin', UserController.verificaLogin)
 UserRoute.post('/users/create',ModelMiddleware.modelValidade, ModelMiddleware.modelUpdateSenha, UserController.create)
 UserRoute.put('/users/update/:id',ModelMiddleware.modelValidade,UserController.Update)
 UserRoute.patch('/users/update_password/:id', ModelMiddleware.modelUpdateSenha,UserController.updatePassword)

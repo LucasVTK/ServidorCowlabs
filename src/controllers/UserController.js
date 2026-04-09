@@ -104,6 +104,32 @@ const UserController = {
       });
     }
   },
+
+  async verificaLogin(req, res){
+    try{
+      const model = req.body
+      const repsDB = await UserRepository.verificaLogin(model.user_email, model.user_name, model.user_cpf)
+
+      if(repsDB.recordset.length === 0){
+        res.status(200).json({
+          ok:true,
+          message: 'Usuario, Email e CPF Unico, Registro liberado',
+          field: model.user_email
+        })
+        return
+      }
+        res.status(409).json({
+          ok:false,
+          message: "Já existe um usuário cadastrado com este e-mail, cpf ou nome de usuario"
+        })
+    }catch(e){
+      res.status(500).json({
+        ok:false,
+        message:"Erro do servidor",
+        error: e.message
+      })
+    }
+  }
 };
 
 export default UserController;
