@@ -2,11 +2,42 @@ import DemandasRepository from "../repositories/CrudDemandaRepository.js";
 
 const CrudDemandaController = {
   async getAllDemandas(req, res) {
-    const demandas = await DemandasRepository.readAll();
-    res.status(200).json({
-      total: demandas.length,
-      items: demandas,
-    });
+    try{
+      let {page = 1, limit = 10} = req.query;
+
+      page = parseInt(page);
+      limit = parseInt(limit);
+
+      if(isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0){
+        return res.status(400).json({
+          erro: "parametro da paginação errado"
+        })
+      }
+
+      const { dados, total } = await DemandasRepository.readAll(page, limit)
+
+      res.status(200).json({
+        dados,
+        paginacao: {
+          total,
+          pages: Math.ceil(total / limit),
+          currentPage: page,
+          limit
+        }
+      });
+    }catch(err){
+      console.log(err)
+      res.status(500).json({
+        erro: "erro"
+      });
+    }
+
+    //codigo antigo
+    // const demandas = await DemandasRepository.readAll();
+    // res.status(200).json({
+    //   total: demandas.length,
+    //   items: demandas,
+    // });
   },
   async getDemandasById(req, res) {
     const { id } = req.params;
