@@ -11,20 +11,36 @@ const DemandasRepository = {
       .request()
       .input("offset", offset)
       .input("limit", limit).query(`SELECT 
-          user_name, 
-          user_tipo, 
-          demanda_id,
-          demanda_title,  
-          demanda_content, 
-          demanda_file, 
-          demanda_create_data, 
-          demandas_status
-        FROM tb_user
-        JOIN tb_demandas 
-          ON tb_demandas.tb_user_user_id = tb_user.user_id
-        ORDER BY demanda_create_data DESC, tb_demandas.demanda_id DESC
-        OFFSET @offset ROWS
-        FETCH NEXT @limit ROWS ONLY`);
+  u.user_name, 
+  u.user_tipo, 
+  d.demanda_id,
+  d.demanda_title,
+  STRING_AGG(c.curso_name, ', ') AS cursos,
+  d.demanda_content, 
+  d.demanda_file, 
+  d.demanda_create_data, 
+  d.demandas_status
+FROM tb_user u
+JOIN tb_demandas d
+  ON d.tb_user_user_id = u.user_id
+JOIN tb_demandas_curso dc
+  ON dc.tb_demandas_demanda_id = d.demanda_id
+JOIN tb_curso c 
+  ON c.curso_id = dc.tb_curso_curso_id
+
+GROUP BY 
+  u.user_name, 
+  u.user_tipo, 
+  d.demanda_id,
+  d.demanda_title,
+  d.demanda_content, 
+  d.demanda_file, 
+  d.demanda_create_data, 
+  d.demandas_status
+
+ORDER BY d.demanda_create_data DESC, d.demanda_id DESC
+OFFSET @offset ROWS
+FETCH NEXT @limit ROWS ONLY`);
 
         const contar = await conn.request()
         .query(`SELECT COUNT(*) AS total FROM tb_user JOIN tb_demandas ON tb_demandas.tb_user_user_id = tb_user.user_id`);
