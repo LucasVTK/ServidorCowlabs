@@ -13,6 +13,7 @@ const DemandasRepository = {
       .input("limit", limit).query(`SELECT 
           user_name, 
           user_tipo, 
+          demanda_id,
           demanda_title,  
           demanda_content, 
           demanda_file, 
