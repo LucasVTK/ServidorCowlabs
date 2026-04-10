@@ -3,13 +3,36 @@ import AuthController from "../controllers/AuthController.js";
 import sqltype from "mssql";
 
 const DemandasRepository = {
-  async readAll() {
+  async readAll(page = 1, limit = 10) {
     const conn = await con();
-    const { recordset } = await conn.query(
-      "select user_name, user_tipo, demanda_title,  demanda_content, demanda_file, demanda_create_data, demandas_status from tb_user join tb_demandas on tb_demandas.tb_user_user_id = tb_user.user_id",
-    );
-    console.log(recordset)
-    return recordset; // retorna todas as demandas
+
+    const offset = (page - 1) * limit;
+    const { recordset } = await conn
+      .request()
+      .input("offset", offset)
+      .input("limit", limit).query(`SELECT 
+          user_name, 
+          user_tipo, 
+          demanda_id,
+          demanda_title,  
+          demanda_content, 
+          demanda_file, 
+          demanda_create_data, 
+          demandas_status
+        FROM tb_user
+        JOIN tb_demandas 
+          ON tb_demandas.tb_user_user_id = tb_user.user_id
+        ORDER BY demanda_create_data DESC, tb_demandas.demanda_id DESC
+        OFFSET @offset ROWS
+        FETCH NEXT @limit ROWS ONLY`);
+
+        const contar = await conn.request()
+        .query(`SELECT COUNT(*) AS total FROM tb_user JOIN tb_demandas ON tb_demandas.tb_user_user_id = tb_user.user_id`);
+
+        return {
+          dados: recordset,
+          total: contar.recordset[0].total
+        }
   },
   async readById(demanda_id) {
     (user_name,
