@@ -104,6 +104,54 @@ const UserController = {
       });
     }
   },
+
+  async verificaLogin(req, res){
+    try{
+      const model = req.body
+      const repsDB = await UserRepository.verificaLogin(model.user_email, model.user_name, model.user_cpf)
+      //variavel criada para contem as mensagens de erro vindas do banco caso ja exista usuario com email, cpf ou nome de usuario cadastrado
+      let field = []
+
+      //primeira validacao, caso o recordset venha vazio, quer dizer que nao foi encontrado no banco nada igual foi digitado no model
+      if(repsDB.recordset.length === 0){
+        res.status(200).json({
+          ok:true,
+          message: 'Usuario, Email e CPF Unico, Registro liberado',
+          field: model.user_email
+        })
+        return
+      }
+      //verificacoes para retorno de mansagem ao front, com iteracao para retornar sempre todos os campos que existirem no banco, pois sem essa iteracao apenas o primeiro retorno do banco iria para o front end
+      repsDB.recordset.forEach(registro => {
+        if(registro.user_email === model.user_email){
+          //cada push e uma mensagem adicionada ao field, caso o campo seja encontrado, montando assim um array
+          field.push(`<br>email ja cadastrado`)
+      }
+      if(registro.user_cpf === model.user_cpf){
+          field.push(`<br>cpf ja cadastrado`)
+      }
+      if(registro.user_name === model.user_name){
+          field.push(`<br>usuário ja cadastrado`)
+      }
+      })
+      //retorno final ao front, se utiliza tambem das mesmas mensagens vindas do backend, caso a variavel field esteja com algo dentro retorna oque ja existe
+      if(field.length > 0){
+        res.status(409).json({
+          ok:false,
+          message:"ja existe usuario registrados com email, usuario ou este cpf",
+          field: field
+        })
+        return
+      }
+    }catch(e){
+      //qualquer outro tipo de erro de execucao de codigo e retornado por aqui
+      res.status(500).json({
+        ok:false,
+        message:"Erro do servidor",
+        error: e.message
+      })
+    }
+  }
 };
 
 export default UserController;
