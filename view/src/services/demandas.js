@@ -135,8 +135,8 @@ document.querySelector("#filter_btn_sm").addEventListener("click", () => {
 });
 
 
+loaderDemandas();
 function DOMLoader(){
-  loaderDemandas();
   
   footer();
 

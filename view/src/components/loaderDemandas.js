@@ -1,19 +1,21 @@
-export default async function loaderDemandas() {
-  const URL = `http://localhost:3000/demandas`;
-  const resp = await fetch(URL);
-  const {items} = await resp.json();
+export default async function loaderDemandas(page) {
+  if (!page || page == "" || page == null) {
+    page = 1;
+  }
 
+  const URL = `http://localhost:3000/demandas?page=${page}`;
+  const resp = await fetch(URL);
+  const response = await resp.json();
+
+  const dados = response.dados;
 
   const cards = document.querySelector(".row_cards");
 
-  
+  if (dados) {
+    cards.innerHTML = "";
+    console.log(dados);
 
-  if (items) {
-    cards.innerHTML = ""
-    console.log(items);
-
-    
-    items.forEach((d)=>{
+    dados.forEach((d) => {
       cards.innerHTML += `
         <div class="col-12" data-curso="${``}">
         <div class="card mb-4">
@@ -35,12 +37,56 @@ export default async function loaderDemandas() {
           </div>
         </div>
       </div>
-      `
-    })
-    // demandas.Map((d) => {
-    //   cards.innerHTML += `
-                
-    //     `;
-    // });
+      `;
+    });
+  }
+
+  const pagination = response.paginacao;
+  // console.log(pagination)
+
+  const navpages = document.querySelector(".navpages");
+  // console.log(navpages)
+
+  if (pagination) {
+    navpages.innerHTML = "";
+    const currentPage = pagination.currentPage;
+
+    if (currentPage > 1) {
+      navpages.innerHTML += `
+        <li class="page-item">
+          <a class="page-link" href="#" data-page="${currentPage - 1}">Anterior</a>
+        </li>`;
+    } else {
+      navpages.innerHTML += `
+        <li class="page-item disabled">
+          <a class="page-link">Anterior</a>
+        </li>`;
+    }
+
+    for (let i = 1; i <= pagination.pages; i++) {
+      navpages.innerHTML += `
+        <li class="page-item ${i === currentPage ? "active" : ""}">
+          <a class="page-link" href="#" data-page="${i}">${i}</a>
+        </li>`;
+    }
+
+    if (currentPage < pagination.pages) {
+      navpages.innerHTML += `
+        <li class="page-item">
+          <a class="page-link" href="#" data-page="${currentPage + 1}">Próxima</a>
+        </li>`;
+    } else {
+      navpages.innerHTML += `
+        <li class="page-item disabled">
+          <a class="page-link">Próxima</a>
+        </li>`;
+    }
+
+    navpages.querySelectorAll(".page-link[data-page]").forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault(); // <- impede o reload
+        loaderDemandas(Number(e.target.dataset.page));
+      });
+    });
   }
 }
