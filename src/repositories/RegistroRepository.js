@@ -1,6 +1,9 @@
 import con from "../database/connectionSQL.js";
 import sqltype from "mssql";
 
+import pkg from 'mssql';
+const { VarChar } = pkg;
+
 const UserRepository = {
   async readAll() {
     const conn = await con();
@@ -161,6 +164,18 @@ const UserRepository = {
 
     return respDB;
   },
+
+  async verificaLogin(user_email, user_name, user_cpf){
+    const conn = await con()
+
+    const respDB = await conn.request()
+    .input('user_email', VarChar(100), user_email)
+    .input('user_name', VarChar(100), user_name)
+    .input('user_cpf', VarChar(11), user_cpf)
+    .query('select user_name, user_email, user_cpf from tb_user where user_email = @user_email OR user_name = @user_name OR user_cpf = @user_cpf')
+
+    return respDB
+  }
 };
 
 export default UserRepository;

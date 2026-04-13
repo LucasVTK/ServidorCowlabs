@@ -109,10 +109,6 @@ const UserController = {
     try{
       const model = req.body
       const repsDB = await UserRepository.verificaLogin(model.user_email, model.user_name, model.user_cpf)
-      //variavel criada para contem as mensagens de erro vindas do banco caso ja exista usuario com email, cpf ou nome de usuario cadastrado
-      let field = []
-
-      //primeira validacao, caso o recordset venha vazio, quer dizer que nao foi encontrado no banco nada igual foi digitado no model
       if(repsDB.recordset.length === 0){
         res.status(200).json({
           ok:true,
@@ -122,6 +118,7 @@ const UserController = {
         return
       }
       //verificacoes para retorno de mansagem ao front, com iteracao para retornar sempre todos os campos que existirem no banco, pois sem essa iteracao apenas o primeiro retorno do banco iria para o front end
+      const field = []
       repsDB.recordset.forEach(registro => {
         if(registro.user_email === model.user_email){
           //cada push e uma mensagem adicionada ao field, caso o campo seja encontrado, montando assim um array
