@@ -129,7 +129,6 @@ async function register(e) {
         alert("Preencha todos os campos");
         return;
     }
-
    
     const newUser = {
         user_name: Nome,
@@ -147,33 +146,53 @@ async function register(e) {
         user_cep: cep
     };
 
-    try {
-        const response = await fetch("http://localhost:3000/users/create", {
-            method: "POST",
-            headers: {
+    try{
+        //tenta executar essa parte, faz o fetch pegando a rota com POST, o body captura user,cpf e name
+        const respDB = await fetch("http://127.0.0.1:3000/users/verificaLogin",{
+            method:"POST",
+            headers:{
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(newUser)
-        });
-
-        if (!response.ok) {
-           
-            const errorData = await response.json();
-            throw new Error(errorData.message || `Erro ao cadastrar: ${response.status}`);
+            body: JSON.stringify({user_email: newUser.user_email, user_cpf: newUser.user_cpf, user_name: newUser.user_name})
+        })
+        //se a resposa vinda do banco, for diferente de true, retorna o erro
+        if(!respDB.ok){
+            const ErrorData = await respDB.json()
+            //lancar mensagem de erro
+            throw new Error(ErrorData.field)
         }
-
-        
-        registerDone();
-
-    } catch (error) {
-        console.error("Erro no cadastro:", error);
+        //caso n retorne erro nenhum chama a funcao da proxima rota
+        createUser()
+    }catch(e){
         InfoUser.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Erro ao cadastrar:</strong> ${error.message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>`;
+                <strong>Erro ao cadastrar:</strong> ${e.message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+    }
+    async function createUser(){
+        try {
+            const response = await fetch("http://localhost:3000/users/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(newUser)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `Erro ao cadastrar: ${response.status}`);
+            }
+            registerDone();
+        } catch (error) {
+            console.error("Erro no cadastro:", error);
+            InfoUser.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Erro ao cadastrar:</strong> ${error.message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+        }
     }
 }
-
 
 //função que avisa que o registro foi efetuado e chama o redirecionamento
 function registerDone(){
@@ -210,7 +229,7 @@ function closeAdvise(){
 // essa função será chamada para redirecionar o usuário.
 function redirectLogin(){
     setTimeout(()=>{
-        window.location.href = '../pages/loing.html';
+        window.location.href = '../pages/login.html';
       
     }, 3000);
     

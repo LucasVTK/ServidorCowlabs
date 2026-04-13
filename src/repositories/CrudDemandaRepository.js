@@ -3,20 +3,66 @@ import AuthController from "../controllers/AuthController.js";
 import sqltype from "mssql";
 
 const DemandasRepository = {
-  async readAll() {
+  async readAll(page = 1, limit = 10) {
     const conn = await con();
-    const { recordset } = await conn.query(
-      "select demanda_id,demanda_title,demanda_content,demanda_file,demanda_create_data,tb_user_user_id,demandas_status,demandas_status_date from tb_demandas"
-    );
-    return recordset; // retorna todas as demandas
+
+    const offset = (page - 1) * limit;
+    const { recordset } = await conn
+      .request()
+      .input("offset", offset)
+      .input("limit", limit).query(`SELECT 
+  u.user_name, 
+  u.user_tipo, 
+  d.demanda_id,
+  d.demanda_title,
+  STRING_AGG(c.curso_name, ', ') AS cursos,
+  d.demanda_content, 
+  d.demanda_file, 
+  d.demanda_create_data, 
+  d.demandas_status
+FROM tb_user u
+JOIN tb_demandas d
+  ON d.tb_user_user_id = u.user_id
+JOIN tb_demandas_curso dc
+  ON dc.tb_demandas_demanda_id = d.demanda_id
+JOIN tb_curso c 
+  ON c.curso_id = dc.tb_curso_curso_id
+
+GROUP BY 
+  u.user_name, 
+  u.user_tipo, 
+  d.demanda_id,
+  d.demanda_title,
+  d.demanda_content, 
+  d.demanda_file, 
+  d.demanda_create_data, 
+  d.demandas_status
+
+ORDER BY d.demanda_create_data DESC, d.demanda_id DESC
+OFFSET @offset ROWS
+FETCH NEXT @limit ROWS ONLY`);
+
+        const contar = await conn.request()
+        .query(`SELECT COUNT(*) AS total FROM tb_user JOIN tb_demandas ON tb_demandas.tb_user_user_id = tb_user.user_id`);
+
+        return {
+          dados: recordset,
+          total: contar.recordset[0].total
+        }
   },
   async readById(demanda_id) {
+    (user_name,
+      user_tipo,
+      demanda_title,
+      demanda_content,
+      demanda_create_data,
+      demandas_status);
     const conn = await con();
     const { recordset } = await conn
       .request()
       .input("demanda_id", sqltype.Int, demanda_id)
       .query(
-        "select demanda_id,demanda_title,demanda_content,demanda_file,demanda_create_data,tb_user_user_id,demandas_status,demandas_status_date from tb_demandas where demanda_id=@demanda_id"
+        "select demanda_id,demanda_title,demanda_content,demanda_file,demanda_create_data,tb_user_user_id,demandas_status,demandas_status_date from tb_demandas where demanda_id=@demanda_id",
       );
     return recordset;
   },
@@ -83,7 +129,7 @@ const DemandasRepository = {
       tb_user_user_id,
       demandas_status,
       demandas_status_date,
-    }
+    },
   ) {
     const conn = await con();
     const sql = `update tb_demandas 
@@ -101,7 +147,7 @@ const DemandasRepository = {
       .query(sql);
 
     return respDB;
-  }
+  },
 };
 
 export default DemandasRepository;

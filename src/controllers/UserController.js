@@ -109,7 +109,6 @@ const UserController = {
     try{
       const model = req.body
       const repsDB = await UserRepository.verificaLogin(model.user_email, model.user_name, model.user_cpf)
-
       if(repsDB.recordset.length === 0){
         res.status(200).json({
           ok:true,
@@ -118,11 +117,31 @@ const UserController = {
         })
         return
       }
+      //verificacoes para retorno de mansagem ao front, com iteracao para retornar sempre todos os campos que existirem no banco, pois sem essa iteracao apenas o primeiro retorno do banco iria para o front end
+      const field = []
+      repsDB.recordset.forEach(registro => {
+        if(registro.user_email === model.user_email){
+          //cada push e uma mensagem adicionada ao field, caso o campo seja encontrado, montando assim um array
+          field.push(`<br>email ja cadastrado`)
+      }
+      if(registro.user_cpf === model.user_cpf){
+          field.push(`<br>cpf ja cadastrado`)
+      }
+      if(registro.user_name === model.user_name){
+          field.push(`<br>usuário ja cadastrado`)
+      }
+      })
+      //retorno final ao front, se utiliza tambem das mesmas mensagens vindas do backend, caso a variavel field esteja com algo dentro retorna oque ja existe
+      if(field.length > 0){
         res.status(409).json({
           ok:false,
-          message: "Já existe um usuário cadastrado com este e-mail, cpf ou nome de usuario"
+          message:"ja existe usuario registrados com email, usuario ou este cpf",
+          field: field
         })
+        return
+      }
     }catch(e){
+      //qualquer outro tipo de erro de execucao de codigo e retornado por aqui
       res.status(500).json({
         ok:false,
         message:"Erro do servidor",
