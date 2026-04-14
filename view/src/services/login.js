@@ -53,8 +53,13 @@ function meuDialogo() {
     console.log(`Usuário logado com sucesso`)
     document.getElementById("meuDialogo").showModal();
 
-    // setTimeout(() => {
-    //     window.location.href = '../demandas/index.html';
-    // }, 2000);
+
+    setTimeout(() => {
+    // direciona para pagina de perfil
+        window.location.href = "../pages/profile.html";
+    }, 2000);
+    
+    //      window.location.href = '../demandas/index.html';
+    //  }, 2000);
    
 }

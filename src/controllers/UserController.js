@@ -148,7 +148,40 @@ const UserController = {
         error: e.message
       })
     }
+  },
+  
+   async getUserRanking(req, res) {
+    try {
+      const id = req.params.id;
+      const ranking = await UserRepository.readRankingByUserId(id);
+
+      res.status(200).json(ranking);
+    } catch (e) {
+      res.status(500).json({
+        ok: false,
+        message: "Erro ao buscar ranking do usuário",
+        error: e.message,
+      });
+    }
+  },
+
+   async getUserActivity(req, res) {
+    try {
+      const id = req.params.id;
+      const activity = await UserRepository.readActivityByUserId(id);
+
+      res.status(200).json(activity);
+    } catch (e) {
+      res.status(500).json({
+        ok: false,
+        message: "Erro ao buscar atividade do usuário",
+        error: e.message,
+      });
+    }
   }
 };
+
+
+
 
 export default UserController;

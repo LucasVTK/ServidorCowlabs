@@ -13,5 +13,8 @@ UserRoute.put('/users/update/:id',ModelMiddleware.modelValidade,UserController.U
 UserRoute.patch('/users/update_password/:id', ModelMiddleware.modelUpdateSenha,UserController.updatePassword)
 // UserRoute.delete('/admin/users/delete/:id', authMiddleare.authenticateAdmin,UserController.delete)
 
+UserRoute.get('/users/:id/ranking', UserController.getUserRanking)
+UserRoute.get('/users/:id/activity', UserController.getUserActivity)
+
 export default UserRoute
 
