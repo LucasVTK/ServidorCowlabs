@@ -175,7 +175,43 @@ const UserRepository = {
     .query('select user_name, user_email, user_cpf from tb_user where user_email = @user_email OR user_name = @user_name OR user_cpf = @user_cpf')
 
     return respDB
-  }
+  },
+
+ // como ainda nao tem tabela de avaliaçao foi feito um mock
+  //esta retornando uma media mokada baseada em quantidade
+ async readRankingByUserId(id) {
+  const conn = await con();
+  const { recordset } = await conn
+    .request()
+    .input("user_id", sqltype.Int, id)
+    //mock
+    .query(`
+      SELECT 
+        CAST(3.0 AS DECIMAL(10,1)) AS media,
+        CAST(9 AS INT) AS total_avaliacoes
+    `);
+
+  return recordset[0];
+},
+
+async readActivityByUserId(id) {
+  const conn = await con();
+
+  const { recordset } = await conn
+    .request()
+    .input("user_id", sqltype.Int, id)
+    //mock
+    .query(`
+      SELECT
+        COUNT(*) AS projetos_realizados,
+        SUM(CASE WHEN demandas_status = 'aberta' THEN 1 ELSE 0 END) AS projetos_em_execucao,
+        CAST(9 AS INT) AS classificacoes_clientes
+      FROM tb_demandas
+      WHERE tb_user_user_id = @user_id
+    `);
+
+  return recordset[0];
+}
 };
 
 export default UserRepository;
