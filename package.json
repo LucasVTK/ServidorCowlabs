@@ -4,14 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --env-file .env ./src/Server.js"
+    "test": "npx poku",
+    "start": "nodemon --env-file .env ./src/Server.js",
+    "test:e2e": "start-server-and-test start http://localhost:3000 test",
+    "autocannon": "autocannon -c 1000 -d 10 http://localhost:3000/demandas",
+    "test:stress": "start-server-and-test start http://localhost:3000 autocannon"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "autocannon": "^8.0.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
@@ -19,7 +23,11 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.3",
     "mssql": "^12.2.0",
+    "node-mocks-http": "^1.17.2",
     "nodemon": "^3.1.11",
+    "poku": "^4.2.1",
+    "quibble": "^0.9.2",
+    "start-server-and-test": "^3.0.2",
     "xpress": "^2.4.6"
   }
 }
