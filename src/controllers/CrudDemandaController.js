@@ -113,9 +113,7 @@ const CrudDemandaController = {
     res.status(200).json(demandaAtualizada);
   },
   async deleteDemandas(req, res) {
-    const { id } = req.params;
-    const demandaDeletada = await DemandasRepository.delete(id);
-    res.status(200).json(demandaDeletada);
+  //ainda n criado
   },
 };
 
