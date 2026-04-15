@@ -88,7 +88,9 @@ const CrudDemandaController = {
       file_location,
     });
 
-    res.status(200).json(novaDemanda);
+    res.status(200).json({
+      itemAdicionado: novaDemanda
+    });
   },
   async updateDemandas(req, res) {
     const { id } = req.params;
@@ -110,12 +112,13 @@ const CrudDemandaController = {
       file_location,
     });
 
-    res.status(200).json(demandaAtualizada);
+    res.status(200).json(
+    {
+      itemUpdate:demandaAtualizada
+    });
   },
   async deleteDemandas(req, res) {
-    const { id } = req.params;
-    const demandaDeletada = await DemandasRepository.delete(id);
-    res.status(200).json(demandaDeletada);
+  //ainda n criado
   },
 };
 

@@ -42,21 +42,18 @@ ORDER BY d.demanda_create_data DESC, d.demanda_id DESC
 OFFSET @offset ROWS
 FETCH NEXT @limit ROWS ONLY`);
 
-        const contar = await conn.request()
-        .query(`SELECT COUNT(*) AS total FROM tb_user JOIN tb_demandas ON tb_demandas.tb_user_user_id = tb_user.user_id`);
+    const contar = await conn
+      .request()
+      .query(
+        `SELECT COUNT(*) AS total FROM tb_user JOIN tb_demandas ON tb_demandas.tb_user_user_id = tb_user.user_id`,
+      );
 
-        return {
-          dados: recordset,
-          total: contar.recordset[0].total
-        }
+    return {
+      dados: recordset,
+      total: contar.recordset[0].total,
+    };
   },
   async readById(demanda_id) {
-    (user_name,
-      user_tipo,
-      demanda_title,
-      demanda_content,
-      demanda_create_data,
-      demandas_status);
     const conn = await con();
     const { recordset } = await conn
       .request()
@@ -80,11 +77,8 @@ FETCH NEXT @limit ROWS ONLY`);
     // return BususcarTag; // retorna a demanda encrontrada
   },
   async create({
-    data_curso,
-    user_demanda,
     demanda_title,
     demanda_content,
-    demanda_tag,
     demanda_file,
     demanda_create_data,
     tb_user_user_id,
@@ -119,35 +113,42 @@ FETCH NEXT @limit ROWS ONLY`);
   async update(
     demanda_id,
     {
-      data_curso,
-      user_demanda,
       demanda_title,
       demanda_content,
-      demanda_tag,
       demanda_file,
       demanda_create_data,
-      tb_user_user_id,
       demandas_status,
       demandas_status_date,
     },
   ) {
     const conn = await con();
-    const sql = `update tb_demandas 
-                set demanda_title = @demanda_title,   demanda_content= @demanda_content, demanda_file=@demanda_file,   demanda_create_data= @demanda_create_data,     demandas_status=@demandas_status,   demandas_status_date= @demandas_status_date  
-                where demanda_id=@demanda_id`;
 
-    const respDB = await conn
+    const { recordset } = await conn
       .request()
+      .input("demanda_id", sqltype.Int, demanda_id)
       .input("demanda_title", sqltype.VarChar(250), demanda_title)
       .input("demanda_content", sqltype.VarChar(10000), demanda_content)
-      .input("demanda_file", sqltype.Bit(48000000), demanda_file)
+      .input("demanda_file", sqltype.Bit, demanda_file)
       .input("demanda_create_data", sqltype.DateTime, demanda_create_data)
       .input("demandas_status", sqltype.VarChar(10), demandas_status)
       .input("demandas_status_date", sqltype.DateTime, demandas_status_date)
-      .query(sql);
+      .query(`
+      update tb_demandas 
+      set 
+        demanda_title = @demanda_title,
+        demanda_content = @demanda_content,
+        demanda_file = @demanda_file,
+        demanda_create_data = @demanda_create_data,
+        demandas_status = @demandas_status,
+        demandas_status_date = @demandas_status_date
+      where demanda_id = @demanda_id
+    `);
 
-    return respDB;
+    return recordset;
   },
+  async deleteDemanda(){
+    //ainda n criado
+  }
 };
 
 export default DemandasRepository;
