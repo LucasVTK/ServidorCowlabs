@@ -3,10 +3,13 @@ import DemandasRepository from "../repositories/CrudDemandaRepository.js";
 const CrudDemandaController = {
   async getAllDemandas(req, res) {
     try {
-      const limit = 10;
-      const page = Number.parseInt(req.query.page ?? "1", 10);
-
-      if (Number.isNaN(page) || page <= 0) {
+      let { page } = req.query;
+      let limit = 10;
+    
+      page = parseInt(page);
+      limit = parseInt(limit);
+    
+      if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) {
         return res.status(400).json({
           erro: "parametro da paginação errado"
         });

@@ -7,7 +7,7 @@
     "test": "npx poku",
     "start": "nodemon --env-file .env ./src/Server.js",
     "test:e2e": "start-server-and-test start http://localhost:3000 test",
-    "autocannon": "autocannon -c 1000 -d 10 http://localhost:3000/demandas",
+    "autocannon": "autocannon -c 1000 -d 10 http://localhost:3000/demandas?page=1",
     "test:stress": "start-server-and-test start http://localhost:3000 autocannon"
   },
   "keywords": [],
