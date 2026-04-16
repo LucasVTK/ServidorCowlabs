@@ -217,9 +217,9 @@ function configurarEventosExcluir(token) {
         //faz a requisiçao 
         try {
           const response = await fetch(
-            `http://localhost:3000/demandas/${id}`,
+            `http://localhost:3000/demandas/delete/${id}`,
             {
-               method: "DELETE",
+               method: "delete",
               headers: {
                 Authorization: `Bearer ${token}`
               }

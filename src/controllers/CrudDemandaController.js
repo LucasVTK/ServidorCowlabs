@@ -42,18 +42,19 @@ const CrudDemandaController = {
   });
 }
   },
-  async getDemandasById(req, res) {
-    const { id } = req.params;
-    const demanda = await DemandasRepository.readById(id);
-    if (!demanda) {
-      res.status(404).json({
-        message: "Demanda não encontrada!",
-        erro: true,
-      });
-    } else {
-      res.status(200).json(demanda);
-    }
-  },
+ async getDemandasById(req, res) {
+  const { id } = req.params;
+  const demanda = await DemandasRepository.readById(id);
+
+  if (!demanda || demanda.length === 0) {
+    return res.status(404).json({
+      message: "Demanda não encontrada!",
+      erro: true,
+    });
+  }
+
+  return res.status(200).json(demanda[0]);
+},
   async getDemandasByTag(req, res) {
     const { demanda_tag } = req.params;
     const demanda = await DemandasRepository.readByTag(demanda_tag);
