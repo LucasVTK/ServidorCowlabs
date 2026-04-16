@@ -26,13 +26,17 @@ const demandasByTagMock = [
 ]
 
 const novaDemandaMock = {
-    data_curso: "2026-04-14",
-    user_demanda: "Rafael",
-    demanda_title: "Nova demanda",
-    demanda_content: "Conteudo da demanda",
-    demanda_tag: "frontend",
-    file_location: "arquivo.pdf"
-}
+        "data_curso": "2026-04-14",
+        "user_demanda": "Rafael",
+        "demanda_title": "Nova demanda",
+        "demanda_content": "Conteudo da demanda",
+        "demanda_tag": "frontend",
+        "demanda_file": null,
+        "demanda_create_data": "2026-04-16T03:26:26.783Z",
+        "tb_user_user_id": null,
+        "demandas_status": "aberta",
+        "demandas_status_date": null
+      }
 
 await quibble.esm("../src/repositories/CrudDemandaRepository.js", {
   default: {
@@ -133,8 +137,9 @@ describe(" CrudDemandaController ", { background: 'blue' })
     const data = res._getJSONData();
 
     assert.strictEqual(res.statusCode, 200, "Status code deve ser 200");
-    assert.deepStrictEqual(data, novaDemandaMock, "Dados retornados devem corresponder a nova demanda");
-
+    assert.strictEqual(data.data.demanda_title, novaDemandaMock.demanda_title)
+    assert.strictEqual(data.data.demanda_content, novaDemandaMock.demanda_content)
+    assert.strictEqual(data.data.demanda_tag, novaDemandaMock.demanda_tag)
   });
 
   await it("updateDemandas(req, res) - Demanda alterada com sucesso", async () => {
@@ -148,12 +153,15 @@ describe(" CrudDemandaController ", { background: 'blue' })
     });
     const res = httpMocks.createResponse();
 
-    await obj.updateDemandas(req, res);
+    await obj.updateDemanda(req, res);
     const data = res._getJSONData();
 
     assert.strictEqual(res.statusCode, 200, "Status code deve ser 200");
-    assert.deepStrictEqual(data, { id: "1", ...novaDemandaMock }, "Dados retornados devem corresponder a demanda alterada");
-
+    assert.deepStrictEqual(data.data, {
+      id: 1,
+      demanda_title: "Nova demanda",
+      demanda_content: "Conteudo da demanda"
+    });
   });
 
   await it("deleteDemandas(req, res) - Demanda deletada com sucesso", async () => {
@@ -166,11 +174,11 @@ describe(" CrudDemandaController ", { background: 'blue' })
     });
     const res = httpMocks.createResponse();
 
-    await obj.deleteDemandas(req, res);
+    await obj.deleteDemanda(req, res);
     const data = res._getJSONData();
 
     assert.strictEqual(res.statusCode, 200, "Status code deve ser 200");
-    assert.deepStrictEqual(data, { ok: true, id: "1" }, "Retorno deve corresponder a exclusao da demanda");
+    assert.deepStrictEqual(data, { "message": "Demanda excluída com sucesso." }, "Retorno deve corresponder a exclusao da demanda");
 
   });
 

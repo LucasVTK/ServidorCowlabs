@@ -91,6 +91,7 @@ FETCH NEXT @limit ROWS ONLY`);
 
 
   async create({
+    data_curso,
     demanda_title,
     demanda_content,
     demanda_file,

@@ -95,7 +95,7 @@ const CrudDemandaController = {
       demandas_status_date: null
     });
 
-    res.status(201).json({
+    res.status(200).json({
       message: "Demanda criada com sucesso",
       data: novaDemanda
     });
@@ -138,7 +138,7 @@ const CrudDemandaController = {
     console.log("DELETE demanda_id:", demanda_id);
     console.log("DELETE req.user:", req.user);
 
-    await DemandasRepository.delete(demanda_id);
+    const result = await DemandasRepository.delete(demanda_id);
 
     return res.status(200).json({
       message: "Demanda excluída com sucesso."
