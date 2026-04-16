@@ -53,7 +53,7 @@ const CrudDemandaController = {
     });
   }
 
-  return res.status(200).json(demanda[0]);
+  return res.status(200).json(demanda);
 },
   async getDemandasByTag(req, res) {
     const { demanda_tag } = req.params;
