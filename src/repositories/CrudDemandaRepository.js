@@ -91,11 +91,8 @@ FETCH NEXT @limit ROWS ONLY`);
 
 
   async create({
-    data_curso,
-    user_demanda,
     demanda_title,
     demanda_content,
-    demanda_tag,
     demanda_file,
     demanda_create_data,
     tb_user_user_id,
