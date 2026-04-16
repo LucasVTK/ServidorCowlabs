@@ -14,7 +14,6 @@ const CrudDemandaController = {
           erro: "parametro da paginação errado"
         });
       }
-    
       const { dados, total } = await DemandasRepository.readAll(page, limit);
     
       const pages = Math.ceil(total / limit);
@@ -36,11 +35,12 @@ const CrudDemandaController = {
       });
     
     } catch (err) {
-      console.log(err);
-      res.status(500).json({
-        erro: "erro"
-      });
-    }
+  console.error("Erro em getAllDemandas:", err);
+  res.status(500).json({
+    erro: "erro ao listar demandas",
+    detalhe: err.message
+  });
+}
   },
   async getDemandasById(req, res) {
     const { id } = req.params;
@@ -69,15 +69,18 @@ const CrudDemandaController = {
       });
     }
   },
-  async creatDemandas(req, res) {
+
+ async creatDemandas(req, res) {
+  try {
     const {
       data_curso,
       user_demanda,
       demanda_title,
       demanda_content,
-      demanda_tag,
-      file_location,
+      demanda_tag
     } = req.body;
+
+    const agora = new Date();
 
     const novaDemanda = await DemandasRepository.create({
       data_curso,
@@ -85,38 +88,69 @@ const CrudDemandaController = {
       demanda_title,
       demanda_content,
       demanda_tag,
-      file_location,
+      demanda_file: null,
+      demanda_create_data: agora,
+      tb_user_user_id: req.user?.id || req.body.tb_user_user_id || null,
+      demandas_status: "aberta",
+      demandas_status_date: null
     });
 
-    res.status(200).json(novaDemanda);
-  },
-  async updateDemandas(req, res) {
-    const { id } = req.params;
+    res.status(201).json({
+      message: "Demanda criada com sucesso",
+      data: novaDemanda
+    });
+  } catch (err) {
+    console.error("Erro em creatDemandas:", err);
+    res.status(500).json({
+      erro: "erro ao criar demanda",
+      detalhe: err.message
+    });
+  }
+},
+  async updateDemanda(req, res) {
+  try {
+    const demanda_id = Number(req.params.id);
+
     const {
-      data_curso,
-      user_demanda,
       demanda_title,
-      demanda_content,
-      demanda_tag,
-      file_location,
+      demanda_content
     } = req.body;
 
-    const demandaAtualizada = await DemandasRepository.update(id, {
-      data_curso,
-      user_demanda,
+    const demandaAtualizada = await DemandasRepository.update(demanda_id, {
       demanda_title,
-      demanda_content,
-      demanda_tag,
-      file_location,
+      demanda_content
     });
 
-    res.status(200).json(demandaAtualizada);
-  },
-  async deleteDemandas(req, res) {
-    const { id } = req.params;
-    const demandaDeletada = await DemandasRepository.delete(id);
-    res.status(200).json(demandaDeletada);
-  },
-};
+    return res.status(200).json({
+      message: "Demanda atualizada com sucesso.",
+      data: demandaAtualizada
+    });
+  } catch (error) {
+    console.error("Erro ao atualizar demanda:", error);
+    return res.status(500).json({
+      error: "Erro ao atualizar demanda."
+    });
+  }
+},
+ async deleteDemanda(req, res) {
+  try {
+    const demanda_id = Number(req.params.id);
+    console.log("DELETE demanda_id:", demanda_id);
+    console.log("DELETE req.user:", req.user);
+
+    await DemandasRepository.delete(demanda_id);
+
+    return res.status(200).json({
+      message: "Demanda excluída com sucesso."
+    });
+  } catch (error) {
+    console.error("Erro ao excluir demanda:", error);
+    return res.status(500).json({
+      error: "Erro ao excluir demanda.",
+      detalhe: error.message
+    });
+  }
+}
+}
 
 export default CrudDemandaController;

@@ -112,64 +112,76 @@
       </div>
     </nav>
 
-    <div
-      class="modal fade"
-      id="modalDemanda"
-      tabindex="-1"
-      aria-labelledby="modalDemandaLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalDemandaLabel">Nova Demanda</h5>
-          </div>
-          <div class="modal-body">
-            <form id="form-demanda">
-              <div class="mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="novaDemanda"
-                  placeholder="Digite o título da sua demanda"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <textarea
-                  class=""
-                  id="textoDemanda"
-                  placeholder="Digite sua demanda aqui"
-                  required
-                ></textarea>
-              </div>
-              <div class="mb-3">
-                <label for="fileLocation" class="form-label"
-                  >Arquivos (Opcional):</label
-                >
-                <input type="file" class="form-control" id="fileLocation" />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Fechar
-            </button>
-            <button
-              type="submit"
-              class="btn btn-outline-primary"
-              form="form-demanda"
-            >
-              Publicar demanda
-            </button>
-          </div>
-        </div>
+  <div
+  class="modal fade"
+  id="modalDemanda"
+  tabindex="-1"
+  aria-labelledby="modalDemandaLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalDemandaLabel">Nova Demanda</h5>
       </div>
+
+      <div class="modal-body">
+        <form id="form-demanda">
+          <div class="mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="novaDemanda"
+              placeholder="Digite o título da sua demanda"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <textarea
+              class="form-control"
+              id="textoDemanda"
+              placeholder="Digite sua demanda aqui"
+              rows="6"
+              style="resize: vertical;"
+              required
+            ></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Arquivos (Opcional):</label>
+            <input
+              type="file"
+              class="form-control"
+              id="fileLocation"
+            />
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Fechar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          id="btn-publicar-demanda"
+          onclick="window.publicarDemanda()"
+        >
+          Publicar demanda
+        </button>
+      </div>
+
     </div>
+  </div>
+</div>
     <!-- inicio da página, chamar para o usuário publicar um pedido de "demanda" -->
     <div class="container">
       <div class="cards">

@@ -1,145 +1,259 @@
 import footer from "../components/footer.js";
 import loaderDemandas from "../components/loaderDemandas.js";
+import { requireAuth } from "../services/auth.js";
+import { renderUserMenu } from "../components/userMenu.js";
 
-document.querySelector(`form`).addEventListener(`submit`, (e) => {
-  e.preventDefault();
-  // buscar informações do usuário logado
-  const user = JSON.parse(localStorage.getItem("LogedUser"));
+const API_URL = "http://localhost:3000";
 
-  // buscar as informaçoes do que está sendo inserido no forms
-  const textoDemanda = $("#textoDemanda").val();
-  const tituloDemanda = $("#novaDemanda").val();
-  const filesLocation = $("#fileLocation")[0].files[0];
-  const filesLocInput = filesLocation ? URL.createObjectURL(filesLocation) : "";
+// controla se o modal está criando ou editando
+let demandaEmEdicaoId = null;
 
-  // agora, vamos buscar o vetor de demandas salvo em localstorage
-  let demandasExistentes =
-    JSON.parse(localStorage.getItem("DemandasFakeDB")) || [];
+// verifica a autenticaçao
+document.addEventListener("DOMContentLoaded", async () => {
+  const auth = requireAuth("../pages/login.html");
+  if (!auth) return;
 
-  // a seguir, montaremos um novo objeto de demandas
-  const newDemanda = {
-    data_curso: user[0].curso,
-    user_demanda: user[0].name,
-    demanda_title: tituloDemanda,
-    demanda_content: textoDemanda,
-    demanda_tag: user[0].curso,
-    file_location: filesLocInput,
-  };
+  const { user, token } = auth;
 
-  // agora, inserir no novo vetor, a nova demanda
-  demandasExistentes.unshift(newDemanda);
+  console.log("DOMContentLoaded rodou");
+  console.log("form-demanda encontrado?", document.getElementById("form-demanda"));
 
-  // agora vamos regravar o localstorage com as alterações do vetor
-  localStorage.setItem("DemandasFakeDB", JSON.stringify(demandasExistentes));
-
-  const modalElement = bootstrap.Modal.getInstance(
-    document.getElementById("modalDemanda"),
-  );
-
-  modalElement.hide();
-
-  loaderDemandas();
-  montademanda();
-});
-
-
-
-function getCheckedValues() {
-  const form = document.getElementById("form_filter");
-
-  // Seleciona todos os checkboxes marcados dentro do formulário
-  const checkedBoxes = form.querySelectorAll('input[type="checkbox"]:checked');
-
-  // Mapeia os elementos e retorna um array com os valores
-  const values = Array.from(checkedBoxes).map((checkbox) => checkbox.value);
-
-  return values;
-}
-
-function filter(formID) {
-  const demandas = JSON.parse(localStorage.getItem("DemandasFakeDB")) || [];
-  const cards = document.querySelector(".row_cards");
-  const form = document.getElementById(formID);
-
-  const cursosSelecionados = Array.from(
-    form.querySelectorAll('input[type="checkbox"]:checked'),
-  ).map((checkbox) => checkbox.value);
-
-  cards.innerHTML = ``;
-
-  const noCards = `
-    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 50vh" class="">
-        <p>Oops. Nenhuma demanda encontrada!</p>
-        <img src="/assets/img/sad_cow.gif" style="width: 80px; height: auto;">
-    </div>`;
-
-  let encontrouAlguma = false;
-
-  demandas.forEach((d) => {
-    if (
-      cursosSelecionados.length === 0 ||
-      cursosSelecionados.includes(d.data_curso)
-    ) {
-      encontrouAlguma = true;
-      cards.innerHTML += `
-        <div class="col-12" data-curso="${d.data_curso}">
-          <div class="card mb-4">
-            <div class="card-body">
-              <div class="name_user">
-                <span>
-                  <img class="imagem-user" src="/assets/img/ImagemUser.jpg" class="rounded-circle" alt="">
-                  <span class="fs-5 fw-bold user_name">${d.user_demanda}</span>
-                </span>
-              </div>
-              <h4 class="titulo">${d.demanda_title}</h4>
-              <p class="card-text mb-0 descricao">${d.demanda_content}</p>
-              <span class="curso-tag d-none">${d.demanda_tag}</span>
-            </div>
-            <div class="row justify-content-end m-2">
-              <div class="btn-group col-auto mt-auto">
-                <button type="button" class="btn demanda_btn">Ver demanda</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    }
+  // monta o menu
+  renderUserMenu(user, {
+    demandasPath: "../pages/demandas.html",
+    profilePath: "../pages/profile.html",
+    adminPath: "../pages/profile.html",
+    rolePath: "../pages/profile.html",
+    imageBasePath: "../img/profile_img/",
   });
 
-  if (!encontrouAlguma) {
-    cards.innerHTML = noCards;
+  //registra os eventos da páginao
+  configurarSubmitDemanda();
+  configurarFiltros();
+  footer();
+  // carrega a pagina de demanda
+  await loaderDemandas(1);
+});
+
+// procura o formulario pelo id e regitra o evento so nele (submit que envia o formulario)
+function configurarSubmitDemanda() {
+  const formDemanda = document.getElementById("form-demanda");
+
+  console.log("configurarSubmitDemanda foi chamada");
+  console.log("formDemanda:", formDemanda);
+
+  if (!formDemanda) return;
+
+  formDemanda.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await publicarDemanda();
+  });
+}
+
+async function publicarDemanda() {
+  const formDemanda = document.getElementById("form-demanda");
+  const auth = requireAuth("../pages/login.html");
+  if (!auth) return;
+
+  const { user, token } = auth;
+
+  const tituloDemanda = document.getElementById("novaDemanda").value.trim();
+  const textoDemanda = document.getElementById("textoDemanda").value.trim();
+
+  if (!tituloDemanda || !textoDemanda) {
+    alert("Preencha todos os campos.");
+    return;
+  }
+//estou dizendo oque pegar
+  // pacode de dados para enviar para api, dados esse que sao obrigatorios no middleware
+const payload = {
+  user_demanda: user.email || "",
+  data_curso: "Administração",
+  demanda_title: tituloDemanda,
+  demanda_content: textoDemanda,
+  demanda_tag: "Administração",
+  tb_user_user_id: user.id || "",
+};
+console.log("user completo:", user);
+console.log("payload final:", payload);
+
+//verificaçoes da informaçoes
+if (
+  !payload.user_demanda ||
+  !payload.data_curso ||
+  !payload.demanda_title ||
+  !payload.demanda_content ||
+  !payload.demanda_tag ||
+  !payload.tb_user_user_id
+) {
+  console.error("Payload inválido:", payload);
+  alert("Os dados do usuário logado estão incompletos. Veja o console.");
+  return;
+}
+
+ // manda requisição create ou update
+try {
+  let response;
+
+  //se tiver editando faz isso
+  if (demandaEmEdicaoId) {
+    response = await fetch(
+      `${API_URL}/demandas/${demandaEmEdicaoId}`,
+      { method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          demanda_title: payload.demanda_title,
+          demanda_content: payload.demanda_content,
+        }),
+      });
+    }
+  // se nao faz isso
+  else {
+    response = await fetch(
+      `${API_URL}/demandas/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      }
+    );
   }
 
-  montademanda();
-}
+  const data = await response.json();
+  console.log("status:", response.status);
+  console.log("resposta:", data);
 
-document
-  .getElementById("form_filter_sidebar")
-  .addEventListener("change", () => {
-    filter("form_filter_sidebar");
-  });
-document
-  .getElementById("form_filter_dropdown")
-  .addEventListener("change", () => {
-    filter("form_filter_dropdown");
-  });
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+      data.erro ||
+      data.error ||
+      "Erro ao salvar demanda"
+    );
+  }
 
-document.querySelector("#clear_filter").addEventListener("click", () => {
-  document.getElementById("form_filter_sidebar").reset();
-  loaderDemandas();
-});
-
-document.querySelector("#filter_btn_sm").addEventListener("click", () => {
-  document.getElementById("form_filter_dropdown").reset();
-  loaderDemandas();
-});
-
-
-loaderDemandas();
-function DOMLoader(){
   
-  footer();
+  const modalEl = document.getElementById("modalDemanda");
+  const modal = bootstrap.Modal.getInstance(modalEl);
+    // fecha modal
+  if (modal) {
+    modal.hide();
+  }
 
+  alert(
+    demandaEmEdicaoId
+      ? "Demanda atualizada com sucesso!"
+      : "Demanda criada com sucesso!"
+  );
+
+  // limpar form
+  if (formDemanda) {
+    formDemanda.reset();
+  }
+  //retorn a para mode de criaçao
+  demandaEmEdicaoId = null;
+
+  // recarregar lista
+  await loaderDemandas(1);
+} catch (error) {
+  console.error("Erro ao salvar demanda:", error);
+  alert(error.message);
+}
 }
 
-DOMLoader()
+function configurarFiltros() {
+  const formSidebar = document.getElementById("form_filter_sidebar");
+  const formDropdown = document.getElementById("form_filter_dropdown");
+  const clearFilter = document.getElementById("clear_filter");
+  const clearFilterSm = document.getElementById("filter_btn_sm");
+
+  if (formSidebar) {
+    formSidebar.addEventListener("change", () => {
+      filtrarCardsJaRenderizados("form_filter_sidebar");
+    });
+  }
+
+  if (formDropdown) {
+    formDropdown.addEventListener("change", () => {
+      filtrarCardsJaRenderizados("form_filter_dropdown");
+    });
+  }
+
+  if (clearFilter) {
+    clearFilter.addEventListener("click", () => {
+      formSidebar.reset();
+      loaderDemandas(1);
+    });
+  }
+
+  if (clearFilterSm) {
+    clearFilterSm.addEventListener("click", () => {
+      formDropdown.reset();
+      loaderDemandas(1);
+    });
+  }
+}
+ // filtra os cards da tela
+function filtrarCardsJaRenderizados(formID) {
+  const form = document.getElementById(formID);
+  const cards = document.querySelectorAll(".row_cards > .col-12");
+
+  if (!form) {
+    console.log("Form não encontrado:", formID);
+    return;
+  }
+
+  if (!cards.length) {
+    console.log("Nenhum card encontrado para filtrar.");
+    return;
+  }
+
+  const cursosSelecionados = Array.from(
+    form.querySelectorAll('input[type="checkbox"]:checked')
+  ).map((checkbox) => normalizarTexto(checkbox.value));
+
+  cards.forEach((card) => {
+    const cursoBruto = card.dataset.curso || "";
+    const cursosDoCard = cursoBruto
+      .split(",")
+      .map((curso) => normalizarTexto(curso))
+      .filter(Boolean);
+
+    const deveMostrar =
+      cursosSelecionados.length === 0 ||
+      cursosDoCard.some((curso) => cursosSelecionados.includes(curso));
+
+    if (deveMostrar) {
+      card.classList.remove("d-none");
+    } else {
+      card.classList.add("d-none");
+    }
+  });
+}
+
+function normalizarTexto(texto) {
+  return (texto || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase();
+}
+//guarda o id da demanda
+window.definirDemandaEmEdicao = function (id) {
+  demandaEmEdicaoId = Number(id);
+};
+// expõe a função para o botão onclick do HTML
+window.publicarDemanda = publicarDemanda;
+
+
+window.logout = function () {
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("LogedUser");
+    window.location.href = "../pages/login.html";
+}
