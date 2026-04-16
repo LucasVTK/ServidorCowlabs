@@ -30,8 +30,8 @@ const CrudDemandaController = {
           currentPage: page,
           next_page,
           prev_page,
-          prev_path: prev_page ? `/admin/clientesPage?page=${prev_page}` : false,
-          next_path: next_page ? `/admin/clientesPage?page=${next_page}` : false
+          prev_path: prev_page ? `/demandas?page=${prev_page}` : false,
+          next_path: next_page ? `/demandas?page=${next_page}` : false
         }
       });
     
