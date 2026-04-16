@@ -202,6 +202,63 @@ textarea{
   width: 30px;
 }
 
+/* Container dos botões */
+.btn-group {
+  display: flex;
+  justify-content: flex-end; 
+  gap: 10px;
+}
+
+.btn-ver {
+  background-color: #006eff;
+  color: white;
+  border-radius: 25px;
+  padding: 10px 25px;
+  border: none;
+}
+
+.btn-ver:hover {
+  background-color: #0056d6;
+  color: white;
+}
+
+.btn-editar {
+  background-color: white;
+  color: #006eff;
+  border: 2px solid #006eff;
+  border-radius: 8px;
+  padding: 8px 15px;
+}
+
+.btn-editar:hover {
+  background-color: #006eff;
+  color: white;
+}
+
+
+.btn-excluir {
+  background-color: white;
+  color: #dc3545;
+  border: 2px solid #dc3545;
+  border-radius: 8px;
+  padding: 8px 15px;
+}
+
+.btn-excluir:hover {
+  background-color: #dc3545;
+  color: white;
+}
+.dropdown-menu {
+  color: #212529;
+  font-style: normal;
+  font-weight: normal;
+}
+
+.dropdown-menu * {
+  color: #212529 !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+}
 /* .text-colored{
   color: #fff;
   display: inline;
