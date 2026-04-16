@@ -9,7 +9,7 @@ DemandasRouter.get('/demandas', CrudDemandaController.getAllDemandas)
 DemandasRouter.get('/demandas/id/:id', middlewareDemandas.verificarIdValido,CrudDemandaController.getDemandasById)
 DemandasRouter.get('/demandas/tag/:demanda_tag', middlewareDemandas.verificarTagValida, CrudDemandaController.getDemandasByTag) // arrumar rota demanda_tag
 DemandasRouter.post('/demandas/create', middlewareDemandas.verificarCamposdaDemanda, CrudDemandaController.creatDemandas)
-DemandasRouter.put('/demandas/update/:id', middlewareDemandas.verificarIdValido,middlewareDemandas.verificarCamposdaDemanda, middlewareDemandas.verificarTiposDeDados, middlewareDemandas.verificarComprimento, CrudDemandaController.updateDemanda)
+DemandasRouter.put('/demandas/update/:id', middlewareDemandas.verificarIdValido, CrudDemandaController.updateDemanda)
 DemandasRouter.delete('/demandas/delete/:id', middlewareDemandas.verificarIdValido, CrudDemandaController.deleteDemanda)
 
 export default DemandasRouter

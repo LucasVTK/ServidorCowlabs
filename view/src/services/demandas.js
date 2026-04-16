@@ -98,7 +98,7 @@ try {
   //se tiver editando faz isso
   if (demandaEmEdicaoId) {
     response = await fetch(
-      `${API_URL}/demandas/${demandaEmEdicaoId}`,
+      `${API_URL}/demandas/update/${demandaEmEdicaoId}`,
       { method: "PUT",
         headers: {
           "Content-Type": "application/json",
