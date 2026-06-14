@@ -19,10 +19,12 @@ const sqlConfig = {
 let pool; // essa variável armazena a conexao com o banco
 
 let con = async function conectar() {
-  try { // o try tenta estabelecer a conexao e se não der certo o catch retorna o erro
+  try {
+    // Reutiliza o pool existente (importante em ambientes serverless como Vercel)
+    if (pool && pool.connected) return pool;
     pool = await sql.connect(sqlConfig);
     console.log("Conectando ao banco...");
-    return pool // o pool tem que ser retornado para que funcione lá no arquivo server, assim retornando a conexao
+    return pool;
   } catch (err) {
     console.error("Erro ao conectar:", err.message);
   }

@@ -26,10 +26,14 @@ app.get("/", (req, res) => {
   });
 });
 
-// Inicia servidor só após conectar ao banco para evitar erros de conexão
-con().then(() => {
-  // estamos utilizando o .then() aqui para esperara conexao com o banco e depois dar inicio ao servidor, não sei bem o pq mas sem isso não tava funcionando antes.
-  app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
+// No Vercel (serverless) exporta o app diretamente.
+// Localmente, sobe o servidor na porta definida no .env.
+if (process.env.VERCEL) {
+  con(); // pré-aquece o pool na cold start
+} else {
+  con().then(() => {
+    app.listen(port, () => console.log(`Servidor rodando na porta ${port}`));
   });
-});
+}
+
+export default app;
