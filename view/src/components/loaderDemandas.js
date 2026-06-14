@@ -2,7 +2,8 @@ import { requireAuth } from "../services/auth.js";
 import myModal, { myConfirm } from "./mymodal.js";
 import { API_URL } from "../services/api.js";
 
-export default async function loaderDemandas(page) {
+// cursos: string CSV e.g. "Medicina,Direito" — null/undefined = sem filtro
+export default async function loaderDemandas(page, cursos) {
 
   const auth = requireAuth("../pages/login.html");
   if (!auth) return;
@@ -13,7 +14,11 @@ export default async function loaderDemandas(page) {
     page = 1;
   }
 
-  const URL = `${API_URL}/demandas?page=${page}`;
+  const cursosQuery = cursos && cursos.trim()
+    ? `&cursos=${encodeURIComponent(cursos.trim())}`
+    : "";
+
+  const URL = `${API_URL}/demandas?page=${page}${cursosQuery}`;
 
   try {
     const resp = await fetch(URL);
@@ -137,10 +142,13 @@ export default async function loaderDemandas(page) {
          </a></li>`
       : `<li class="page-item disabled"><a class="page-link"><i class="bi bi-chevron-right"></i></a></li>`;
 
+    // preserva o filtro de cursos ativo ao trocar de página
+    const cursosAtivos = pagination.cursos || null;
+
     navpages.querySelectorAll(".page-link[data-page]").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
-        loaderDemandas(Number(e.target.closest("[data-page]").dataset.page));
+        loaderDemandas(Number(e.target.closest("[data-page]").dataset.page), cursosAtivos);
       });
     });
 

@@ -1,5 +1,4 @@
 :root {
-  --primary: #006eff;
   --bg-admin: #f4f7fa;
 }
 
@@ -15,17 +14,6 @@ body {
   top: 0;
 }
 
-.bg-brand-solid { background: #001a41; }
-
-.logo-font { 
-  font-family: 'JetBrains Mono', monospace; 
-  font-weight: 800; 
-  font-size: 1.5rem; 
-  color: #fff !important; 
-  text-decoration: none; 
-}
-.logo-font span { color: var(--primary); }
-
 .nav-link {
   color: rgba(255,255,255,0.7);
   padding: 12px 15px;
@@ -38,9 +26,6 @@ body {
   background: rgba(255,255,255,0.1);
   color: #fff;
 }
-
-.fw-800 { font-family: 'Plus Jakarta Sans'; font-weight: 800; }
-.fw-600 { font-weight: 600; }
 
 .card-kpi {
   border-radius: 20px;

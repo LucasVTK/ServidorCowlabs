@@ -178,7 +178,43 @@ const UserController = {
         error: e.message,
       });
     }
-  }
+  },
+
+  // Soft delete — define user_status = 'inativo'
+  async delete(req, res) {
+    try {
+      const id = Number(req.params.id);
+      const respDB = await UserRepository.updateStatus(id, "inativo");
+
+      if (respDB.rowsAffected[0] > 0) {
+        return res.status(200).json({ ok: true, message: "Usuário desativado com sucesso." });
+      }
+      return res.status(404).json({ ok: false, message: "Usuário não encontrado." });
+    } catch (e) {
+      res.status(500).json({ ok: false, message: "Erro do servidor", error: e.message });
+    }
+  },
+
+  // Atualização parcial pelo admin (user_tipo e/ou user_status)
+  async updateAdmin(req, res) {
+    try {
+      const id = Number(req.params.id);
+      const { user_tipo, user_status } = req.body;
+
+      if (!user_tipo && !user_status) {
+        return res.status(400).json({ ok: false, message: "Nenhum campo para atualizar." });
+      }
+
+      const respDB = await UserRepository.updateAdmin(id, { user_tipo, user_status });
+
+      if (respDB.rowsAffected[0] > 0) {
+        return res.status(200).json({ ok: true, message: "Usuário atualizado com sucesso." });
+      }
+      return res.status(404).json({ ok: false, message: "Usuário não encontrado." });
+    } catch (e) {
+      res.status(500).json({ ok: false, message: "Erro do servidor", error: e.message });
+    }
+  },
 };
 
 

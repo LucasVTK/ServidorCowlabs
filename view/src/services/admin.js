@@ -11,8 +11,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!auth) return;
 
   const { user, token } = auth;
+  _adminToken = token;
 
-  const tipo = (user.user_tipo || "").toLowerCase();
+  // AuthController.login armazena "tipo" no payload JWT; fallback para "user_tipo"
+  const tipo = (user.tipo || user.user_tipo || "").toLowerCase();
   if (!tipo.includes("admin")) {
     await myModal("Acesso restrito a administradores.", { type: "danger", title: "Sem permissão" });
     window.location.href = "../pages/brickwall.html";
@@ -32,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function renderAdminHeader(user) {
   const nomeEl = document.getElementById("admin-nome");
-  if (nomeEl) nomeEl.textContent = user.user_real_name || user.user_name || "Admin";
+  if (nomeEl) nomeEl.textContent = user.user_real_name || user.user_name || user.email || "Admin";
 }
 
 // ── KPIs ─────────────────────────────────────────────────────────────────────
@@ -128,9 +130,12 @@ async function carregarTabela(token) {
 
     tbody.innerHTML = users.map((u) => {
       const initials = getInitials(u.user_real_name || u.user_name || "?");
-      const nome = u.user_real_name || u.user_name || "—";
-      const tipo = u.user_tipo || "—";
-      const email = u.user_email || "—";
+      const nome     = u.user_real_name || u.user_name || "—";
+      const tipo     = u.user_tipo   || "—";
+      const email    = u.user_email  || "—";
+      const status   = u.user_status || "ativo";
+      const ativo    = status !== "inativo";
+      const userId   = u.user_id || u.id;
       return `
         <tr>
           <td class="ps-4">
@@ -143,13 +148,21 @@ async function carregarTabela(token) {
             </div>
           </td>
           <td><span class="badge bg-secondary">${tipo}</span></td>
-          <td><span class="text-success"><i class="bi bi-circle-fill me-1 small"></i> Ativo</span></td>
-          <td>—</td>
+          <td>
+            ${ativo
+              ? `<span class="text-success"><i class="bi bi-circle-fill me-1 small"></i> Ativo</span>`
+              : `<span class="text-danger"><i class="bi bi-circle-fill me-1 small"></i> Inativo</span>`}
+          </td>
+          <td><small class="text-muted">${u.user_create_data ? new Date(u.user_create_data).toLocaleDateString("pt-BR") : "—"}</small></td>
           <td class="text-end pe-4">
-            <button class="btn btn-sm btn-light me-1" onclick="editarUsuario(${u.id || u.user_id})">
+            <button class="btn btn-sm btn-light me-1"
+              onclick="abrirModalEdicao(${userId}, '${tipo}', '${status}')"
+              title="Editar">
               <i class="bi bi-pencil"></i>
             </button>
-            <button class="btn btn-sm btn-light text-danger" onclick="excluirUsuario(${u.id || u.user_id})">
+            <button class="btn btn-sm btn-light text-danger"
+              onclick="excluirUsuario(${userId}, '${nome}')"
+              title="${ativo ? 'Desativar' : 'Já inativo'}">
               <i class="bi bi-trash"></i>
             </button>
           </td>
@@ -170,22 +183,78 @@ function getInitials(name) {
 
 // ── Ações de usuário ─────────────────────────────────────────────────────────
 
-// Editar usuário — PUT /users/update/:id requer modelo completo (incluindo senha).
-// TODO: Criar endpoint PATCH /admin/users/update/:id que aceite campos parciais sem senha.
-window.editarUsuario = async function (id) {
-  await myModal(
-    "Edição de usuários está sendo implementada. Em breve disponível.",
-    { type: "info", title: "Em produção" }
-  );
+// token acessível às funções globais (atribuído no DOMContentLoaded abaixo)
+let _adminToken = null;
+
+window.abrirModalEdicao = function (id, tipoAtual, statusAtual) {
+  const modal = document.getElementById("modalEditarUsuario");
+  if (!modal) return;
+
+  modal.dataset.userId = id;
+
+  const tipoSelect   = document.getElementById("edit-user-tipo");
+  const statusSelect = document.getElementById("edit-user-status");
+
+  // Força o valor atual do usuário; se não bater com nenhuma option cai no primeiro
+  tipoSelect.value   = tipoAtual   || "Aluno";
+  statusSelect.value = statusAtual || "ativo";
+
+  if (!tipoSelect.value)   tipoSelect.selectedIndex   = 0;
+  if (!statusSelect.value) statusSelect.selectedIndex = 0;
+
+  new bootstrap.Modal(modal).show();
 };
 
-// Excluir usuário — DELETE /admin/users/delete/:id está comentado no backend.
-// TODO: Descomentar UserRoute.delete('/admin/users/delete/:id', ...) em UsersRoutes.js
-window.excluirUsuario = async function (id) {
-  await myModal(
-    "Exclusão de usuários está sendo implementada. Em breve disponível.",
-    { type: "info", title: "Em produção" }
+window.salvarEdicaoUsuario = async function () {
+  const modal  = document.getElementById("modalEditarUsuario");
+  const id     = modal?.dataset.userId;
+  const tipo   = document.getElementById("edit-user-tipo")?.value;
+  const status = document.getElementById("edit-user-status")?.value;
+
+  if (!id || !_adminToken) return;
+
+  try {
+    const res = await fetch(`${API_URL}/admin/users/update/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${_adminToken}`,
+      },
+      body: JSON.stringify({ user_tipo: tipo, user_status: status }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Erro ao atualizar");
+
+    bootstrap.Modal.getInstance(modal)?.hide();
+    myModal("Usuário atualizado com sucesso!", { type: "success" });
+    await carregarTabela(_adminToken);
+  } catch (e) {
+    myModal(e.message, { type: "danger", title: "Erro ao atualizar" });
+  }
+};
+
+window.excluirUsuario = async function (id, nome) {
+  const ok = await myConfirm(
+    `Desativar o usuário "${nome}"? O acesso será bloqueado imediatamente.`,
+    { type: "warning", title: "Desativar usuário", okText: "Desativar" }
   );
+  if (!ok || !_adminToken) return;
+
+  try {
+    const res = await fetch(`${API_URL}/admin/users/delete/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${_adminToken}` },
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Erro ao desativar");
+
+    myModal("Usuário desativado com sucesso.", { type: "success" });
+    await carregarTabela(_adminToken);
+  } catch (e) {
+    myModal(e.message, { type: "danger", title: "Erro ao desativar" });
+  }
 };
 
 // ── Resetar base ─────────────────────────────────────────────────────────────

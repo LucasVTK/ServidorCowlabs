@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const { user, token } = auth;
 
-  const tipo = (user.user_tipo || "").toLowerCase();
+  const tipo = (user.tipo || user.user_tipo || "").toLowerCase();
   if (!tipo.includes("prof") && !tipo.includes("admin")) {
     await myModal("Acesso restrito a professores.", { type: "danger", title: "Sem permissão" });
     window.location.href = "../pages/brickwall.html";
@@ -29,8 +29,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 function renderTeacherHeader(user) {
   const nomeEl = document.getElementById("teacher-nome");
   const roleEl = document.getElementById("teacher-role");
-  if (nomeEl) nomeEl.textContent = user.user_real_name || user.user_name || "Professor";
-  if (roleEl) roleEl.textContent = user.user_tipo || "Professor";
+  if (nomeEl) nomeEl.textContent = user.user_real_name || user.user_name || user.email || "Professor";
+  if (roleEl) roleEl.textContent = user.tipo || user.user_tipo || "Professor";
 }
 
 // ── Atividade / KPIs ─────────────────────────────────────────────────────────

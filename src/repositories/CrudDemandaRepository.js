@@ -3,54 +3,77 @@ import AuthController from "../controllers/AuthController.js";
 import sqltype from "mssql";
 
 const DemandasRepository = {
-  async readAll(page = 1, limit = 10) {
+  async readAll(page = 1, limit = 10, cursos = null) {
     const conn = await con();
 
     const offset = (page - 1) * limit;
+
+    // cursos: string CSV e.g. "Medicina,Direito" or null (sem filtro)
+    const cursosParam = cursos && cursos.trim() ? cursos.trim() : null;
+
     const { recordset } = await conn
       .request()
-      .input("offset", offset)
-      .input("limit", limit).query(`SELECT 
-  u.user_name, 
-  u.user_tipo, 
-  d.demanda_id,
-  d.tb_user_user_id,
-  d.demanda_title,
-  STRING_AGG(c.curso_name, ', ') AS cursos,
-  d.demanda_content, 
-  d.demanda_file, 
-  d.demanda_create_data, 
-  d.demandas_status
-FROM tb_user u
-JOIN tb_demandas d
-  ON d.tb_user_user_id = u.user_id
-JOIN tb_demandas_curso dc
-  ON dc.tb_demandas_demanda_id = d.demanda_id
-JOIN tb_curso c 
-  ON c.curso_id = dc.tb_curso_curso_id
+      .input("offset", sqltype.Int, offset)
+      .input("limit",  sqltype.Int, limit)
+      .input("cursos", sqltype.VarChar(500), cursosParam)
+      .query(`
+        SELECT
+          u.user_name,
+          u.user_tipo,
+          d.demanda_id,
+          d.tb_user_user_id,
+          d.demanda_title,
+          STRING_AGG(c.curso_name, ', ') AS cursos,
+          d.demanda_content,
+          d.demanda_file,
+          d.demanda_create_data,
+          d.demandas_status
+        FROM tb_user u
+        JOIN tb_demandas d
+          ON d.tb_user_user_id = u.user_id
+        JOIN tb_demandas_curso dc
+          ON dc.tb_demandas_demanda_id = d.demanda_id
+        JOIN tb_curso c
+          ON c.curso_id = dc.tb_curso_curso_id
+        WHERE @cursos IS NULL
+           OR c.curso_name IN (
+                SELECT TRIM([value])
+                FROM STRING_SPLIT(@cursos, ',')
+              )
+        GROUP BY
+          u.user_name,
+          u.user_tipo,
+          d.demanda_id,
+          d.tb_user_user_id,
+          d.demanda_title,
+          d.demanda_content,
+          d.demanda_file,
+          d.demanda_create_data,
+          d.demandas_status
+        ORDER BY d.demanda_create_data DESC, d.demanda_id DESC
+        OFFSET @offset ROWS
+        FETCH NEXT @limit ROWS ONLY
+      `);
 
-GROUP BY 
-  u.user_name, 
-  u.user_tipo, 
-  d.demanda_id,
-  d.tb_user_user_id,
-  d.demanda_title,
-  d.demanda_content, 
-  d.demanda_file, 
-  d.demanda_create_data, 
-  d.demandas_status
-
-ORDER BY d.demanda_create_data DESC, d.demanda_id DESC
-OFFSET @offset ROWS
-FETCH NEXT @limit ROWS ONLY`);
-
-    const contar = await conn.request()
-      .query(`SELECT COUNT(*) AS total FROM tb_user JOIN tb_demandas ON tb_demandas.tb_user_user_id = tb_user.user_id`);
+    const contar = await conn
+      .request()
+      .input("cursos", sqltype.VarChar(500), cursosParam)
+      .query(`
+        SELECT COUNT(DISTINCT d.demanda_id) AS total
+        FROM tb_demandas d
+        JOIN tb_demandas_curso dc ON dc.tb_demandas_demanda_id = d.demanda_id
+        JOIN tb_curso c            ON c.curso_id = dc.tb_curso_curso_id
+        WHERE @cursos IS NULL
+           OR c.curso_name IN (
+                SELECT TRIM([value])
+                FROM STRING_SPLIT(@cursos, ',')
+              )
+      `);
 
     return {
       dados: recordset,
-      total: contar.recordset[0].total
-    }
+      total: contar.recordset[0].total,
+    };
   },
   async readById(demanda_id) {
   const conn = await con();

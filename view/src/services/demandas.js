@@ -138,57 +138,31 @@ function resetModalParaCriacao() {
   if (btn) btn.textContent = "Publicar";
 }
 
-// ── Filtros ──────────────────────────────────────────────────────────────────
+// ── Filtros (server-side) ─────────────────────────────────────────────────────
 
 function configurarFiltros() {
   const formDropdown = document.getElementById("form_filter_dropdown");
   const clearFilterSm = document.getElementById("filter_btn_sm");
 
   if (formDropdown) {
-    formDropdown.addEventListener("change", () => {
-      filtrarCardsJaRenderizados("form_filter_dropdown");
+    formDropdown.addEventListener("change", async () => {
+      const selecionados = Array.from(
+        formDropdown.querySelectorAll('input[type="checkbox"]:checked')
+      ).map((cb) => cb.value);
+
+      const cursosParam = selecionados.length > 0 ? selecionados.join(",") : null;
+      await loaderDemandas(1, cursosParam);
+      selectDemanda();
     });
   }
 
   if (clearFilterSm) {
-    clearFilterSm.addEventListener("click", () => {
+    clearFilterSm.addEventListener("click", async () => {
       if (formDropdown) formDropdown.reset();
-      loaderDemandas(1).then(() => selectDemanda());
+      await loaderDemandas(1);
+      selectDemanda();
     });
   }
-}
-
-function filtrarCardsJaRenderizados(formID) {
-  const form = document.getElementById(formID);
-  const cards = document.querySelectorAll(".row_cards > .col-12");
-
-  if (!form || !cards.length) return;
-
-  const cursosSelecionados = Array.from(
-    form.querySelectorAll('input[type="checkbox"]:checked')
-  ).map((cb) => normalizarTexto(cb.value));
-
-  cards.forEach((card) => {
-    const cursoBruto = card.dataset.curso || "";
-    const cursosDoCard = cursoBruto
-      .split(",")
-      .map(normalizarTexto)
-      .filter(Boolean);
-
-    const deveMostrar =
-      cursosSelecionados.length === 0 ||
-      cursosDoCard.some((c) => cursosSelecionados.includes(c));
-
-    card.classList.toggle("d-none", !deveMostrar);
-  });
-}
-
-function normalizarTexto(texto) {
-  return (texto || "")
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .trim()
-    .toLowerCase();
 }
 
 // ── Expostos globalmente para loaderDemandas.js ───────────────────────────────
