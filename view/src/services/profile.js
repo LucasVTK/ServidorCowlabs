@@ -1,92 +1,82 @@
+import nav from "../components/nav.js";
 import footer from "../components/footer.js";
+import myModal from "../components/mymodal.js";
 import { requireAuth } from "./auth.js";
-import { renderUserMenu, getUserImageByType } from "../components/userMenu.js";
+import { API_URL } from "./api.js";
 
-const API_URL = "http://localhost:3000";
+// ── Cloudinary ──────────────────────────────────────────────────────────────
+// Para ativar o upload:
+//  1. Crie uma conta em cloudinary.com
+//  2. Crie um "Upload Preset" sem assinatura (unsigned) no painel do Cloudinary
+//  3. Preencha as constantes abaixo com seu Cloud Name e o nome do preset
+//  4. Salve a URL retornada em user_img via PUT /users/update/:id
+const CLOUDINARY_CLOUD_NAME = "";
+const CLOUDINARY_UPLOAD_PRESET = "";
 
-// armazena as estrelas
 let stars = [];
-//guarda a nota atual
 let currentRating = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
+  nav();
   setupStars();
 
-  //chama a autenticaçao
   const auth = requireAuth("../pages/login.html");
   if (!auth) return;
 
-  // monta menu e tem os caminhos do menu
-  renderUserMenu(auth.user, {
-    demandasPath: "../pages/demandas.html",
-    profilePath: "../pages/profile.html",
-    adminPath: "../pages/profile.html",
-    rolePath: "../pages/profile.html",
-    loginPath: "../pages/login.html",
-    imageBasePath: "../img/profile_img/"
-  });
+  const { user, token } = auth;
 
-  loadProfilePage(auth.user.id, auth.token);
+  setupUpload(user, token);
+  loadProfilePage(user, token);
+
   footer();
 });
 
-//organiza a sequência de carregamento
-async function loadProfilePage(userId, token) {
+// ── Carregamento sequencial ──────────────────────────────────────────────────
+
+async function loadProfilePage(user, token) {
   try {
-    await loadUserData(userId, token);
-    await loadUserRanking(userId, token);
-    await loadUserActivity(userId, token);
+    await loadUserData(user.id, token);
+    await loadUserRanking(user.id, token);
+    await loadUserActivity(user.id, token);
+    renderAccountInfo(user);
   } catch (error) {
     console.error("Erro ao carregar perfil:", error);
   }
 }
 
+// ── Dados do usuário ─────────────────────────────────────────────────────────
 
-// busca e exibe os dados princioais do user
 async function loadUserData(userId, token) {
   const response = await fetch(`${API_URL}/users/${userId}`, {
-    method: "GET",
-    headers: {
-      "Authorization": `Bearer ${token}`
-    }
+    headers: { Authorization: `Bearer ${token}` },
   });
 
-  if (!response.ok) {
-    throw new Error("Erro ao buscar usuário");
-  }
+  if (!response.ok) throw new Error("Erro ao buscar usuário");
 
   const users = await response.json();
   const user = users[0];
 
-  document.getElementById("userName").textContent =
-    user.user_real_name ||
-    user.user_name ||
-    "Usuário";
+  const nameEl = document.getElementById("userName");
+  if (nameEl) nameEl.textContent = user.user_real_name || user.user_name || "Usuário";
 
-  document.getElementById("Role").textContent =
-    user.user_tipo ||
-    "Sem tipo";
+  const roleEl = document.getElementById("Role");
+  if (roleEl) roleEl.textContent = user.user_tipo || "Sem tipo";
 
- 
-const profileImage = document.getElementById("profile-image");
-if (profileImage) {
-   // define a foto de perfil, com base no tipo
-  const imageName = getUserImageByType(user);
-  profileImage.src = `../img/profile_img/${imageName}`;
-// define o texto da alternativo da imagem
-  profileImage.alt = user.user_real_name || user.user_name || "Usuário";
-}
+  const imgEl = document.getElementById("profile-image");
+  if (imgEl) {
+    // Prioridade: imagem do Cloudinary salva no perfil → avatar gerado pelo nome
+    const savedImg = user.user_img || user.user_image || user.profile_img || user.foto;
+    const nome = encodeURIComponent(user.user_real_name || user.user_name || "U");
+    imgEl.src = savedImg || `https://ui-avatars.com/api/?name=${nome}&size=150&background=006eff&color=fff`;
+    imgEl.alt = user.user_real_name || user.user_name || "Usuário";
+  }
 }
 
+// ── Ranking / estrelas ───────────────────────────────────────────────────────
 
-// busca a media dos usuarios, atualiza a nota e pinta a estrela
 async function loadUserRanking(userId, token) {
   const response = await fetch(`${API_URL}/users/${userId}/ranking`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    }
+    headers: { Authorization: `Bearer ${token}` },
   });
 
   if (!response.ok) {
@@ -95,31 +85,20 @@ async function loadUserRanking(userId, token) {
   }
 
   const ranking = await response.json();
-
-  console.log("Ranking recebido do backend:", ranking);
-
   const nota = Number(ranking.media || 0);
-  const estrelasPintadas = Math.floor(nota);
-
-  console.log("Nota convertida:", nota);
-  console.log("Estrelas pintadas:", estrelasPintadas);
 
   const ratingValue = document.getElementById("rating-value");
-  if (ratingValue) {
-    ratingValue.textContent = `Nota: ${nota.toFixed(1)}`;
-  }
+  if (ratingValue) ratingValue.textContent = `${nota.toFixed(1)} / 5.0`;
 
-  updateStars(estrelasPintadas);
+  currentRating = Math.floor(nota);
+  updateStars(currentRating);
 }
 
-//dados da atividades do user, busca todas
+// ── Atividade ────────────────────────────────────────────────────────────────
+
 async function loadUserActivity(userId, token) {
   const response = await fetch(`${API_URL}/users/${userId}/activity`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    }
+    headers: { Authorization: `Bearer ${token}` },
   });
 
   if (!response.ok) {
@@ -129,48 +108,93 @@ async function loadUserActivity(userId, token) {
 
   const activity = await response.json();
 
-  const projetosRealizados = document.getElementById("projectsDone");
-  const projetosEmExecucao = document.getElementById("projectsInProgress");
-  const horasTrabalhadas = document.getElementById("workedHours");
-  const classificacoes = document.getElementById("clientRatings");
-
-  if (projetosRealizados) {
-    projetosRealizados.textContent = activity.projetos_realizados ?? 0;
-  }
-
-  if (projetosEmExecucao) {
-    projetosEmExecucao.textContent = activity.projetos_em_execucao ?? 0;
-  }
-
-  if (horasTrabalhadas) {
-    horasTrabalhadas.textContent = activity.horas_trabalhadas ?? 0;
-  }
-
-  if (classificacoes) {
-    classificacoes.textContent = activity.classificacoes_clientes ?? 0;
-  }
+  const el = (id) => document.getElementById(id);
+  if (el("projectsDone"))  el("projectsDone").textContent  = activity.projetos_realizados  ?? "—";
+  if (el("workedHours"))   el("workedHours").textContent   = activity.horas_trabalhadas    ?? "—";
+  if (el("clientRatings")) el("clientRatings").textContent = activity.classificacoes_clientes ?? "—";
 }
+
+// ── Info de conta ────────────────────────────────────────────────────────────
+
+function renderAccountInfo(user) {
+  const emailEl = document.getElementById("userEmail");
+  if (emailEl) emailEl.textContent = user.user_email || "—";
+}
+
+// ── Upload de foto via Cloudinary ────────────────────────────────────────────
+
+function setupUpload(user, token) {
+  const trigger = document.getElementById("upload-trigger");
+  const input   = document.getElementById("image-input");
+  const imgEl   = document.getElementById("profile-image");
+
+  if (!trigger || !input) return;
+
+  trigger.addEventListener("click", () => {
+    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+      myModal(
+        "Upload de foto ainda não configurado.<br>Preencha CLOUDINARY_CLOUD_NAME e CLOUDINARY_UPLOAD_PRESET em profile.js.",
+        { type: "info", title: "Configuração necessária" }
+      );
+      return;
+    }
+    input.click();
+  });
+
+  input.addEventListener("change", async () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    try {
+      const url = await uploadToCloudinary(file);
+      if (!url) return;
+
+      // Atualiza a imagem na tela
+      if (imgEl) imgEl.src = url;
+
+      // Salva a URL no perfil via backend
+      // TODO: O campo user_img deve ser aceito por PUT /users/update/:id
+      // Por enquanto, apenas mostra sucesso visual
+      myModal("Foto atualizada com sucesso!", { type: "success" });
+
+    } catch (e) {
+      console.error("Erro no upload:", e);
+      myModal("Erro ao enviar a foto. Tente novamente.", { type: "danger" });
+    }
+  });
+}
+
+async function uploadToCloudinary(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+    { method: "POST", body: formData }
+  );
+
+  if (!res.ok) throw new Error(`Cloudinary HTTP ${res.status}`);
+
+  const data = await res.json();
+  return data.secure_url;
+}
+
+// ── Estrelas de rating ───────────────────────────────────────────────────────
 
 function setupStars() {
   stars = document.querySelectorAll("#rating i");
 
-  console.log("Stars encontradas:", stars.length);
-
   stars.forEach((star) => {
     star.addEventListener("click", () => {
       currentRating = parseInt(star.getAttribute("data-value"), 10);
-
       const ratingValue = document.getElementById("rating-value");
-      if (ratingValue) {
-        ratingValue.textContent = `Nota: ${currentRating}`;
-      }
-
+      if (ratingValue) ratingValue.textContent = `${currentRating}.0 / 5.0`;
       updateStars(currentRating);
     });
 
     star.addEventListener("mouseover", () => {
-      const hoverRating = parseInt(star.getAttribute("data-value"), 10);
-      updateStars(hoverRating);
+      updateStars(parseInt(star.getAttribute("data-value"), 10));
     });
 
     star.addEventListener("mouseout", () => {
@@ -180,24 +204,8 @@ function setupStars() {
 }
 
 function updateStars(rating) {
-  console.log("updateStars recebeu:", rating);
-
   stars.forEach((star) => {
     const value = Number(star.getAttribute("data-value"));
-
-    console.log("estrela", value, "rating", rating);
-
-    if (value <= rating) {
-      star.className = "bi bi-star-fill text-warning";
-    } else {
-      star.className = "bi bi-star";
-    }
+    star.className = value <= rating ? "bi bi-star-fill text-warning" : "bi bi-star";
   });
-
-  // window cria uma funçao global
-  window.logout = function () {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("LogedUser");
-    window.location.href = "../pages/login.html";
-  };
 }

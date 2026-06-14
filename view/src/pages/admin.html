@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CowLabs - Admin Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="/view/src/styles/default.css" />
+  <link rel="stylesheet" href="/view/src/styles/admin.css" />
+</head>
+<body>
+
+  <!-- Navbar injetada pelo componente nav.js -->
+  <div id="nav-root"></div>
+
+  <div class="d-flex">
+
+    <!-- Sidebar admin (navegação específica do painel) -->
+    <nav class="sidebar bg-brand-deep text-white p-3 d-none d-lg-block">
+      <div class="mb-4 px-3">
+        <p class="small opacity-50 mb-0 fw-bold text-uppercase">Admin Panel</p>
+      </div>
+
+      <ul class="nav flex-column gap-2">
+        <li class="nav-item">
+          <a class="nav-link active" href="#"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="bi bi-people me-2"></i> Gestão de Usuários</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <i class="bi bi-chat-left-dots me-2"></i> TalkUs
+            <span class="badge bg-danger ms-1" id="kpi-talkus-badge">—</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="bi bi-shield-check me-2"></i> Aprovações</a>
+        </li>
+      </ul>
+    </nav>
+
+    <main class="flex-grow-1 bg-light min-vh-100 p-4">
+
+      <header class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+          <h2 class="fw-800 mb-0">Olá, <span id="admin-nome">Admin</span></h2>
+          <p class="text-muted mb-0">Bem-vindo à sala de controle.</p>
+        </div>
+      </header>
+
+      <!-- KPIs -->
+      <div class="row g-4 mb-5">
+        <div class="col-md-3">
+          <div class="card card-kpi p-4 border-0 shadow-sm">
+            <span class="text-muted small fw-bold">USUÁRIOS ATIVOS</span>
+            <h2 class="fw-800 mt-2" id="kpi-users">—</h2>
+            <span class="text-muted small">Total cadastrado</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card card-kpi p-4 border-0 shadow-sm">
+            <span class="text-muted small fw-bold">DEMANDAS TOTAIS</span>
+            <h2 class="fw-800 mt-2" id="kpi-demandas">—</h2>
+            <span class="text-primary small"><a href="/view/src/pages/brickwall.html">Ver todas</a></span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card card-kpi p-4 border-0 shadow-sm">
+            <span class="text-muted small fw-bold">MENSAGENS TALKUS</span>
+            <h2 class="fw-800 mt-2" id="kpi-talkus">—</h2>
+            <span class="text-muted small" id="kpi-talkus-sub">Backend em produção</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card card-kpi p-4 border-0 shadow-sm bg-warning-subtle">
+            <span class="text-muted small fw-bold">AGUARDANDO APROVAÇÃO</span>
+            <h2 class="fw-800 mt-2 text-warning-emphasis" id="kpi-pendentes">—</h2>
+            <span class="text-dark small">Backend em produção</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+
+        <!-- Gráfico de crescimento -->
+        <div class="col-lg-7">
+          <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-800 mb-1">Crescimento da Plataforma</h5>
+            <p class="text-muted small mb-4">
+              <!-- TODO: Criar GET /admin/stats/crescimento → { labels, novosUsuarios } -->
+              Histórico de novos usuários por mês.
+            </p>
+            <canvas id="growthChart" height="250"></canvas>
+          </div>
+        </div>
+
+        <!-- TalkUs recentes -->
+        <div class="col-lg-5">
+          <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <h5 class="fw-800 mb-4">Últimas do TalkUs</h5>
+            <!-- TODO: Criar GET /admin/talkus → [{ nome, mensagem, tempo, categoria }] -->
+            <div class="text-center text-muted py-4 small">
+              <i class="bi bi-chat-left-dots fs-2 d-block mb-2 opacity-25"></i>
+              Em implementação no backend.
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela de usuários -->
+        <div class="col-12">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="p-4 bg-white border-bottom d-flex justify-content-between align-items-center">
+              <h5 class="fw-800 mb-0">Controle de Usuários</h5>
+              <button class="btn btn-sm btn-outline-danger" id="btn-reset-base">
+                <i class="bi bi-trash"></i> Resetar Base
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                  <tr>
+                    <th class="ps-4">Usuário</th>
+                    <th>Cargo</th>
+                    <th>Status</th>
+                    <th>Último Login</th>
+                    <th class="text-end pe-4">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="users-tbody">
+                  <tr>
+                    <td colspan="5" class="text-center text-muted py-4">Carregando...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer injetado pelo componente footer.js -->
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="/view/src/services/admin.js"></script>
+</body>
+</html>

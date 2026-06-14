@@ -1,297 +1,413 @@
+/* ============================================================
+   CowLabs · default.css
+   Estrutura geral de identidade visual do site.
+   Carregue ANTES do CSS específico de cada página.
+   Documentação completa: ./default.md
+   ============================================================ */
 
-body, html {
-    margin: 0;
-    padding: 0;
-  }
-  
-  main {
-    padding-top: 50px;
-  }
-  
-  .text-dark-gray {
-    color: #242424;
-  }
-  
-  .blue-text {
-    color: #006eff;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  
-  .bg-blue {
-    background-color: #006eff;
-  }
-  
-  .navbar-brand {
-    font-family: 'JetBrains Mono', monospace;
-  }
-  
-  #texto_centralizado{
-   place-items: center;
-  
-  }
+/* ----------------------------------------------------------
+   1. DESIGN TOKENS (variáveis globais)
+   ---------------------------------------------------------- */
+:root {
+  /* Cores de marca */
+  --primary: #006eff;
+  --primary-hover: #0056d6;
+  --primary-deep: #004299;      /* usado nos gradientes do hero */
+  --labs-light: #a5c9ff;        /* o "Labs" da logo e detalhes claros */
+  --dark-blue: #001a41;         /* tema escuro (painéis adm/professor) */
 
-  .list_none{
-    list-style: none;
-  }
-  
-  .texto_justificado{
-    text-align: justify;
-  }
+  /* Neutros / superfícies */
+  --bg-page: #f8fafc;
+  --white: #ffffff;
+  --surface: #ffffff;
+  --border-soft: #e2e8f0;
 
-  #imagem-user, .imagem-user{
-    width: 30px;
-  }
-  
-  #back_btn{
-    width: 80px;
-  }
+  /* Texto */
+  --text-main: #1e293b;
+  --text-muted: #64748b;
 
-  .banner-home {
-    margin-bottom: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 50px; 
-    background-image: url(../../assets/img/banner-home.png);
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: right;
-  }
-  
-  .h1-title-montserrat {
-    font-family: "Montserrat", sans-serif;
-    font-style: normal;
-    font-weight: 800;
-    font-size: 60px;
-    width: 50%;
-    line-height: 1;
-    letter-spacing: 0;
-  }
-  
-  .banner-home .content-text {
-    width: 50%;
-  }
-  
-  .banner-home .content-image {
-    width: 40%;
-  }
-  
-  .banner-home img {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  
-  .btn:link,
-  .btn:visited {
-    text-transform: uppercase;
-    text-decoration: none;
-    padding: 15px 40px;
-    display: inline-block;
-    border-radius: 100px;
-    transition: all 0.2s;
-  }
-  
-  .btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  }
-  
-  .btn:active {
-    transform: translateY(-1px);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  .btn-primary {
-    background-color: #006eff;
-    border-color: #006eff;
-    border-radius: 25px;
-  }
-  
-  .btn-primary:hover {
-    background-color: #0056d6;
-    border-color: #0056d6;
-  }
-  
-  .btn-white {
-    background-color: #fff;
-    color: #777;
-  }
-  
-  .btn-white:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .btn-animated {
-    animation: moveInBottom 5s ease-out;
-    animation-fill-mode: backwards;
-  }
-  
-  
-  .btn-bottom-right {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-    border-radius: 25px; 
-    padding: 15px;
-    background-color: #006eff;
-    color: white;
-  }
-  
-  .btn-bottom-right:hover {
-    background-color: #0056d6;
-  }
-  
-  #forms_btn{
-    border-radius: 30px;
-    padding: 15px 80px;
-    text-transform: uppercase;
-    justify-self: center;
-    
-  }
-  
-  .justify_center{
-    display: flex;
-    justify-content: center;
-  }
-  
-  .profile_img{
-    width: auto;
-    color: white;
-    /* border: white solid; */
-    border-radius: 100%;
-    
-        
-    img{
-      background-color: white;
-      width: 50px;
-      border-radius: 100%;
-    }
+  /* Feedback */
+  --success: #16a34a;
+  --danger: #ef4444;
+  --warning: #f59e0b;
 
-    .aluno{
-      border: solid 3px greenyellow;
-    }
+  /* Tipografia */
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
-    .professor{
-      border: solid 3px orange;
-    }
+  /* Raios de borda */
+  --radius-sm: 10px;
+  --radius-md: 15px;
+  --radius-lg: 24px;
+  --radius-xl: 30px;
+  --radius-pill: 50px;
 
-    .Admin{
-      border: solid 3px red;
-    }
+  /* Sombras */
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+  --shadow-brand: 0 10px 20px rgba(0, 110, 255, 0.2);
 
-  }
-  .personal_btn{
-    background-color: #0d6efd;
-    border: white solid 2px;
-    color: white;
-    border-radius: 30px;
-    padding: 0.7rem 2rem;
-  }
-  
-  .personal_btn:hover{
-    background-color: white ;
-    border:  white solid 2px;
-    color:  #0d6efd ;
-  }
-  
-  .demanda_btn{
-    background-color: white ;
-    border:  #0d6efd solid 2px;
-    color: #0d6efd;
-    border-radius: 30px;
-    padding: 0.6rem 1.8rem;
-    
-  }
-  
-  .demanda_btn:hover{
-    background-color: #0d6efd;
-    border:  #0d6efd solid 2px;
-    color:   white ;
-  }
+  /* Transição padrão */
+  --transition: all 0.3s ease;
+}
 
+/* ----------------------------------------------------------
+   2. BASE
+   ---------------------------------------------------------- */
+* { box-sizing: border-box; }
 
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--bg-page);
+  color: var(--text-main);
+}
 
- .milk_box{
-  width: 50px;
+a { text-decoration: none; }
+
+/* ----------------------------------------------------------
+   3. TIPOGRAFIA UTILITÁRIA
+   ---------------------------------------------------------- */
+.fw-800 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+.fw-600 { font-weight: 600; }
+
+.text-labs { color: var(--labs-light); }
+.text-primary-brand { color: var(--primary); }
+
+/* ----------------------------------------------------------
+   4. MARCA / LOGO
+   ---------------------------------------------------------- */
+.bg-brand-solid { background-color: var(--primary) !important; }
+.bg-brand-deep  { background-color: var(--dark-blue) !important; }
+
+.logo-font {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: var(--white) !important;
+  text-decoration: none;
+  line-height: 1;
+}
+.logo-font span { color: var(--labs-light); }
+
+/* ----------------------------------------------------------
+   5. HERO (cabeçalho com gradiente de marca)
+   ---------------------------------------------------------- */
+.hero-brand {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
+  color: var(--white);
+  padding: 80px 0;
+  border-radius: 0 0 50px 50px;
+  box-shadow: 0 10px 30px rgba(0, 110, 255, 0.2);
+}
+/* Variantes de raio menores para heros internos */
+.hero-brand.hero-compact { padding: 56px 0; border-radius: 0 0 40px 40px; }
+
+/* ----------------------------------------------------------
+   6. BOTÕES (família padrão)
+   ---------------------------------------------------------- */
+
+/* Botão sólido principal */
+.btn-primary {
+  background: var(--primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 110, 255, 0.2);
+  transition: var(--transition);
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-brand);
+}
+
+/* Botão de destaque sobre fundo de marca (branco) */
+.btn-action-hero {
+  background: var(--white);
+  color: var(--primary);
+  font-weight: 700;
+  padding: 16px 32px;
+  border-radius: var(--radius-md);
+  border: none;
+  transition: var(--transition);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+.btn-action-hero:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  color: var(--primary-hover);
+}
+
+/* Botão contornado para usar sobre o fundo azul (navbar/hero) */
+.btn-light-outline {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: var(--white);
+  border-radius: 12px;
+  padding: 8px 20px;
+  font-weight: 500;
+  transition: var(--transition);
+  background: transparent;
+}
+.btn-light-outline:hover { background: var(--white); color: var(--primary); }
+
+/* Botão "enviar" (formulários claros) */
+.btn-send {
+  background: var(--primary);
+  color: var(--white);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  border: none;
+  transition: var(--transition);
+}
+.btn-send:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-brand);
+  color: var(--white);
+}
+
+/* ----------------------------------------------------------
+   7. BADGES / TAGS
+   ---------------------------------------------------------- */
+.badge-tag {
+  background: #eff6ff;
+  color: var(--primary);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 11px;
+}
+.badge-premium {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ----------------------------------------------------------
+   8. CARDS
+   ---------------------------------------------------------- */
+.card-premium {
+  background: var(--surface);
+  border-radius: 28px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: var(--transition);
+  height: 100%;
   display: flex;
-  
- }
+  flex-direction: column;
+  overflow: hidden;
+}
+.card-premium:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 25px 50px -12px rgba(0, 110, 255, 0.15);
+  border-color: var(--primary);
+}
 
-  
-  #contact {
-    padding: 3rem 0;
-  }
-  
-  .form-group {
-    margin-bottom: 1.5rem;
-  }
-  
-  .form-control {
-    height: 45px;
-    border-radius: 0.25rem;
-    border: 1px solid #ccc;
-  }
-  
-  textarea#message {
-    resize: none;
-  }
-  
-  .text-colored{
-    color: #fff;
-    display: inline;
-  }
-  
-  .social-links,
-  strong{
-    display: block;
-    text-align: center;
-  }
-  
-  .social-links li{
-    display: inline;
-    list-style: none;
-  }
-  
-  .social-links a{
-    text-decoration: none;
-  }
-  
-  .cor-footer{
-    color: #fff;
-  }
-  
-  i{
-    font-size: 20px;
-  }
-  
-  
-  .login_dialog{
-    border-radius: 15px;
-    border: none;
-    text-align: center;
-    
-    
-    img{
-      width: 100px;
-    }
-  }
+/* ----------------------------------------------------------
+   9. FORMULÁRIOS
+   ---------------------------------------------------------- */
+.form-control {
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+}
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(0, 110, 255, 0.1);
+}
 
-  dialog::backdrop{
-    background-color: #34588fa6;
-  }
+/* ----------------------------------------------------------
+   10. PAGINAÇÃO
+   ---------------------------------------------------------- */
+.custom-pagination .page-link {
+  border: none;
+  color: var(--text-muted);
+  margin: 0 5px;
+  border-radius: 12px;
+  font-weight: 600;
+  padding: 12px 18px;
+}
+.custom-pagination .page-item.active .page-link {
+  background: var(--primary);
+  color: var(--white);
+  box-shadow: 0 4px 10px rgba(0, 110, 255, 0.3);
+}
 
-  
-  @keyframes moveInBottom {
-    0% {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0px);
-    }
-  }
-  
+/* ----------------------------------------------------------
+   11. RODAPÉ (componente footer.js)
+   ---------------------------------------------------------- */
+.footer-premium .social-links a {
+  color: var(--white);
+  font-size: 1.4rem;
+  margin-left: 20px;
+  transition: var(--transition);
+  opacity: 0.8;
+}
+.footer-premium .social-links a:hover { color: var(--labs-light); opacity: 1; }
+
+/* ============================================================
+   12. NAVBAR (componente nav.js)
+   ============================================================ */
+.cl-navbar .nav-link {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  transition: var(--transition);
+}
+.cl-navbar .nav-link:hover,
+.cl-navbar .nav-link.active {
+  color: var(--white);
+}
+
+/* Chip do usuário logado: "Olá, Fulano" + avatar */
+.cl-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--white);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.cl-user-chip .cl-greeting { font-size: 0.9rem; line-height: 1.1; }
+.cl-user-chip .cl-greeting strong { display: block; font-weight: 700; }
+
+/* Avatar: imagem de perfil OU iniciais */
+.cl-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--white);
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  color: var(--primary);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  flex: 0 0 auto;
+  overflow: hidden;
+  text-transform: uppercase;
+}
+.cl-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Dropdown do usuário */
+.cl-user-menu .dropdown-menu {
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 8px;
+  min-width: 220px;
+}
+.cl-user-menu .dropdown-item {
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-weight: 500;
+}
+.cl-user-menu .dropdown-item:active { background: var(--primary); }
+.cl-user-menu .dropdown-header { color: var(--text-muted); }
+
+/* ============================================================
+   13. MYMODAL (componente mymodal.js) — substituto do alert()
+   ============================================================ */
+.cl-modal {
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 0;
+  width: 100%;
+  max-width: 400px;
+  background: transparent;
+  overflow: visible;
+}
+.cl-modal::backdrop { background: rgba(0, 26, 65, 0.45); }
+
+.cl-modal-card {
+  position: relative;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 32px 28px 28px;
+  text-align: center;
+  font-family: var(--font-body);
+}
+
+/* Botão "x" de fechar no canto */
+.cl-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.4rem;
+  line-height: 1;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.cl-modal-close:hover { background: var(--bg-page); color: var(--text-main); }
+
+/* Ícone do topo (cor varia conforme o tipo) */
+.cl-modal-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.cl-modal-text {
+  color: var(--text-main);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  margin: 0 0 24px;
+}
+
+.cl-modal-ok { min-width: 120px; }
+
+/* Container dos botões (alerta = 1, confirmação = 2) */
+.cl-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Botão secundário (cancelar) do modo confirmação */
+.cl-modal-cancel {
+  min-width: 120px;
+  background: var(--bg-page);
+  color: var(--text-main);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: var(--transition);
+}
+.cl-modal-cancel:hover { background: #e9eef5; color: var(--text-main); }
+
+/* Variantes de cor por tipo (info é o padrão) */
+.cl-modal--info    .cl-modal-icon { background: #eff6ff; color: var(--primary); }
+.cl-modal--success .cl-modal-icon { background: #ecfdf5; color: var(--success); }
+.cl-modal--danger  .cl-modal-icon { background: #fef2f2; color: var(--danger); }
+.cl-modal--warning .cl-modal-icon { background: #fffbeb; color: var(--warning); }
+
+/* Animação de entrada */
+.cl-modal[open] .cl-modal-card { animation: cl-modal-pop 0.18s ease-out; }
+@keyframes cl-modal-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}

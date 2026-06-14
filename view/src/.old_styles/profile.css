@@ -1,0 +1,52 @@
+.profile-picture {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%; /* deixa redondo */
+  overflow: hidden; /* corta as bordas */
+  cursor: pointer;
+}
+
+.profile-picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-picture .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* overlay escuro semi-transparente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.profile-picture:hover .overlay {
+  opacity: 1;
+}
+
+  .object-fit-cover {
+    object-fit: cover;
+  }
+  .card-custom {
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  }
+  .progress-bar {
+    background-color: #e667af;
+  }
+
+  .overlay {
+    transition: opacity 0.3s;
+    opacity: 0;
+  }
+  #rating i {
+    cursor: pointer;
+    transition: color 0.2s;
+  }

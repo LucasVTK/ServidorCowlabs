@@ -20,12 +20,12 @@ return imageMap[userType] || "accounting.png";
 // menu do perfil é feito aqui
 export function renderUserMenu(user, options = {}) {
   const {
-    demandasPath = "../pages/demandas.html",
-    profilePath = "../pages/profile.html",
-    adminPath = "../pages/profile.html",
-    rolePath = "../pages/profile.html",
-    loginPath = "../pages/login.html",
-    imageBasePath = "../img/profile_img/"
+    demandasPath = "/view/src/pages/brickwall.html",
+    profilePath = "/view/src/pages/profile.html",
+    adminPath = "/view/src/pages/admin.html",
+    rolePath = "/view/src/pages/profile.html",
+    loginPath = "/view/src/pages/login.html",
+    imageBasePath = "/view/src/img/profile_img/"
   } = options;
 
   const profileList = document.getElementById("profile_list");

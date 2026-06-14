@@ -2,6 +2,7 @@ import express from "express";
 import globalMiddleware from "./middleware/globalMiddleware.js";
 import UserRoute from "./routes/UsersRoutes.js";
 import DemandasRoute from "./routes/DemandasRoute.js";
+import ComentariosRoute from "./routes/ComentariosRoute.js";
 import con from "./database/connectionSQL.js";
 import AuthRoute from "./routes/AuthRoute.js";
 
@@ -13,6 +14,7 @@ app.use(globalMiddleware.cors);
 app.use(express.json()); // sem isso o req.body vem vazio
 app.use(UserRoute);
 app.use(DemandasRoute);
+app.use(ComentariosRoute);
 app.use(AuthRoute);
 
 app.get("/", (req, res) => {

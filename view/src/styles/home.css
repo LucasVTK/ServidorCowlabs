@@ -1,0 +1,38 @@
+/* ============================================================
+   home.css  ·  Página inicial (index)
+   Tokens, navbar, botões base, hero e footer vêm do default.css.
+   ============================================================ */
+
+body { overflow-x: hidden; }
+
+/* O hero da home é mais alto e com cantos mais arredondados */
+.hero-brand {
+  padding: 100px 0;
+  border-radius: 0 0 80px 80px;
+  position: relative;
+}
+.fw-800 { letter-spacing: -2px; } /* título grande da home */
+
+/* Mascote animado */
+.floating-mascot {
+  filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.3));
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Cards de recurso */
+.feature-card {
+  background: #f8fafc;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-soft);
+  transition: var(--transition);
+}
+.feature-card:hover {
+  transform: translateY(-10px);
+  background: var(--white);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+}

@@ -1,183 +1,148 @@
+import nav from "../components/nav.js";
 import footer from "../components/footer.js";
 import loaderDemandas from "../components/loaderDemandas.js";
-import { requireAuth } from "../services/auth.js";
-import { renderUserMenu } from "../components/userMenu.js";
+import selectDemanda from "../components/selectDemanda.js";
+import { requireAuth } from "./auth.js";
+import myModal from "../components/mymodal.js";
+import { API_URL } from "./api.js";
 
-const API_URL = "http://localhost:3000";
-
-// controla se o modal está criando ou editando
 let demandaEmEdicaoId = null;
 
-// verifica a autenticaçao
 document.addEventListener("DOMContentLoaded", async () => {
+  nav();
+
   const auth = requireAuth("../pages/login.html");
   if (!auth) return;
 
   const { user, token } = auth;
 
-  console.log("DOMContentLoaded rodou");
-  console.log("form-demanda encontrado?", document.getElementById("form-demanda"));
+  // Exibe o botão de publicar demanda apenas para usuários logados
+  const btnAbrir = document.getElementById("btn-abrir-modal");
+  if (btnAbrir) btnAbrir.classList.remove("d-none");
 
-  // monta o menu
-  renderUserMenu(user, {
-    demandasPath: "../pages/demandas.html",
-    profilePath: "../pages/profile.html",
-    adminPath: "../pages/profile.html",
-    rolePath: "../pages/profile.html",
-    imageBasePath: "../img/profile_img/",
-  });
-
-  //registra os eventos da páginao
-  configurarSubmitDemanda();
+  configurarSubmitDemanda(user, token);
   configurarFiltros();
+
   footer();
-  // carrega a pagina de demanda
+
   await loaderDemandas(1);
+
+  // Seleciona demanda após renderização dos cards
+  selectDemanda();
 });
 
-// procura o formulario pelo id e regitra o evento so nele (submit que envia o formulario)
-function configurarSubmitDemanda() {
+// ── Criar / Editar demanda ───────────────────────────────────────────────────
+
+function configurarSubmitDemanda(user, token) {
   const formDemanda = document.getElementById("form-demanda");
-
-  console.log("configurarSubmitDemanda foi chamada");
-  console.log("formDemanda:", formDemanda);
-
   if (!formDemanda) return;
+
+  // Reseta para modo criação quando o modal for aberto
+  const modalEl = document.getElementById("modalDemanda");
+  if (modalEl) {
+    modalEl.addEventListener("show.bs.modal", () => {
+      if (!demandaEmEdicaoId) resetModalParaCriacao();
+    });
+  }
 
   formDemanda.addEventListener("submit", async (e) => {
     e.preventDefault();
-    await publicarDemanda();
+    await publicarDemanda(user, token);
   });
 }
 
-async function publicarDemanda() {
-  const formDemanda = document.getElementById("form-demanda");
-  const auth = requireAuth("../pages/login.html");
-  if (!auth) return;
+async function publicarDemanda(user, token) {
+  const tituloDemanda = document.getElementById("novaDemanda")?.value.trim();
+  const textoDemanda  = document.getElementById("textoDemanda")?.value.trim();
+  const cursoSelect   = document.getElementById("cursoDemanda");
+  const cursoDemanda  = cursoSelect?.value.trim();
 
-  const { user, token } = auth;
-
-  const tituloDemanda = document.getElementById("novaDemanda").value.trim();
-  const textoDemanda = document.getElementById("textoDemanda").value.trim();
-
-  if (!tituloDemanda || !textoDemanda) {
-    alert("Preencha todos os campos.");
+  if (!tituloDemanda || !textoDemanda || !cursoDemanda) {
+    myModal("Preencha todos os campos.", { type: "warning" });
     return;
   }
-//estou dizendo oque pegar
-  // pacode de dados para enviar para api, dados esse que sao obrigatorios no middleware
-const payload = {
-  user_demanda: user.email || "",
-  data_curso: "Administração",
-  demanda_title: tituloDemanda,
-  demanda_content: textoDemanda,
-  demanda_tag: "Administração",
-  tb_user_user_id: user.id || "",
-};
-console.log("user completo:", user);
-console.log("payload final:", payload);
 
-//verificaçoes da informaçoes
-if (
-  !payload.user_demanda ||
-  !payload.data_curso ||
-  !payload.demanda_title ||
-  !payload.demanda_content ||
-  !payload.demanda_tag ||
-  !payload.tb_user_user_id
-) {
-  console.error("Payload inválido:", payload);
-  alert("Os dados do usuário logado estão incompletos. Veja o console.");
-  return;
-}
+  const payload = {
+    user_demanda:    user.email || user.user_email || "",
+    data_curso:      cursoDemanda,
+    demanda_title:   tituloDemanda,
+    demanda_content: textoDemanda,
+    demanda_tag:     cursoDemanda,
+    tb_user_user_id: user.id || "",
+  };
 
- // manda requisição create ou update
-try {
-  let response;
+  if (!payload.user_demanda || !payload.tb_user_user_id) {
+    myModal("Dados do usuário incompletos. Faça login novamente.", { type: "danger" });
+    return;
+  }
 
-  //se tiver editando faz isso
-  if (demandaEmEdicaoId) {
-    response = await fetch(
-      `${API_URL}/demandas/update/${demandaEmEdicaoId}`,
-      { method: "PUT",
+  try {
+    let response;
+
+    if (demandaEmEdicaoId) {
+      response = await fetch(`${API_URL}/demandas/update/${demandaEmEdicaoId}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          demanda_title: payload.demanda_title,
+          demanda_title:   payload.demanda_title,
           demanda_content: payload.demanda_content,
         }),
       });
-    }
-  // se nao faz isso
-  else {
-    response = await fetch(
-      `${API_URL}/demandas/create`,
-      {
+    } else {
+      response = await fetch(`${API_URL}/demandas/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
-      }
+      });
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.erro || data.error || "Erro ao salvar demanda");
+    }
+
+    // Fecha o modal Bootstrap
+    const bsModal = bootstrap.Modal.getInstance(document.getElementById("modalDemanda"));
+    if (bsModal) bsModal.hide();
+
+    myModal(
+      demandaEmEdicaoId ? "Demanda atualizada com sucesso!" : "Demanda criada com sucesso!",
+      { type: "success" }
     );
+
+    resetModalParaCriacao();
+    demandaEmEdicaoId = null;
+
+    await loaderDemandas(1);
+    selectDemanda();
+
+  } catch (error) {
+    console.error("Erro ao salvar demanda:", error);
+    myModal(error.message, { type: "danger", title: "Erro ao salvar demanda" });
   }
-
-  const data = await response.json();
-  console.log("status:", response.status);
-  console.log("resposta:", data);
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-      data.erro ||
-      data.error ||
-      "Erro ao salvar demanda"
-    );
-  }
-
-  
-  const modalEl = document.getElementById("modalDemanda");
-  const modal = bootstrap.Modal.getInstance(modalEl);
-    // fecha modal
-  if (modal) {
-    modal.hide();
-  }
-
-  alert(
-    demandaEmEdicaoId
-      ? "Demanda atualizada com sucesso!"
-      : "Demanda criada com sucesso!"
-  );
-
-  // limpar form
-  if (formDemanda) {
-    formDemanda.reset();
-  }
-  //retorn a para mode de criaçao
-  demandaEmEdicaoId = null;
-
-  // recarregar lista
-  await loaderDemandas(1);
-} catch (error) {
-  console.error("Erro ao salvar demanda:", error);
-  alert(error.message);
 }
+
+function resetModalParaCriacao() {
+  const form = document.getElementById("form-demanda");
+  if (form) form.reset();
+  const label = document.getElementById("modalDemandaLabel");
+  if (label) label.textContent = "Publicar Demanda";
+  const btn = document.getElementById("btn-publicar-demanda");
+  if (btn) btn.textContent = "Publicar";
 }
+
+// ── Filtros ──────────────────────────────────────────────────────────────────
 
 function configurarFiltros() {
-  const formSidebar = document.getElementById("form_filter_sidebar");
   const formDropdown = document.getElementById("form_filter_dropdown");
-  const clearFilter = document.getElementById("clear_filter");
   const clearFilterSm = document.getElementById("filter_btn_sm");
-
-  if (formSidebar) {
-    formSidebar.addEventListener("change", () => {
-      filtrarCardsJaRenderizados("form_filter_sidebar");
-    });
-  }
 
   if (formDropdown) {
     formDropdown.addEventListener("change", () => {
@@ -185,75 +150,54 @@ function configurarFiltros() {
     });
   }
 
-  if (clearFilter) {
-    clearFilter.addEventListener("click", () => {
-      formSidebar.reset();
-      loaderDemandas(1);
-    });
-  }
-
   if (clearFilterSm) {
     clearFilterSm.addEventListener("click", () => {
-      formDropdown.reset();
-      loaderDemandas(1);
+      if (formDropdown) formDropdown.reset();
+      loaderDemandas(1).then(() => selectDemanda());
     });
   }
 }
- // filtra os cards da tela
+
 function filtrarCardsJaRenderizados(formID) {
   const form = document.getElementById(formID);
   const cards = document.querySelectorAll(".row_cards > .col-12");
 
-  if (!form) {
-    console.log("Form não encontrado:", formID);
-    return;
-  }
-
-  if (!cards.length) {
-    console.log("Nenhum card encontrado para filtrar.");
-    return;
-  }
+  if (!form || !cards.length) return;
 
   const cursosSelecionados = Array.from(
     form.querySelectorAll('input[type="checkbox"]:checked')
-  ).map((checkbox) => normalizarTexto(checkbox.value));
+  ).map((cb) => normalizarTexto(cb.value));
 
   cards.forEach((card) => {
     const cursoBruto = card.dataset.curso || "";
     const cursosDoCard = cursoBruto
       .split(",")
-      .map((curso) => normalizarTexto(curso))
+      .map(normalizarTexto)
       .filter(Boolean);
 
     const deveMostrar =
       cursosSelecionados.length === 0 ||
-      cursosDoCard.some((curso) => cursosSelecionados.includes(curso));
+      cursosDoCard.some((c) => cursosSelecionados.includes(c));
 
-    if (deveMostrar) {
-      card.classList.remove("d-none");
-    } else {
-      card.classList.add("d-none");
-    }
+    card.classList.toggle("d-none", !deveMostrar);
   });
 }
 
 function normalizarTexto(texto) {
   return (texto || "")
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .trim()
     .toLowerCase();
 }
-//guarda o id da demanda
+
+// ── Expostos globalmente para loaderDemandas.js ───────────────────────────────
+
 window.definirDemandaEmEdicao = function (id) {
   demandaEmEdicaoId = Number(id);
+  // Atualiza labels do modal para modo edição
+  const label = document.getElementById("modalDemandaLabel");
+  if (label) label.textContent = "Editar Demanda";
+  const btn = document.getElementById("btn-publicar-demanda");
+  if (btn) btn.textContent = "Salvar alterações";
 };
-// expõe a função para o botão onclick do HTML
-window.publicarDemanda = publicarDemanda;
-
-
-window.logout = function () {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("LogedUser");
-    window.location.href = "../pages/login.html";
-}
