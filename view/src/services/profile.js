@@ -10,8 +10,8 @@ import { API_URL } from "./api.js";
 //  2. Crie um "Upload Preset" sem assinatura (unsigned) no painel do Cloudinary
 //  3. Preencha as constantes abaixo com seu Cloud Name e o nome do preset
 //  4. Salve a URL retornada em user_img via PUT /users/update/:id
-const CLOUDINARY_CLOUD_NAME = "";
-const CLOUDINARY_UPLOAD_PRESET = "";
+const CLOUDINARY_CLOUD_NAME = "dnmzpyfdq";
+const CLOUDINARY_UPLOAD_PRESET = "user_general";
 
 let stars = [];
 let currentRating = 0;
