@@ -47,3 +47,18 @@ body {
   color: #64748b;
   padding: 15px;
 }
+
+/* Cabeçalho colapsível */
+.collapse-toggle .toggle-icon {
+  transition: transform 0.2s ease;
+}
+.collapse-toggle.collapsed .toggle-icon {
+  transform: rotate(180deg);
+}
+
+/* Lista de chamados TalkUs */
+.chamado-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.chamado-item:last-child { border-bottom: none; }

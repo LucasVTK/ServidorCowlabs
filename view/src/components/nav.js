@@ -70,13 +70,11 @@ function getProfileImage(user) {
   );
 }
 
-// Avatar: <img> se houver imagem; senão, círculo com iniciais.
+// Avatar: <img> com foto real ou avatar gerado pelo ui-avatars como fallback.
 function avatarHTML(user, name) {
   const img = getProfileImage(user);
-  if (img) {
-    return `<span class="cl-avatar"><img src="${img}" alt="${name}"></span>`;
-  }
-  return `<span class="cl-avatar">${getInitials(name)}</span>`;
+  const src = img || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=40&background=006eff&color=fff`;
+  return `<span class="cl-avatar"><img src="${src}" alt="${name}"></span>`;
 }
 
 // Marca o link cuja href corresponde à página atual.

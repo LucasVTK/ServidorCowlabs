@@ -31,7 +31,8 @@ const UserRepository = {
                 user_real_name,
                 user_email,
                 user_tipo,
-                user_status
+                user_status,
+                user_img
            FROM tb_user
           WHERE user_id = @user_id`,
       );
@@ -232,6 +233,16 @@ async readActivityByUserId(id) {
       .input("user_id",     sqltype.Int,        id)
       .input("user_status", sqltype.VarChar(20), status)
       .query(`UPDATE tb_user SET user_status = @user_status WHERE user_id = @user_id`);
+    return respDB;
+  },
+
+  async updateImg(id, url) {
+    const conn = await con();
+    const respDB = await conn
+      .request()
+      .input("user_id",  sqltype.Int,         id)
+      .input("user_img", sqltype.VarChar(500), url)
+      .query(`UPDATE tb_user SET user_img = @user_img WHERE user_id = @user_id`);
     return respDB;
   },
 

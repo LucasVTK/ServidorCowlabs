@@ -1,10 +1,25 @@
 import nav from "../components/nav.js";
 import footer from "../components/footer.js";
 import myModal from "../components/mymodal.js";
+import { requireAuth } from "./auth.js";
 import { API_URL } from "./api.js";
+
+let _token = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   nav();
+
+  const auth = requireAuth("../pages/login.html");
+  if (!auth) return;
+
+  const { user, token } = auth;
+  _token = token;
+
+  // Pré-preenche nome e e-mail com os dados do usuário logado
+  const nomeEl  = document.getElementById("nome");
+  const emailEl = document.getElementById("email");
+  if (nomeEl)  nomeEl.value  = user.user_name  || user.user_real_name || "";
+  if (emailEl) emailEl.value = user.email || "";
 
   const form = document.getElementById("contactForm");
   if (form) {
@@ -32,32 +47,30 @@ async function enviarMensagem() {
   if (btn) { btn.disabled = true; btn.textContent = "Enviando..."; }
 
   try {
-    // POST /talkus — endpoint em implementação no backend.
-    // TODO: Criar rota POST /talkus → salva { nome, email, telefone, mensagem } na tabela tb_talkus
-    const res = await fetch(`${API_URL}/talkus`, {
+    const res = await fetch(`${API_URL}/chamados/create`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nome, email, telefone, mensagem }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${_token}`,
+      },
+      body: JSON.stringify({
+        chamado_user_name:  nome,
+        chamado_user_email: email,
+        chamado_user_tel:   telefone,
+        chamado_content:    mensagem,
+      }),
     });
 
     if (!res.ok) {
-      if (res.status === 404) {
-        // Backend ainda não tem a rota — avisa com modal
-        await myModal(
-          "Formulário de contato em implementação. Por enquanto, envie um e-mail para <strong>suporte@cowlabs.com.br</strong>.",
-          { type: "info", title: "Em produção" }
-        );
-        return;
-      }
       const data = await res.json().catch(() => ({}));
-      throw new Error(data.message || `Erro HTTP ${res.status}`);
+      throw new Error(data.erro || data.message || `Erro HTTP ${res.status}`);
     }
 
     document.getElementById("contactForm")?.reset();
     await myModal("Mensagem enviada! Em breve entraremos em contato.", { type: "success", title: "Obrigado!" });
 
   } catch (e) {
-    console.error("Erro ao enviar TalkUs:", e);
+    console.error("Erro ao enviar chamado:", e);
     myModal(e.message || "Erro ao enviar. Tente novamente.", { type: "danger", title: "Erro" });
   } finally {
     if (btn) { btn.disabled = false; btn.innerHTML = 'Enviar Mensagem <i class="bi bi-send ms-2"></i>'; }

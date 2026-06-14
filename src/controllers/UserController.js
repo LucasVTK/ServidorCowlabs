@@ -180,6 +180,26 @@ const UserController = {
     }
   },
 
+  async updateImg(req, res) {
+    try {
+      const id  = Number(req.params.id);
+      const { user_img } = req.body;
+
+      if (!user_img) {
+        return res.status(400).json({ ok: false, message: "URL da imagem não informada." });
+      }
+
+      const respDB = await UserRepository.updateImg(id, user_img);
+
+      if (respDB.rowsAffected[0] > 0) {
+        return res.status(200).json({ ok: true, message: "Foto atualizada com sucesso.", user_img });
+      }
+      return res.status(404).json({ ok: false, message: "Usuário não encontrado." });
+    } catch (e) {
+      res.status(500).json({ ok: false, message: "Erro do servidor", error: e.message });
+    }
+  },
+
   // Soft delete — define user_status = 'inativo'
   async delete(req, res) {
     try {

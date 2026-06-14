@@ -41,6 +41,30 @@ const chamadosController = {
         });
     }
     },
+    async responderChamado(req, res) {
+        try {
+            const id = Number(req.params.id)
+            const { chamado_resp } = req.body
+
+            if (!chamado_resp?.trim()) {
+                return res.status(400).json({ erro: 'Resposta obrigatória' })
+            }
+
+            const result = await chamadosRepository.updateResp(id, {
+                chamado_resp: chamado_resp.trim(),
+                chamado_status: 'resolvido',
+            })
+
+            if (result.rowsAffected[0] > 0) {
+                return res.status(200).json({ ok: true, message: 'Chamado respondido com sucesso.' })
+            }
+            return res.status(404).json({ ok: false, message: 'Chamado não encontrado.' })
+        } catch (e) {
+            console.error('Erro em responderChamado:', e)
+            res.status(500).json({ ok: false, message: 'Erro do servidor', detalhe: e.message })
+        }
+    },
+
     async createChamados(req,res){
         try{
             const {

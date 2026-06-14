@@ -8,22 +8,35 @@ const chamadosRepository = {
         const offset = (page - 1) * limit
         const {recordset} = await conn
         .request()
-        .input("offset" ,offset)
-        .input("limit", limit)
-        .query(`select * from tb_chamados
-            ORDER BY chamado_id DESC 
-            OFFSET @offset ROWS 
+        .input("offset", sqltype.Int, offset)
+        .input("limit",  sqltype.Int, limit)
+        .query(`SELECT * FROM tb_chamados
+            ORDER BY chamado_id DESC
+            OFFSET @offset ROWS
             FETCH NEXT @limit ROWS ONLY`)
 
-
-            const contar = await conn
+        const contar = await conn
             .request()
             .query(`SELECT COUNT(*) AS total FROM tb_chamados`)
 
-            return{
-                dados: recordset,
-                total: contar
-            }
+        return {
+            dados: recordset,
+            total: contar.recordset[0].total
+        }
+    },
+
+    async updateResp(id, { chamado_resp, chamado_status }) {
+        const conn = await con()
+        const respDB = await conn
+            .request()
+            .input('id',     sqltype.Int,         id)
+            .input('resp',   sqltype.VarChar(500), chamado_resp)
+            .input('status', sqltype.VarChar(20),  chamado_status)
+            .query(`UPDATE tb_chamados
+                       SET chamado_resp   = @resp,
+                           chamado_status = @status
+                     WHERE chamado_id = @id`)
+        return respDB
     },
 
     async create(cham){
