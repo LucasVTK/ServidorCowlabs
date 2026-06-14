@@ -5,6 +5,7 @@ import DemandasRoute from "./routes/DemandasRoute.js";
 import ComentariosRoute from "./routes/ComentariosRoute.js";
 import con from "./database/connectionSQL.js";
 import AuthRoute from "./routes/AuthRoute.js";
+import chamadosRouter from "./routes/ChamadosRoute.js";
 
 const app = express();
 const port = process.env.PORT;
@@ -16,6 +17,7 @@ app.use(UserRoute);
 app.use(DemandasRoute);
 app.use(ComentariosRoute);
 app.use(AuthRoute);
+app.use(chamadosRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({

@@ -11,6 +11,7 @@ UserRoute.post('/users/verificaLogin', UserController.verificaLogin)
 UserRoute.post('/users/create',ModelMiddleware.modelValidade, ModelMiddleware.modelUpdateSenha, UserController.create)
 UserRoute.put('/users/update/:id',ModelMiddleware.modelValidade,UserController.Update)
 UserRoute.patch('/users/update_password/:id', ModelMiddleware.modelUpdateSenha,UserController.updatePassword)
+UserRoute.patch('/users/:id/img', authMiddleare.authenticate, UserController.updateImg)
 UserRoute.patch('/admin/users/update/:id', authMiddleare.authenticateAdmin, UserController.updateAdmin)
 UserRoute.delete('/admin/users/delete/:id', authMiddleare.authenticateAdmin, UserController.delete)
 

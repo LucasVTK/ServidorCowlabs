@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await Promise.all([
     carregarKPIs(token),
     carregarTabela(token),
+    carregarChamados(token),
   ]);
   bindResetBase();
 
@@ -65,10 +66,7 @@ async function carregarKPIs(token) {
     console.warn("KPI demandas indisponível:", e.message);
   }
 
-  // TalkUs — endpoint ainda não implementado no backend.
-  // TODO: Criar GET /admin/talkus → { total: number, urgentes: number }
-  setKPI("kpi-talkus", "—");
-  setKPI("kpi-talkus-sub", "Backend em produção");
+  // TalkUs — carregado por carregarChamados(); KPI atualizado lá.
 
   // Aprovações pendentes — endpoint ainda não implementado no backend.
   // TODO: Criar GET /admin/pendentes → { total: number }
@@ -183,8 +181,10 @@ function getInitials(name) {
 
 // ── Ações de usuário ─────────────────────────────────────────────────────────
 
-// token acessível às funções globais (atribuído no DOMContentLoaded abaixo)
-let _adminToken = null;
+// token e mapa de chamados acessíveis às funções globais
+let _adminToken  = null;
+let _chamadoAtual = null;
+const _chamadosMap = new Map();
 
 window.abrirModalEdicao = function (id, tipoAtual, statusAtual) {
   const modal = document.getElementById("modalEditarUsuario");
@@ -257,13 +257,138 @@ window.excluirUsuario = async function (id, nome) {
   }
 };
 
+// ── TalkUs / Chamados ────────────────────────────────────────────────────────
+
+function statusBadge(status) {
+  const s = (status || "").toLowerCase();
+  if (s === "resolvido")   return `<span class="badge bg-success">Resolvido</span>`;
+  if (s === "em análise" || s === "em analise") return `<span class="badge bg-info text-dark">Em análise</span>`;
+  if (s === "aberto")      return `<span class="badge bg-warning text-dark">Aberto</span>`;
+  return `<span class="badge bg-secondary">Sem status</span>`;
+}
+
+async function carregarChamados(token) {
+  const list = document.getElementById("talkus-list");
+  if (!list) return;
+
+  try {
+    const res = await fetch(`${API_URL}/admin/chamados?page=1`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const { dados, paginacao } = await res.json();
+
+    // Atualiza KPI
+    const total  = paginacao?.total ?? dados?.length ?? 0;
+    const abertos = (dados || []).filter(c => (c.chamado_status || "").toLowerCase() === "aberto").length;
+    setKPI("kpi-talkus", total.toLocaleString("pt-BR"));
+    setKPI("kpi-talkus-sub", `${abertos} aberto${abertos !== 1 ? "s" : ""} agora`);
+
+    const badge = document.getElementById("kpi-talkus-badge");
+    if (badge) badge.textContent = abertos > 0 ? abertos : "";
+
+    if (!dados || dados.length === 0) {
+      list.innerHTML = `<div class="text-center text-muted py-4 small">Nenhum chamado registrado.</div>`;
+      return;
+    }
+
+    _chamadosMap.clear();
+    dados.forEach(c => _chamadosMap.set(c.chamado_id, c));
+
+    list.innerHTML = dados.map((c) => {
+      const initials = getInitials(c.chamado_user_name || "?");
+      const conteudo = c.chamado_content
+        ? c.chamado_content.length > 60
+          ? c.chamado_content.slice(0, 60) + "…"
+          : c.chamado_content
+        : "<span class='text-muted fst-italic'>Sem conteúdo</span>";
+
+      return `
+        <div class="chamado-item d-flex align-items-start gap-3"
+             role="button" style="cursor:pointer" onclick="abrirChamado(${c.chamado_id})">
+          <div class="avatar-sm flex-shrink-0">${initials}</div>
+          <div class="flex-grow-1 overflow-hidden">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <span class="fw-600 text-truncate">${c.chamado_user_name || "—"}</span>
+              ${statusBadge(c.chamado_status)}
+            </div>
+            <small class="text-muted d-block">${c.chamado_user_email || "—"}</small>
+            <small class="mt-1 d-block">${conteudo}</small>
+          </div>
+        </div>`;
+    }).join("");
+
+  } catch (e) {
+    console.error("Erro ao carregar chamados:", e);
+    list.innerHTML = `<div class="text-center text-danger py-4 small">Erro ao carregar chamados.</div>`;
+  }
+}
+
+window.abrirChamado = function (id) {
+  const c = _chamadosMap.get(id);
+  if (!c) return;
+  _chamadoAtual = c;
+
+  document.getElementById("chamado-id").textContent      = c.chamado_id;
+  document.getElementById("chamado-nome").textContent    = c.chamado_user_name  || "—";
+  document.getElementById("chamado-email").textContent   = c.chamado_user_email || "—";
+  document.getElementById("chamado-tel").textContent     = c.chamado_user_tel   || "—";
+  document.getElementById("chamado-content").textContent = c.chamado_content    || "Sem conteúdo";
+  document.getElementById("chamado-status-badge").innerHTML = statusBadge(c.chamado_status);
+
+  const respBox   = document.getElementById("chamado-resp-existente");
+  const respTexto = document.getElementById("chamado-resp-texto");
+  if (c.chamado_resp) {
+    respBox.classList.remove("d-none");
+    respTexto.textContent = c.chamado_resp;
+  } else {
+    respBox.classList.add("d-none");
+  }
+
+  document.getElementById("chamado-resp-input").value = "";
+  new bootstrap.Modal(document.getElementById("modalChamado")).show();
+};
+
+window.responderChamado = async function () {
+  if (!_chamadoAtual || !_adminToken) return;
+
+  const resp = document.getElementById("chamado-resp-input")?.value.trim();
+  if (!resp) {
+    myModal("Digite uma resposta antes de salvar.", { type: "warning" });
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/admin/chamados/${_chamadoAtual.chamado_id}/responder`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${_adminToken}`,
+      },
+      body: JSON.stringify({ chamado_resp: resp }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || data.erro || "Erro ao responder");
+
+    bootstrap.Modal.getInstance(document.getElementById("modalChamado"))?.hide();
+    myModal("Resposta salva com sucesso!", { type: "success" });
+    await carregarChamados(_adminToken);
+  } catch (e) {
+    myModal(e.message, { type: "danger", title: "Erro ao responder" });
+  }
+};
+
 // ── Resetar base ─────────────────────────────────────────────────────────────
 
 function bindResetBase() {
   const btn = document.getElementById("btn-reset-base");
   if (!btn) return;
 
-  btn.addEventListener("click", async () => {
+  btn.addEventListener("click", async (e) => {
+    e.stopPropagation();
     const ok = await myConfirm(
       "Esta ação irá apagar TODOS os dados da plataforma. Tem certeza?",
       { type: "danger", title: "Resetar Base de Dados", okText: "Sim, resetar" }

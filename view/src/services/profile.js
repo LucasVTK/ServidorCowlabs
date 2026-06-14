@@ -118,7 +118,7 @@ async function loadUserActivity(userId, token) {
 
 function renderAccountInfo(user) {
   const emailEl = document.getElementById("userEmail");
-  if (emailEl) emailEl.textContent = user.user_email || "—";
+  if (emailEl) emailEl.textContent = user.email || user.user_email || "—";
 }
 
 // ── Upload de foto via Cloudinary ────────────────────────────────────────────
@@ -149,12 +149,22 @@ function setupUpload(user, token) {
       const url = await uploadToCloudinary(file);
       if (!url) return;
 
-      // Atualiza a imagem na tela
-      if (imgEl) imgEl.src = url;
+      // Persiste a URL no banco via backend
+      const res = await fetch(`${API_URL}/users/${user.id}/img`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ user_img: url }),
+      });
 
-      // Salva a URL no perfil via backend
-      // TODO: O campo user_img deve ser aceito por PUT /users/update/:id
-      // Por enquanto, apenas mostra sucesso visual
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || `Erro HTTP ${res.status}`);
+      }
+
+      if (imgEl) imgEl.src = url;
       myModal("Foto atualizada com sucesso!", { type: "success" });
 
     } catch (e) {

@@ -100,42 +100,48 @@
 
         <!-- TalkUs recentes -->
         <div class="col-lg-5">
-          <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+          <div class="card border-0 shadow-sm rounded-4 p-4 h-100 d-flex flex-column">
             <h5 class="fw-800 mb-4">Últimas do TalkUs</h5>
-            <!-- TODO: Criar GET /admin/talkus → [{ nome, mensagem, tempo, categoria }] -->
-            <div class="text-center text-muted py-4 small">
-              <i class="bi bi-chat-left-dots fs-2 d-block mb-2 opacity-25"></i>
-              Em implementação no backend.
+            <div id="talkus-list" class="flex-grow-1 overflow-auto" style="max-height:380px">
+              <div class="text-center text-muted py-4 small">
+                <i class="bi bi-arrow-clockwise fs-2 d-block mb-2 opacity-25"></i>
+                Carregando...
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Tabela de usuários -->
+        <!-- Tabela de usuários (colapsível) -->
         <div class="col-12">
           <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="p-4 bg-white border-bottom d-flex justify-content-between align-items-center">
-              <h5 class="fw-800 mb-0">Controle de Usuários</h5>
+            <div class="p-4 bg-white border-bottom d-flex justify-content-between align-items-center collapse-toggle"
+                 role="button" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="true" style="cursor:pointer">
+              <h5 class="fw-800 mb-0">
+                <i class="bi bi-chevron-up me-2 toggle-icon"></i>Controle de Usuários
+              </h5>
               <button class="btn btn-sm btn-outline-danger" id="btn-reset-base">
                 <i class="bi bi-trash"></i> Resetar Base
               </button>
             </div>
-            <div class="table-responsive">
-              <table class="table table-hover align-middle mb-0">
-                <thead class="bg-light">
-                  <tr>
-                    <th class="ps-4">Usuário</th>
-                    <th>Cargo</th>
-                    <th>Status</th>
-                    <th>Último Login</th>
-                    <th class="text-end pe-4">Ações</th>
-                  </tr>
-                </thead>
-                <tbody id="users-tbody">
-                  <tr>
-                    <td colspan="5" class="text-center text-muted py-4">Carregando...</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div id="collapseUsuarios" class="collapse show">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="bg-light">
+                    <tr>
+                      <th class="ps-4">Usuário</th>
+                      <th>Cargo</th>
+                      <th>Status</th>
+                      <th>Cadastro</th>
+                      <th class="text-end pe-4">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody id="users-tbody">
+                    <tr>
+                      <td colspan="5" class="text-center text-muted py-4">Carregando...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -145,6 +151,55 @@
   </div>
 
   <!-- Footer injetado pelo componente footer.js -->
+
+  <!-- Modal: Detalhes do Chamado TalkUs -->
+  <div class="modal fade" id="modalChamado" tabindex="-1" aria-labelledby="modalChamadoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0 shadow">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-800" id="modalChamadoLabel">
+            Chamado <span class="text-muted fw-400">#<span id="chamado-id"></span></span>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+
+          <!-- Info do remetente -->
+          <div class="p-3 bg-light rounded-3 mb-3">
+            <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+              <span class="fw-600" id="chamado-nome"></span>
+              <span id="chamado-status-badge"></span>
+            </div>
+            <small class="text-muted d-block"><i class="bi bi-envelope me-1"></i><span id="chamado-email"></span></small>
+            <small class="text-muted d-block"><i class="bi bi-telephone me-1"></i><span id="chamado-tel"></span></small>
+          </div>
+
+          <!-- Mensagem -->
+          <div class="mb-3">
+            <p class="small text-uppercase text-muted fw-600 mb-1">Mensagem</p>
+            <p id="chamado-content" class="mb-0"></p>
+          </div>
+
+          <!-- Resposta anterior (visível se já respondido) -->
+          <div id="chamado-resp-existente" class="mb-3 d-none">
+            <p class="small text-uppercase text-muted fw-600 mb-1">Resposta enviada</p>
+            <p id="chamado-resp-texto" class="mb-0 text-success"></p>
+          </div>
+
+          <!-- Campo de nova resposta -->
+          <div class="mb-3">
+            <label class="form-label fw-600">Resposta</label>
+            <textarea class="form-control" id="chamado-resp-input" rows="3"
+              placeholder="Digite a resposta para o usuário..."></textarea>
+          </div>
+          <button type="button" class="btn btn-primary w-100 py-2" onclick="responderChamado()">
+            <i class="bi bi-send me-2"></i>Salvar resposta
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal: Editar Usuário -->
   <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true">
