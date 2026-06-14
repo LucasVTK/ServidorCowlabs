@@ -1,3 +1,5 @@
+import myModal from "../components/mymodal.js";
+
 document.querySelector("#login-form").addEventListener("submit", validaLogin);
 
 // const user = document.querySelector("#user").value;
@@ -9,7 +11,7 @@ async function validaLogin(e) {
     const senha = document.querySelector("#Senha").value;
 
     if (user === "" || senha === "") {
-        alert("Preencha todos os campos");
+        myModal("Preencha todos os campos", { type: "warning" });
         return;
     }
 
@@ -45,7 +47,7 @@ async function validaLogin(e) {
 
     } catch (error) {
         console.error("Erro no login:", error);
-        alert(`Erro ao fazer login: ${error.message}`);
+        myModal(error.message, { type: "danger", title: "Erro ao fazer login" });
     }
 }
 

@@ -1,52 +1,65 @@
-.profile-picture {
+/* profile.css — estilos específicos da página de perfil.
+   Variáveis de cor, tipografia e utilitários globais estão em default.css. */
+
+/* ── Hero de fundo ──────────────────────────────────────────────────────── */
+.profile-hero {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
+  height: 200px;
+  border-radius: 0 0 50px 50px;
+}
+
+/* ── Foto de perfil ─────────────────────────────────────────────────────── */
+.profile-pic-wrapper {
   position: relative;
   width: 150px;
   height: 150px;
-  border-radius: 50%; /* deixa redondo */
-  overflow: hidden; /* corta as bordas */
-  cursor: pointer;
+  margin: 0 auto;
 }
 
-.profile-picture img {
+.profile-pic-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border: 5px solid white;
 }
 
-.profile-picture .overlay {
+.upload-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* overlay escuro semi-transparente */
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  cursor: pointer;
+  transition: var(--transition);
 }
 
-.profile-picture:hover .overlay {
+.profile-pic-wrapper:hover .upload-overlay {
   opacity: 1;
 }
 
-  .object-fit-cover {
-    object-fit: cover;
-  }
-  .card-custom {
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  }
-  .progress-bar {
-    background-color: #e667af;
-  }
+/* ── Cards de métrica ───────────────────────────────────────────────────── */
+.metric-card {
+  transition: var(--transition);
+}
+.metric-card:hover {
+  transform: translateY(-5px);
+}
 
-  .overlay {
-    transition: opacity 0.3s;
-    opacity: 0;
-  }
-  #rating i {
-    cursor: pointer;
-    transition: color 0.2s;
-  }
+/* ── Círculo de ícone (conquistas) ─────────────────────────────────────── */
+.icon-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.badge-item {
+  width: 100px;
+}

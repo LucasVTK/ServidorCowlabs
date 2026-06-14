@@ -1,0 +1,22 @@
+/* ============================================================
+   talkus.css  ·  Fale Conosco
+   Tokens, navbar, hero, .form-control, .btn-send e footer
+   vêm do default.css.
+   ============================================================ */
+
+/* Hero compacto da página de contato */
+.contact-hero {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
+  padding-bottom: 80px !important;
+  border-radius: 0 0 50px 50px;
+}
+
+/* Cartão do formulário */
+.contact-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Ajuste fino do padding dos inputs flutuantes desta página */
+.contact-card .form-control { padding: 1rem 0.75rem; }

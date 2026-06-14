@@ -3,23 +3,29 @@ import DemandasRepository from "../repositories/CrudDemandaRepository.js";
 const CrudDemandaController = {
   async getAllDemandas(req, res) {
     try {
-      let { page } = req.query;
+      let { page, cursos } = req.query;
       let limit = 10;
-    
+
       page = parseInt(page);
       limit = parseInt(limit);
-    
+
       if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) {
         return res.status(400).json({
           erro: "parametro da paginação errado"
         });
       }
-      const { dados, total } = await DemandasRepository.readAll(page, limit);
+
+      // cursos: CSV de nomes, e.g. "Medicina,Direito" — vem da query string
+      const cursosParam = cursos && cursos.trim() ? cursos.trim() : null;
+
+      const { dados, total } = await DemandasRepository.readAll(page, limit, cursosParam);
     
       const pages = Math.ceil(total / limit);
       const prev_page = page - 1 > 0 ? page - 1 : false;
       const next_page = page + 1 > pages ? false : page + 1;
-    
+
+      const cursosQuery = cursosParam ? `&cursos=${encodeURIComponent(cursosParam)}` : "";
+
       res.status(200).json({
         dados,
         paginacao: {
@@ -29,8 +35,9 @@ const CrudDemandaController = {
           currentPage: page,
           next_page,
           prev_page,
-          prev_path: prev_page ? `/demandas?page=${prev_page}` : false,
-          next_path: next_page ? `/demandas?page=${next_page}` : false
+          cursos: cursosParam,
+          prev_path: prev_page ? `/demandas?page=${prev_page}${cursosQuery}` : false,
+          next_path: next_page ? `/demandas?page=${next_page}${cursosQuery}` : false,
         }
       });
     

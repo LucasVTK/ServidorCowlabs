@@ -8,12 +8,14 @@ const UserRepository = {
   async readAll() {
     const conn = await con();
     const { recordset } = await conn.query(
-      `select user_id, 
+      `SELECT user_id,
               user_name,
-              user_real_name, 
-              user_email, 
-              user_tipo 
-        from tb_user`,
+              user_real_name,
+              user_email,
+              user_tipo,
+              user_status,
+              user_create_data
+         FROM tb_user`,
     );
     return recordset;
   },
@@ -24,16 +26,25 @@ const UserRepository = {
       .request()
       .input("user_id", sqltype.Int, id)
       .query(
-        `select 
-          user_id,
-          user_name,
-          user_real_name,
-          user_email,
-          user_tipo 
-        from tb_user 
-        where user_id=@user_id`,
+        `SELECT user_id,
+                user_name,
+                user_real_name,
+                user_email,
+                user_tipo,
+                user_status
+           FROM tb_user
+          WHERE user_id = @user_id`,
       );
     return recordset;
+  },
+
+  async readStatusById(id) {
+    const conn = await con();
+    const { recordset } = await conn
+      .request()
+      .input("user_id", sqltype.Int, id)
+      .query(`SELECT user_status FROM tb_user WHERE user_id = @user_id`);
+    return recordset[0] || null;
   },
 
   async readUser(user_email) {
@@ -211,7 +222,35 @@ async readActivityByUserId(id) {
     `);
 
   return recordset[0];
-}
+},
+
+  // Soft delete — marca o usuário como inativo sem apagar do banco
+  async updateStatus(id, status) {
+    const conn = await con();
+    const respDB = await conn
+      .request()
+      .input("user_id",     sqltype.Int,        id)
+      .input("user_status", sqltype.VarChar(20), status)
+      .query(`UPDATE tb_user SET user_status = @user_status WHERE user_id = @user_id`);
+    return respDB;
+  },
+
+  // Atualização parcial pelo admin (tipo e/ou status)
+  async updateAdmin(id, { user_tipo, user_status }) {
+    const conn = await con();
+    const respDB = await conn
+      .request()
+      .input("user_id",     sqltype.Int,        id)
+      .input("user_tipo",   sqltype.VarChar(20), user_tipo   ?? null)
+      .input("user_status", sqltype.VarChar(20), user_status ?? null)
+      .query(`
+        UPDATE tb_user
+           SET user_tipo   = ISNULL(NULLIF(@user_tipo,   ''), user_tipo),
+               user_status = ISNULL(NULLIF(@user_status, ''), user_status)
+         WHERE user_id = @user_id
+      `);
+    return respDB;
+  },
 };
 
 export default UserRepository;

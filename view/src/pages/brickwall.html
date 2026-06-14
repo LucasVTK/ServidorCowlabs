@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CowLabs - Mural de Demandas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="/view/src/styles/default.css" />
+  <link rel="stylesheet" href="/view/src/styles/brickwall.css" />
+</head>
+<body>
+
+  <!-- Navbar injetada pelo componente nav.js -->
+  <div id="nav-root"></div>
+
+  <header class="hero-brand">
+    <div class="container text-center">
+      <h1 class="display-4 fw-800 mb-2">Mural de Oportunidades</h1>
+      <p class="lead opacity-75 mb-4">Encontre ou publique demandas para colaborar com a comunidade.</p>
+
+      <div class="d-flex justify-content-center gap-3 flex-wrap mb-4">
+        <!-- Botão publicar (visível só para logados — toggled pelo demandas.js) -->
+        <button
+          class="btn btn-action-hero d-none"
+          id="btn-abrir-modal"
+          data-bs-toggle="modal"
+          data-bs-target="#modalDemanda"
+        >
+          <i class="bi bi-plus-lg me-2"></i>Publicar Demanda
+        </button>
+
+        <!-- Filtro por curso -->
+        <div class="filter-container">
+          <div class="dropdown">
+            <button class="btn btn-filter-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+              <i class="bi bi-funnel me-2"></i>Filtrar por Curso
+            </button>
+            <div class="dropdown-menu shadow-lg border-0 rounded-4 p-3" style="min-width: 260px;">
+              <form id="form_filter_dropdown">
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Administração" id="f-adm">
+                  <label class="form-check-label small" for="f-adm">Administração</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Arquitetura e Urbanismo" id="f-arq">
+                  <label class="form-check-label small" for="f-arq">Arquitetura e Urbanismo</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Biomedicina" id="f-bio">
+                  <label class="form-check-label small" for="f-bio">Biomedicina</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Ciências Biológicas" id="f-cb">
+                  <label class="form-check-label small" for="f-cb">Ciências Biológicas</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Ciências Contábeis" id="f-cc">
+                  <label class="form-check-label small" for="f-cc">Ciências Contábeis</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Design Digital" id="f-design">
+                  <label class="form-check-label small" for="f-design">Design Digital</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Direito" id="f-dir">
+                  <label class="form-check-label small" for="f-dir">Direito</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Educação Física" id="f-ef">
+                  <label class="form-check-label small" for="f-ef">Educação Física</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Enfermagem" id="f-enf">
+                  <label class="form-check-label small" for="f-enf">Enfermagem</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Engenharia Civil" id="f-ec">
+                  <label class="form-check-label small" for="f-ec">Engenharia Civil</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Engenharia de Produção" id="f-ep">
+                  <label class="form-check-label small" for="f-ep">Engenharia de Produção</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Farmácia" id="f-farm">
+                  <label class="form-check-label small" for="f-farm">Farmácia</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Fisioterapia" id="f-fisio">
+                  <label class="form-check-label small" for="f-fisio">Fisioterapia</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Medicina" id="f-med">
+                  <label class="form-check-label small" for="f-med">Medicina</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Nutrição" id="f-nut">
+                  <label class="form-check-label small" for="f-nut">Nutrição</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Odontologia" id="f-odont">
+                  <label class="form-check-label small" for="f-odont">Odontologia</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Pedagogia" id="f-ped">
+                  <label class="form-check-label small" for="f-ped">Pedagogia</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" value="Psicologia" id="f-psi">
+                  <label class="form-check-label small" for="f-psi">Psicologia</label>
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" value="Sistemas de Informação" id="f-si">
+                  <label class="form-check-label small" for="f-si">Sistemas de Informação</label>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary w-100" id="filter_btn_sm">
+                  Limpar filtros
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container my-5">
+    <!-- Cards injetados pelo loaderDemandas.js -->
+    <div class="row g-4 row_cards"></div>
+
+    <nav class="mt-5">
+      <ul class="pagination justify-content-center custom-pagination navpages"></ul>
+    </nav>
+  </main>
+
+  <!-- Footer injetado pelo componente footer.js -->
+
+  <!-- Modal: Criar / Editar Demanda -->
+  <div class="modal fade" id="modalDemanda" tabindex="-1" aria-labelledby="modalDemandaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0 shadow">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-800" id="modalDemandaLabel">Publicar Demanda</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body pt-2">
+          <form id="form-demanda">
+            <div class="mb-3">
+              <label class="form-label fw-600">Título <small class="text-muted">(5–20 caracteres)</small></label>
+              <input
+                type="text"
+                class="form-control"
+                id="novaDemanda"
+                minlength="5"
+                maxlength="20"
+                placeholder="Ex: App de Gestão de Eventos"
+                required
+              >
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-600">Descrição <small class="text-muted">(10–300 caracteres)</small></label>
+              <textarea
+                class="form-control"
+                id="textoDemanda"
+                rows="4"
+                minlength="10"
+                maxlength="300"
+                placeholder="Descreva o que você precisa e quais habilidades busca..."
+                required
+              ></textarea>
+            </div>
+            <div class="mb-4">
+              <label class="form-label fw-600">Curso / Área</label>
+              <select class="form-select" id="cursoDemanda" required>
+                <option value="">Selecione o curso ou área...</option>
+                <option>Administração</option>
+                <option>Arquitetura e Urbanismo</option>
+                <option>Biomedicina</option>
+                <option>Ciências Biológicas</option>
+                <option>Ciências Contábeis</option>
+                <option>Design Digital</option>
+                <option>Direito</option>
+                <option>Educação Física</option>
+                <option>Enfermagem</option>
+                <option>Engenharia Civil</option>
+                <option>Engenharia de Produção</option>
+                <option>Farmácia</option>
+                <option>Fisioterapia</option>
+                <option>Medicina</option>
+                <option>Nutrição</option>
+                <option>Odontologia</option>
+                <option>Pedagogia</option>
+                <option>Psicologia</option>
+                <option>Sistemas de Informação</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-send w-100 py-2" id="btn-publicar-demanda">
+              Publicar
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/view/src/services/demandas.js"></script>
+</body>
+</html>

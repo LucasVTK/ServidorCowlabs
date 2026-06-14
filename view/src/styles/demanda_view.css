@@ -1,0 +1,52 @@
+/* ============================================================
+   demanda_view.css  ·  Detalhe da demanda + comentários
+   Identidade base vem do default.css.
+   ============================================================ */
+
+main { padding-top: 30px; }
+
+/* Botão "Voltar" / "comentar" */
+.personal_btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+.personal_btn:hover { background: var(--primary-hover); color: var(--white); }
+.personal_btn a { color: inherit; text-decoration: none; }
+
+.card { border: none; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+
+.imagem-user { width: 36px; height: 36px; object-fit: cover; }
+
+.coments textarea {
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  width: 100%;
+  margin-bottom: 12px;
+}
+.coments textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(0, 110, 255, 0.1);
+}
+
+.card_coment { background: var(--bg-page); }
+
+.login_dialog {
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 28px 36px;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+.login_dialog::backdrop { background: rgba(0, 26, 65, 0.45); }

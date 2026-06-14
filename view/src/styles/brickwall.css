@@ -1,0 +1,42 @@
+/* ============================================================
+   brickwall.css  ·  Mural de Demandas
+   Estilos específicos da página. Tokens, navbar, hero, cards
+   base, paginação e footer vêm do default.css.
+   ============================================================ */
+
+/* Filtro do hero */
+.filter-container { max-width: 500px; padding: 0 15px; }
+
+.btn-filter-dropdown {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--white);
+  padding: 15px 25px;
+  border-radius: 18px;
+  font-weight: 600;
+  text-align: left;
+}
+.btn-filter-dropdown:hover { background: rgba(255, 255, 255, 0.25); color: var(--white); }
+
+/* Conteúdo dos cards de demanda (a base .card-premium está no default) */
+.card-title-premium {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 1.25rem;
+}
+.card-text-premium { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+
+.btn-card-footer {
+  border: none;
+  background: #f8fafc;
+  padding: 18px;
+  width: 100%;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-muted);
+  transition: 0.2s;
+}
+.card-premium:hover .btn-card-footer { background: var(--primary); color: var(--white); }

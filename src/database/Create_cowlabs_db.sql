@@ -25,8 +25,12 @@ CREATE TABLE tb_user (
     user_uf VARCHAR(2),
     user_cep VARCHAR(8),
 
-    user_create_data DATETIME DEFAULT GETDATE()
+    user_create_data DATETIME DEFAULT GETDATE(),
+    user_status      VARCHAR(20) DEFAULT 'ativo'
 );
+
+-- Se a tabela já existir no banco, rode manualmente:
+-- ALTER TABLE tb_user ADD user_status VARCHAR(20) DEFAULT 'ativo';
 
 
 GO

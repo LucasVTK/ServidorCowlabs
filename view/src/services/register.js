@@ -2,6 +2,8 @@
 // para isso desativamos o botão de registro e só iremos ativá-lo quando todas as informações de usuário, CPF e e-mail forem novas entradas no banco de dados. Isso previne a existência de dois nomes de usuários iguais, e que duas pessoas tenham mais de uma conta e que sejam enviadas mensagens de recuperação de senha (a serem implementadas futuramente) para uma outra pessoa.
 
 // inseren event listener nos campos trackeados
+import myModal from "../components/mymodal.js";
+
 document.getElementById("User").addEventListener("change", () => inputCompare("User"));
 // document.getElementById("Email").addEventListener("change", () => inputCompare("Email"));
 // document.getElementById("CPF").addEventListener("change", () => inputCompare("CPF"));
@@ -74,7 +76,7 @@ document.querySelector("#CEP").onblur = async function(e){
         
         // validação do retorno
         if(dados.erro){
-            alert("CEP inexistente")
+            myModal("CEP inexistente", { type: "danger" })
         }else{
             document.querySelector("#uf").value = dados.uf
             document.querySelector("#cidade").value = dados.localidade
@@ -86,7 +88,7 @@ document.querySelector("#CEP").onblur = async function(e){
         }
         
     }else{
-        alert("CEP inválido")
+        myModal("CEP inválido", { type: "warning" })
     }
 
 }
@@ -126,7 +128,7 @@ async function register(e) {
     }
 
     if (Nome === "" || Realname === "" || CPF === "" || Email === "" || Curso === "") {
-        alert("Preencha todos os campos");
+        myModal("Preencha todos os campos", { type: "warning" });
         return;
     }
    

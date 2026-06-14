@@ -34,10 +34,19 @@ const AuthController = {
                 })
             }
 
+            if (user.user_status === 'inativo') {
+                return res.status(403).json({
+                    ok: false,
+                    message: 'Conta desativada. Entre em contato com o administrador.'
+                })
+            }
+
             const payload = {
                 id: user.user_id,
                 email: user.user_email,
-                tipo: user.user_tipo
+                tipo: user.user_tipo,
+                user_name: user.user_name,
+                user_real_name: user.user_real_name,
             }
 
             const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '8h' })

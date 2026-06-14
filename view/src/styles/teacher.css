@@ -1,0 +1,44 @@
+:root {
+  --bg-teacher: #f4f7f6;
+}
+
+body {
+  background-color: var(--bg-teacher);
+  font-family: 'Inter', sans-serif;
+}
+
+.teacher-hero {
+  background: linear-gradient(135deg, var(--dark-blue) 0%, #004299 100%);
+  border-radius: 0 0 50px 50px;
+}
+
+/* Indicadores Pedagógicos */
+.progress-vertical {
+  width: 12px;
+  height: 60px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.progress-bar-v {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.project-item {
+  border: 1px solid #eef2f6;
+  transition: 0.3s;
+}
+.project-item:hover {
+  border-color: var(--primary);
+  background-color: #f8fbff;
+}
+
+.border-dashed {
+  border: 2px dashed #cbd5e1 !important;
+}
+
+.bg-primary-subtle { background-color: #e6f0ff !important; }
