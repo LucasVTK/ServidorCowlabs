@@ -25,7 +25,7 @@ const chamadosRepository = {
         }
     },
 
-    async updateResp(id, { chamado_resp, chamado_status }) {
+    async updateResp(id, { chamado_resp, chamado_status,  }) {
         const conn = await con()
         const respDB = await conn
             .request()
@@ -33,9 +33,10 @@ const chamadosRepository = {
             .input('resp',   sqltype.VarChar(500), chamado_resp)
             .input('status', sqltype.VarChar(20),  chamado_status)
             .query(`UPDATE tb_chamados
-                       SET chamado_resp   = @resp,
-                           chamado_status = @status
-                     WHERE chamado_id = @id`)
+                    SET chamado_resp   = @resp,
+                        chamado_status = @status
+                    WHERE chamado_id = @id`)
+                    
         return respDB
     },
 
@@ -74,6 +75,21 @@ const chamadosRepository = {
             await transaction.rollback()
             return e
         }
+    },
+
+    async respChamado(id){
+        //conexao com banco
+        const conn = await con()
+        
+        //select para pegar o email do usuario via ID do chamado
+        const sql =  `select chamado_user_email from tb_chamados where chamado_id = @Cham_id`
+        const {recordset} = await conn
+        .request()
+        .input('Cham_id', sqltype.Int, id)
+        .query(sql)
+
+        //retorna o email de indice 0 (o primeiro email com aquele ID)
+        return recordset[0].chamado_user_email
     }
 }
 
