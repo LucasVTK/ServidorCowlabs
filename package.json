@@ -24,6 +24,7 @@
     "jsonwebtoken": "^9.0.3",
     "mssql": "^12.2.0",
     "node-mocks-http": "^1.17.2",
+    "nodemailer": "^9.0.0",
     "nodemon": "^3.1.11",
     "poku": "^4.2.1",
     "quibble": "^0.9.2",

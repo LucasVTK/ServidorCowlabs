@@ -1,4 +1,5 @@
 import chamadosRepository from "../repositories/ChamadosRepository.js";
+import mailer from "../utils/mailer.js";
 
 const chamadosController = {
     async getAllChamados(req, res) {
@@ -93,6 +94,36 @@ const chamadosController = {
                 message: 'erro ao enviar chamado ',
                 detalhe: e.message
             })
+        }
+    },
+    async EnviarEmail(req,res){
+        try{
+
+        //pega o id passado como parametro para fazer a pesquisa 
+        const id = req.params.id
+
+        //mensagem enviada pelo admin pelo body
+        const {
+            email_content
+        } = req.body
+
+        //busca pelo id o email do usuario pelo select feito ao banco
+        const emailUsuario = await chamadosRepository.respChamado(id)
+
+        //mailer espera 2 parametros, e email da pessoa e o texto, aqui estamos passando os 2
+        await mailer(emailUsuario, email_content, id)
+
+        res.status(200).json({
+            ok:true,
+            email:emailUsuario,
+            id: id
+        })
+        }catch(e){
+        console.log("Erro ao enviar email", e)
+        res.status(500).json({
+            message: "Erro ao responder chamado",
+            detalhe: e.message
+        })
         }
     }
 };
