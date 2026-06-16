@@ -35,6 +35,9 @@ importers:
       node-mocks-http:
         specifier: ^1.17.2
         version: 1.17.2(@types/node@25.5.2)
+      nodemailer:
+        specifier: ^9.0.0
+        version: 9.0.0
       nodemon:
         specifier: ^3.1.11
         version: 3.1.14
@@ -831,6 +834,10 @@ packages:
         optional: true
       '@types/node':
         optional: true
+
+  nodemailer@9.0.0:
+    resolution: {integrity: sha512-tbPTid7d/p9jAA8CRZ3iomvrMaST0o6NYuY7v6JQZHpPRZ61mLFSPKYd7342NtOFuej9/+L48SOIxwfu2uDvtw==}
+    engines: {node: '>=6.0.0'}
 
   nodemon@3.1.14:
     resolution: {integrity: sha512-jakjZi93UtB3jHMWsXL68FXSAosbLfY0In5gtKq3niLSkrWznrVBzXFNOEMJUfc9+Ke7SHWoAZsiMkNP3vq6Jw==}
@@ -2077,6 +2084,8 @@ snapshots:
       type-is: 1.6.18
     optionalDependencies:
       '@types/node': 25.5.2
+
+  nodemailer@9.0.0: {}
 
   nodemon@3.1.14:
     dependencies:
