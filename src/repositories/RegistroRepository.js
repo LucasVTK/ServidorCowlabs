@@ -19,7 +19,6 @@ const UserRepository = {
     );
     return recordset;
   },
-
   async readById(id) {
     const conn = await con();
     const { recordset } = await conn
@@ -33,6 +32,7 @@ const UserRepository = {
                 user_tipo,
                 user_status,
                 user_img
+                user_curso
            FROM tb_user
           WHERE user_id = @user_id`,
       );
@@ -54,7 +54,14 @@ const UserRepository = {
     const { recordset } = await sql
       .request()
       .input("user_email", sqltype.VarChar(100), user_email)
-      .query(`select * from tb_user where user_email=@user_email`);
+      .query(`select u.user_id, u.user_name, u.user_real_name, u.user_email,
+         u.user_senha, u.user_tipo, u.user_status, u.user_img,
+         c.curso_name AS user_curso
+    FROM tb_user u
+    LEFT JOIN tb_user_curso uc ON uc.tb_user_user_id = u.user_id
+    LEFT JOIN tb_curso c ON c.curso_id = uc.tb_curso_curso_id
+   WHERE u.user_email = @user_email
+`);
 
           // console.log('Recordset:', recordset)
           // console.log('Email buscado:', user_email) 
@@ -67,7 +74,10 @@ const UserRepository = {
 
   async create(model) {
     const conn = await con();
+    const transaction = new sqltype.Transaction(conn);
     console.log("Repository");
+    try{ 
+      await transaction.begin(sqltype.ISOLATION_LEVEL.READ_COMMITTED);
     const sql = `
         INSERT INTO tb_user (
             user_name, 
@@ -84,6 +94,7 @@ const UserRepository = {
             user_uf, 
             user_cep
             ) 
+        OUTPUT INSERTED.user_id
         VALUES(
             @user_name, 
             @user_real_name,
@@ -101,8 +112,7 @@ const UserRepository = {
             )
         `;
 
-    const respDB = await conn
-      .request()
+    const respDB = await new sqltype.Request(transaction)
       .input("user_name", sqltype.VarChar(100), model.user_name)
       .input("user_real_name", sqltype.VarChar(250), model.user_real_name)
       .input("user_cpf", sqltype.VarChar(11), model.user_cpf)
@@ -118,6 +128,29 @@ const UserRepository = {
       .input("user_cep", sqltype.VarChar(8), model.user_cep)
       .query(sql);
 
+      // Pega o ID direto do INSERT usando OUTPUT
+    const newUserId = respDB.recordset[0].user_id;
+
+    // Busca o curso_id pelo nome
+    const cursoResult = await new sqltype.Request(transaction)
+      .input("curso_name", sqltype.VarChar(100), model.user_curso)
+      .query(`SELECT curso_id FROM tb_curso WHERE curso_name = @curso_name`);
+
+    if (cursoResult.recordset.length > 0) {
+      const cursoId = cursoResult.recordset[0].curso_id;
+      await new sqltype.Request(transaction)
+        .input("user_id",  sqltype.Int, newUserId)
+        .input("curso_id", sqltype.Int, cursoId)
+        .query(`INSERT INTO tb_user_curso (tb_user_user_id, tb_curso_curso_id) VALUES (@user_id, @curso_id)`);
+    }
+
+    await transaction.commit();
+    return respDB;
+
+  } catch (err) {
+    await transaction.rollback();
+    throw err;
+  }
     return respDB;
   },
 
