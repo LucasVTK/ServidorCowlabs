@@ -69,6 +69,7 @@ const UserController = {
         email: model.user_email,
       });
     } catch (e) {
+      console.error(e);
       res.status(500).json({
         ok: false,
         message: "Erro do servidor",
@@ -98,6 +99,7 @@ const UserController = {
         email: model.user_email,
       });
     } catch (e) {
+      console.error(e);
       res.status(500).json({
         ok: false,
         message: "Erro do servidor",
@@ -119,7 +121,7 @@ const UserController = {
       }
       //verificacoes para retorno de mansagem ao front, com iteracao para retornar sempre todos os campos que existirem no banco, pois sem essa iteracao apenas o primeiro retorno do banco iria para o front end
       const field = []
-      repsDB.recordset.forEach(registro => {
+      for(const registro of repsDB.recordset) {
         if(registro.user_email === model.user_email){
           //cada push e uma mensagem adicionada ao field, caso o campo seja encontrado, montando assim um array
           field.push(`<br>email ja cadastrado`)
@@ -130,7 +132,7 @@ const UserController = {
       if(registro.user_name === model.user_name){
           field.push(`<br>usuário ja cadastrado`)
       }
-      })
+      }
       //retorno final ao front, se utiliza tambem das mesmas mensagens vindas do backend, caso a variavel field esteja com algo dentro retorna oque ja existe
       if(field.length > 0){
         res.status(409).json({

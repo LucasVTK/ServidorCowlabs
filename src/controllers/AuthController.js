@@ -60,7 +60,8 @@ const AuthController = {
             })
 
         } catch (e) {
-            return res.status(500).json({
+            console.error(e);
+            return res.status(500).json({ 
                 ok: false,
                 message: 'Erro interno no servidor.'
             })

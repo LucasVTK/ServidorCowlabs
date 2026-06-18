@@ -1,7 +1,6 @@
 import { Router } from "express";
 import CrudDemandaController from "../controllers/CrudDemandaController.js";
 import middlewareDemandas from '../middleware/middlewareDemandas.js'
-import authMiddleware from "../middleware/authMiddleware.js";
 
 const DemandasRouter = Router()
 

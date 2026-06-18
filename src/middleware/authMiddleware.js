@@ -22,6 +22,7 @@ const authMiddleware = {
             req.user = payload
             next()
         } catch (e) {
+            console.error(e);
             return res.status(401).json({ ok: false, message: 'Token inválido ou expirado' })
         }
     },
@@ -51,6 +52,7 @@ const authMiddleware = {
                 return res.status(403).json({ ok: false, message: 'Acesso negado' })
             }
         } catch (e) {
+            console.error(e);
             return res.status(401).json({ ok: false, message: 'Token inválido ou expirado' })
         }
     }

@@ -7,10 +7,10 @@ const chamadosController = {
         let { page } = req.query;
         let limit = 5;
 
-        page = parseInt(page);
-        limit = parseInt(limit);
+        page = Number.parseInt(page);
+        limit = Number.parseInt(limit);
 
-        if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) {
+        if (Number.isNaN(page) || Number.isNaN(limit) || page <= 0 || limit <= 0) {
         return res.status(400).json({
             erro: "parametro da paginação errado",
         });

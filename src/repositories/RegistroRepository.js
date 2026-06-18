@@ -151,7 +151,6 @@ const UserRepository = {
     await transaction.rollback();
     throw err;
   }
-    return respDB;
   },
 
   async update(id, model) {

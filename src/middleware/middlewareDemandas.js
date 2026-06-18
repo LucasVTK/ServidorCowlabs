@@ -82,7 +82,7 @@ const validarDemandas = {
 
     const { id } = req.params;
 
-    if (!id || isNaN(parseInt(id))) {
+    if (!id || Number.isNaN(parseInt(id))) {
 
       return res.status(400).json({
         error: "ID inválido. Deve ser um número inteiro.",

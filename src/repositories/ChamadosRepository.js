@@ -50,7 +50,7 @@ const chamadosRepository = {
             
             //inserindo no banco oque o usuario enviou
             const sql = ` insert into tb_chamados (chamado_user_name, chamado_user_email, chamado_user_tel, chamado_content, chamado_status, tb_user_id ) VALUES (@ChamUser, @ChamEmail, @ChamTel, @ChamContent, @ChamStatus, @ChamUserID)`
-            const resChamado = await request
+             await request
             .input('ChamUser', sqltype.VarChar(50), cham.chamado_user_name)
             .input('ChamEmail', sqltype.VarChar(70), cham.chamado_user_email)
             .input('ChamTel', sqltype.VarChar(20), cham.chamado_user_tel)

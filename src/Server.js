@@ -31,9 +31,9 @@ app.get("/", (req, res) => {
 if (process.env.VERCEL) {
   con(); // pré-aquece o pool na cold start
 } else {
-  con().then(() => {
+    await con();
     app.listen(port, () => console.log(`Servidor rodando na porta ${port}`));
-  });
+ 
 }
 
 export default app;
