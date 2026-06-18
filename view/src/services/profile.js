@@ -1,7 +1,7 @@
 import nav from "../components/nav.js";
 import footer from "../components/footer.js";
 import myModal from "../components/mymodal.js";
-import { requireAuth } from "./auth.js";
+import { requireAuth, getLoggedUser } from "./auth.js";
 import { API_URL } from "./api.js";
 
 // ── Cloudinary ──────────────────────────────────────────────────────────────
@@ -62,12 +62,43 @@ async function loadUserData(userId, token) {
   const roleEl = document.getElementById("Role");
   if (roleEl) roleEl.textContent = user.user_tipo || "Sem tipo";
 
-  const imgEl = document.getElementById("profile-image");
+   const imgEl = document.getElementById("profile-image");
   if (imgEl) {
-    // Prioridade: imagem do Cloudinary salva no perfil → avatar gerado pelo nome
     const savedImg = user.user_img || user.user_image || user.profile_img || user.foto;
     const nome = encodeURIComponent(user.user_real_name || user.user_name || "U");
-    imgEl.src = savedImg || `https://ui-avatars.com/api/?name=${nome}&size=150&background=006eff&color=fff`;
+
+    const loggedUser = getLoggedUser();
+    const curso = loggedUser?.user_curso || "";
+
+    const cursoImgMap = {
+      "Administração":              "/view/src/img/profile_img/administration.png",
+      "Arquitetura e Urbanismo":    "/view/src/img/profile_img/Engenharia.png",
+      "Ciência da Computação":      "/view/src/img/profile_img/SI.png",
+      "Ciências Biológicas":        "/view/src/img/profile_img/biological.png",
+      "Ciências Contábeis":         "/view/src/img/profile_img/accounting.png",
+      "Design":                     "/view/src/img/profile_img/Design.png",
+      "Direito":                    "/view/src/img/profile_img/Direito.png",
+      "Educação Física":            "/view/src/img/profile_img/educacao_fisica.png",
+      "Enfermagem":                 "/view/src/img/profile_img/Enfermagem.png",
+      "Engenharia ABI":             "/view/src/img/profile_img/Engenharia.png",
+      "Engenharia Ambiental":       "/view/src/img/profile_img/Engenharia_Ambiental.png",
+      "Engenharia Civil":           "/view/src/img/profile_img/Engenharia_Civil.png",
+      "Engenharia de Alimentos":    "/view/src/img/profile_img/Engenharia.png",
+      "Engenharia de Computação":   "/view/src/img/profile_img/SI.png",
+      "Engenharia de Produção":     "/view/src/img/profile_img/Engenharia_de_Producao.png",
+      "Engenharia Elétrica":        "/view/src/img/profile_img/Engenharia_Eletrica.png",
+      "Engenharia Mecânica":        "/view/src/img/profile_img/Engenharia_Mecanica.png",
+      "Engenharia Química":         "/view/src/img/profile_img/Engenharia.png",
+      "Medicina":                   "/view/src/img/profile_img/Medicina.png",
+      "Nutrição":                   "/view/src/img/profile_img/Nutricao.png",
+      "Odontologia":                "/view/src/img/profile_img/Odonto.png",
+      "Publicidade e Propaganda":   "/view/src/img/profile_img/Publicidade_e_Propaganda.png",
+      "Serviço Social":             "/view/src/img/profile_img/Servico_Social.png",
+      "Sistemas de Informação":     "/view/src/img/profile_img/SI.png",
+      "Técnico em Enfermagem":      "/view/src/img/profile_img/Tecnico_em_Enfermagem.png",
+    };
+
+    imgEl.src = savedImg || cursoImgMap[curso] || `https://ui-avatars.com/api/?name=${nome}&size=150&background=006eff&color=fff`;
     imgEl.alt = user.user_real_name || user.user_name || "Usuário";
   }
 }

@@ -139,6 +139,7 @@ async function register(e) {
         user_email: Email,
         user_senha: Senha,
         user_tipo: "Aluno",
+        user_curso: Curso,
         user_uf: uf,
         user_cidade: cidade,
         user_endereco: endereco,

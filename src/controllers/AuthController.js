@@ -47,6 +47,7 @@ const AuthController = {
                 tipo: user.user_tipo,
                 user_name: user.user_name,
                 user_real_name: user.user_real_name,
+                user_curso: user.user_curso,
             }
 
             const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '8h' })

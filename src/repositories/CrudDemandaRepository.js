@@ -127,7 +127,8 @@ const DemandasRepository = {
     const transaction = new sqltype.Transaction(conn);
 
     try {
-      await transaction.begin();
+      //Nivel de isolamento - esse é o padrao sql server
+      await transaction.begin(sqltype.ISOLATION_LEVEL.READ_COMMITTED);
 
       // 1. buscar o curso_id pelo nome do curso
       const cursoResult = await new sqltype.Request(transaction)
@@ -232,7 +233,7 @@ const DemandasRepository = {
   const transaction = new sqltype.Transaction(conn);
 
   try {
-    await transaction.begin();
+    await transaction.begin(sqltype.ISOLATION_LEVEL.READ_COMMITTED);
 
     // apaga vínculos com curso primeiro
     await new sqltype.Request(transaction)

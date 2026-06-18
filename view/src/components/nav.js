@@ -73,7 +73,31 @@ function getProfileImage(user) {
 // Avatar: <img> com foto real ou avatar gerado pelo ui-avatars como fallback.
 function avatarHTML(user, name) {
   const img = getProfileImage(user);
-  const src = img || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=40&background=006eff&color=fff`;
+
+  const cursoImgMap = {
+    "Administração":            "/view/src/img/profile_img/administration.png",
+    "Ciências Biológicas":      "/view/src/img/profile_img/biological.png",
+    "Ciências Contábeis":       "/view/src/img/profile_img/accounting.png",
+    "Design":                   "/view/src/img/profile_img/Design.png",
+    "Direito":                  "/view/src/img/profile_img/Direito.png",
+    "Educação Física":          "/view/src/img/profile_img/educacao_fisica.png",
+    "Enfermagem":               "/view/src/img/profile_img/Enfermagem.png",
+    "Engenharia Ambiental":     "/view/src/img/profile_img/Engenharia_Ambiental.png",
+    "Engenharia Civil":         "/view/src/img/profile_img/Engenharia_Civil.png",
+    "Engenharia de Produção":   "/view/src/img/profile_img/Engenharia_de_Producao.png",
+    "Engenharia Elétrica":      "/view/src/img/profile_img/Engenharia_Eletrica.png",
+    "Engenharia Mecânica":      "/view/src/img/profile_img/Engenharia_Mecanica.png",
+    "Medicina":                 "/view/src/img/profile_img/Medicina.png",
+    "Nutrição":                 "/view/src/img/profile_img/Nutricao.png",
+    "Odontologia":              "/view/src/img/profile_img/Odonto.png",
+    "Publicidade e Propaganda": "/view/src/img/profile_img/Publicidade_e_Propaganda.png",
+    "Serviço Social":           "/view/src/img/profile_img/Servico_Social.png",
+    "Sistemas de Informação":   "/view/src/img/profile_img/SI.png",
+    "Técnico em Enfermagem":    "/view/src/img/profile_img/Tecnico_em_Enfermagem.png",
+  };
+
+  const cursoImg = cursoImgMap[user.user_curso || ""];
+  const src = img || cursoImg || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=40&background=006eff&color=fff`;
   return `<span class="cl-avatar"><img src="${src}" alt="${name}"></span>`;
 }
 
