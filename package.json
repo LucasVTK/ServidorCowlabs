@@ -8,15 +8,14 @@
     "start": "nodemon --env-file .env ./src/Server.js",
     "test:e2e": "start-server-and-test start http://localhost:3000 test",
     "autocannon": "autocannon -c 1000 -d 10 http://localhost:3000/demandas?page=1",
-    "test:stress": "start-server-and-test start http://localhost:3000 autocannon",
-    "sonar": "node sonar-scanner.cjs"
+    "test:stress": "start-server-and-test start http://localhost:3000 autocannon"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "autocannon": "^2.0.1",
+    "autocannon": "^8.0.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
@@ -31,8 +30,5 @@
     "quibble": "^0.9.2",
     "start-server-and-test": "^3.0.2",
     "xpress": "^2.4.6"
-  },
-  "devDependencies": {
-    "sonarqube-scanner": "^3.5.0"
   }
 }
