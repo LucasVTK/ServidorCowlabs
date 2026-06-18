@@ -25,15 +25,18 @@ const UserRepository = {
       .request()
       .input("user_id", sqltype.Int, id)
       .query(
-        `SELECT user_id,
-                user_name,
-                user_real_name,
-                user_email,
-                user_tipo,
-                user_status,
-                user_img
-           FROM tb_user
-          WHERE user_id = @user_id`,
+        `SELECT  u.user_id,
+            u.user_name,
+            u.user_real_name,
+            u.user_email,
+            u.user_tipo,
+            u.user_status,
+            u.user_img,
+            c.curso_name AS user_curso
+        FROM tb_user u
+        LEFT JOIN tb_user_curso uc ON uc.tb_user_user_id = u.user_id
+        LEFT JOIN tb_curso c ON c.curso_id = uc.tb_curso_curso_id
+          WHERE u.user_id = @user_id`,
       );
     return recordset;
   },
