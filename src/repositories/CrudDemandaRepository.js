@@ -1,5 +1,4 @@
 import con from "../database/connectionSQL.js";
-import AuthController from "../controllers/AuthController.js";
 import sqltype from "mssql";
 
 const DemandasRepository = {
@@ -9,7 +8,7 @@ const DemandasRepository = {
     const offset = (page - 1) * limit;
 
     // cursos: string CSV e.g. "Medicina,Direito" or null (sem filtro)
-    const cursosParam = cursos && cursos.trim() ? cursos.trim() : null;
+    const cursosParam = cursos?.trim() || null;
 
     const { recordset } = await conn
       .request()
@@ -107,9 +106,7 @@ const DemandasRepository = {
 
     return recordset;
 
-    // const padronizarTag = demanda_tag.toLowerCase()// padroniza a tag para minúsculo deixando a busca mais funcional
-    // const BususcarTag = Demandas.filter(d => d.demanda_tag.toLocaleLowerCase().includes(padronizarTag)) // busca a demanda pela tag
-    // return BususcarTag; // retorna a demanda encrontrada
+
   },
 
 

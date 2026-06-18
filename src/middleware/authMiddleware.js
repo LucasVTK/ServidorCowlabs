@@ -16,12 +16,14 @@ const authMiddleware = {
 
             const registro = await UserRepository.readStatusById(payload.id)
             if (!registro || registro.user_status === 'inativo') {
+                console.error(e);
                 return res.status(403).json({ ok: false, message: 'Usuário inativo.' })
             }
 
             req.user = payload
             next()
         } catch (e) {
+            console.error(e);
             return res.status(401).json({ ok: false, message: 'Token inválido ou expirado' })
         }
     },
@@ -51,6 +53,7 @@ const authMiddleware = {
                 return res.status(403).json({ ok: false, message: 'Acesso negado' })
             }
         } catch (e) {
+            console.error(e);
             return res.status(401).json({ ok: false, message: 'Token inválido ou expirado' })
         }
     }

@@ -6,17 +6,17 @@ const CrudDemandaController = {
       let { page, cursos } = req.query;
       let limit = 10;
 
-      page = parseInt(page);
-      limit = parseInt(limit);
+      page = Number.parseInt(page);
+      limit = Number.parseInt(limit);
 
-      if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) {
+      if (Number.isNaN(page) || Number.isNaN(limit) || page <= 0 || limit <= 0) {
         return res.status(400).json({
           erro: "parametro da paginação errado"
         });
       }
 
       // cursos: CSV de nomes, e.g. "Medicina,Direito" — vem da query string
-      const cursosParam = cursos && cursos.trim() ? cursos.trim() : null;
+     const cursosParam = cursos?.trim() || null;
 
       const { dados, total } = await DemandasRepository.readAll(page, limit, cursosParam);
     
@@ -65,17 +65,16 @@ const CrudDemandaController = {
   async getDemandasByTag(req, res) {
     const { demanda_tag } = req.params;
     const demanda = await DemandasRepository.readByTag(demanda_tag);
-    if (!demanda) {
-      res.status(404).json({
-        message: "Demanda não encontrada!",
-        erro: true,
-      });
-    } else {
-      res.status(200).json({
-        total: demanda.length,
+    if (demanda){
+      return res.status(200).json({
+        total:demanda.length,
         items: demanda,
-      });
+      })
     }
+    return res.status(404).json({
+      message:"demanda não encontrada!",
+      erro:true,
+    })  
   },
 
  async creatDemandas(req, res) {
@@ -146,7 +145,7 @@ const CrudDemandaController = {
     console.log("DELETE demanda_id:", demanda_id);
     console.log("DELETE req.user:", req.user);
 
-    const result = await DemandasRepository.delete(demanda_id);
+     await DemandasRepository.delete(demanda_id);
 
     return res.status(200).json({
       message: "Demanda excluída com sucesso."

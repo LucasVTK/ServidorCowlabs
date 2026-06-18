@@ -6,7 +6,7 @@ const ComentariosController = {
     try {
       const demanda_id = Number(req.params.id);
 
-      if (!demanda_id || isNaN(demanda_id)) {
+      if (!demanda_id || Number.isNaN(demanda_id)) {
         return res.status(400).json({ error: "ID de demanda inválido." });
       }
 
@@ -25,7 +25,7 @@ const ComentariosController = {
       const user_id    = req.user.id;
       const { conteudo } = req.body;
 
-      if (!demanda_id || isNaN(demanda_id)) {
+      if (!demanda_id || Number.isNaN(demanda_id)) {
         return res.status(400).json({ error: "ID de demanda inválido." });
       }
 

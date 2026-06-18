@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 const sql = mssql;
 dotenv.config();
 
-//TODO: as o objeto sqlConfig é a configuração que fornece acesso ao sql
+// as o objeto sqlConfig é a configuração que fornece acesso ao sql
 const sqlConfig = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -18,10 +18,10 @@ const sqlConfig = {
 
 let pool; // essa variável armazena a conexao com o banco
 
-let con = async function conectar() {
+const con = async ()=> {
   try {
     // Reutiliza o pool existente (importante em ambientes serverless como Vercel)
-    if (pool && pool.connected) return pool;
+    if (pool?.connected) return pool;
     pool = await sql.connect(sqlConfig);
     console.log("Conectando ao banco...");
     return pool;
