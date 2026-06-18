@@ -110,12 +110,11 @@ const chamadosController = {
         //busca pelo id o email do usuario pelo select feito ao banco
         const emailUsuario = await chamadosRepository.respChamado(id)
 
-        //mailer espera 2 parametros, e email da pessoa e o texto, aqui estamos passando os 2
+        //mailer espera  parametros, email da pessoa e o texto, aqui estamos passando os 2 + o ID para retorno visual
         await mailer(emailUsuario, email_content, id)
 
         res.status(200).json({
             ok:true,
-            email:emailUsuario,
             id: id
         })
         }catch(e){
