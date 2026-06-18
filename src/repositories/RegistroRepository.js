@@ -32,7 +32,6 @@ const UserRepository = {
                 user_tipo,
                 user_status,
                 user_img
-                user_curso
            FROM tb_user
           WHERE user_id = @user_id`,
       );
