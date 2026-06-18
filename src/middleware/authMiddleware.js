@@ -16,7 +16,6 @@ const authMiddleware = {
 
             const registro = await UserRepository.readStatusById(payload.id)
             if (!registro || registro.user_status === 'inativo') {
-                console.error(e);
                 return res.status(403).json({ ok: false, message: 'Usuário inativo.' })
             }
 

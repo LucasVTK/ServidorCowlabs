@@ -120,6 +120,7 @@ const UserController = {
         return
       }
       //verificacoes para retorno de mansagem ao front, com iteracao para retornar sempre todos os campos que existirem no banco, pois sem essa iteracao apenas o primeiro retorno do banco iria para o front end
+      const field = []
       for(const registro of repsDB.recordset) {
         if(registro.user_email === model.user_email){
           //cada push e uma mensagem adicionada ao field, caso o campo seja encontrado, montando assim um array
